@@ -1,0 +1,16 @@
+TaskPresent: True
+Task: انت وكيل ذكي يعمل بشكل ذاتي،
+قم بإستكشاف الجهاز وعندما تنتهي ارفع لي التقرير في ملف وضعه داخل مجلد outbox
+
+Command: Get-WmiObject -Class Win32_ComputerSystem | Select-Object -Property * | Out-File -FilePath "C:\outbox\device_info.txt"
+
+Result:
+
+Out-File : Impossible de trouver une partie du chemin d'accٹs 'C:\outbox\device_info.txt'.
+Au caractٹre Ligne:1 : 73
++ ... t-Object -Property * | Out-File -FilePath "C:\outbox\device_info.txt"
++                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OpenError: (:) [Out-File], DirectoryNotFoundException
+    + FullyQualifiedErrorId : FileOpenFailure,Microsoft.PowerShell.Commands.OutFileCommand
+ 
+
