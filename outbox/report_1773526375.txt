@@ -1,0 +1,7 @@
+TaskPresent: False
+Task: N/A
+
+Command: Get-ChildItem -Path C:\ -Recurse -Force -ErrorAction SilentlyContinue | Where-Object {$_.LastWriteTime -gt (Get-Date).AddDays(-30)} | Select-Object -ExpandProperty FullName
+
+Result:
+Error: command timed out after 60 seconds.
