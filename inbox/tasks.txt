@@ -1,1 +1,1 @@
-waiting for tasks
+COMMAND: Stop-Service -Name "MSSQL`$SQLEXPRESS", "SQLWriter" -Force; Set-Service -Name "MSSQL`$SQLEXPRESS", "SQLWriter" -StartupType Manual
