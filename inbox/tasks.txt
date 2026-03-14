@@ -1,1 +1,1 @@
-waiting for tasks
+COMMAND: Stop-Service -Name 'MSSQL$SQLEXPRESS' -Force -ErrorAction SilentlyContinue; Stop-Service -Name 'SQLWriter' -Force -ErrorAction SilentlyContinue; Set-Service -Name 'MSSQL$SQLEXPRESS' -StartupType Disabled; Set-Service -Name 'SQLWriter' -StartupType Disabled
