@@ -1,0 +1,17 @@
+TaskPresent: False
+Task: N/A
+
+Command: New-Item -ItemType Directory -Path "C:\outbox" -Force
+
+Result:
+
+
+    R‚pertoireے: C:\
+
+
+Mode                LastWriteTime         Length Name                                                                  
+----                -------------         ------ ----                                                                  
+d-----       14/03/2026     23:11                outbox                                                                
+
+
+
