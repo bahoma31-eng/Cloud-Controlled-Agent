@@ -1,10 +1,1 @@
---- [STRATEGIC_TASKS_BATCH] ---
-
-TASK_1: Check CPU intensive processes (Top 5)
-COMMAND: Get-Process | Sort-Object CPU -Descending | Select-Object -First 5 -Property Name, CPU | ConvertTo-Json
-
-TASK_2: Fast Disk Space Overview
-COMMAND: Get-PSDrive C | Select-Object Name, @{n='Free_GB';e={[math]::Round($_.Free/1GB,2)}}, @{n='Used_GB';e={[math]::Round($_.Used/1GB,2)}} | ConvertTo-Json
-
-TASK_3: Top 5 Large Directories in User Profile (Optimized)
-COMMAND: Get-ChildItem -Path $env:USERPROFILE -Directory | ForEach-Object { $size = (Get-ChildItem $_.FullName -File -Recurse -ErrorAction SilentlyContinue | Measure-Object -Property Length -Sum).Sum / 1MB; [PSCustomObject]@{Folder=$_.Name; Size_MB=[math]::Round($size,2)} } | Sort-Object Size_MB -Descending | Select-Object -First 5 | ConvertTo-Json
+COMMAND: Get-Process | Sort-Object CPU -Descending | Select-Object -First 5 -Property Name, CPU; Get-PSDrive C | Select-Object Name, @{n='Free_GB';e={[math]::Round($_.Free/1GB,2)}}, @{n='Used_GB';e={[math]::Round($_.Used/1GB,2)}}
