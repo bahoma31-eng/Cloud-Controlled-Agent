@@ -1,0 +1,321 @@
+TaskPresent: False
+Task: N/A
+
+Command: Get-Counter -ListSet * | Where-Object {$_.CounterSetName -like "*Memory*"} | ForEach-Object {Get-Counter -Counter $_.Counter}
+
+Result:
+
+Timestamp                 CounterSamples                                                                               
+---------                 --------------                                                                               
+14/03/2026 23:13:54       \\desktop-556tj6m\gpu local adapter memory(luid_0x00000000_0x0000909d_phys_0_part_0)\local   
+                          usage :                                                                                      
+                          8192                                                                                         
+                                                                                                                       
+                                                                                                                       
+14/03/2026 23:13:55       \\desktop-556tj6m\gpu adapter memory(luid_0x00000000_0x0000909d_phys_0)\shared usage :       
+                          8192                                                                                         
+                                                                                                                       
+                          \\desktop-556tj6m\gpu adapter memory(luid_0x00000000_0x0000909d_phys_0)\dedicated usage :    
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\gpu adapter memory(luid_0x00000000_0x0000909d_phys_0)\total committed :    
+                          4272128                                                                                      
+                                                                                                                       
+                                                                                                                       
+14/03/2026 23:13:56       \\desktop-556tj6m\gpu process memory(pid_7468_luid_0x00000000_0x0000909d_phys_0)\shared      
+                          usage :                                                                                      
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\gpu process memory(pid_1080_luid_0x00000000_0x0000909d_phys_0)\shared      
+                          usage :                                                                                      
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\gpu process memory(pid_3020_luid_0x00000000_0x0000909d_phys_0)\shared      
+                          usage :                                                                                      
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\gpu process memory(pid_5460_luid_0x00000000_0x0000909d_phys_0)\shared      
+                          usage :                                                                                      
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\gpu process memory(pid_4_luid_0x00000000_0x0000909d_phys_0)\shared usage : 
+                          8192                                                                                         
+                                                                                                                       
+                          \\desktop-556tj6m\gpu process memory(pid_7468_luid_0x00000000_0x0000909d_phys_0)\dedicated   
+                          usage :                                                                                      
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\gpu process memory(pid_1080_luid_0x00000000_0x0000909d_phys_0)\dedicated   
+                          usage :                                                                                      
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\gpu process memory(pid_3020_luid_0x00000000_0x0000909d_phys_0)\dedicated   
+                          usage :                                                                                      
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\gpu process memory(pid_5460_luid_0x00000000_0x0000909d_phys_0)\dedicated   
+                          usage :                                                                                      
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\gpu process memory(pid_4_luid_0x00000000_0x0000909d_phys_0)\dedicated      
+                          usage :                                                                                      
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\gpu process memory(pid_7468_luid_0x00000000_0x0000909d_phys_0)\non local   
+                          usage :                                                                                      
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\gpu process memory(pid_1080_luid_0x00000000_0x0000909d_phys_0)\non local   
+                          usage :                                                                                      
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\gpu process memory(pid_3020_luid_0x00000000_0x0000909d_phys_0)\non local   
+                          usage :                                                                                      
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\gpu process memory(pid_5460_luid_0x00000000_0x0000909d_phys_0)\non local   
+                          usage :                                                                                      
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\gpu process memory(pid_4_luid_0x00000000_0x0000909d_phys_0)\non local      
+                          usage :                                                                                      
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\gpu process memory(pid_7468_luid_0x00000000_0x0000909d_phys_0)\local usage 
+                          :                                                                                            
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\gpu process memory(pid_1080_luid_0x00000000_0x0000909d_phys_0)\local usage 
+                          :                                                                                            
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\gpu process memory(pid_3020_luid_0x00000000_0x0000909d_phys_0)\local usage 
+                          :                                                                                            
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\gpu process memory(pid_5460_luid_0x00000000_0x0000909d_phys_0)\local usage 
+                          :                                                                                            
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\gpu process memory(pid_4_luid_0x00000000_0x0000909d_phys_0)\local usage :  
+                          8192                                                                                         
+                                                                                                                       
+                          \\desktop-556tj6m\gpu process memory(pid_7468_luid_0x00000000_0x0000909d_phys_0)\total       
+                          committed :                                                                                  
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\gpu process memory(pid_1080_luid_0x00000000_0x0000909d_phys_0)\total       
+                          committed :                                                                                  
+                          3502080                                                                                      
+                                                                                                                       
+                          \\desktop-556tj6m\gpu process memory(pid_3020_luid_0x00000000_0x0000909d_phys_0)\total       
+                          committed :                                                                                  
+                          2842624                                                                                      
+                                                                                                                       
+                          \\desktop-556tj6m\gpu process memory(pid_5460_luid_0x00000000_0x0000909d_phys_0)\total       
+                          committed :                                                                                  
+                          839680                                                                                       
+                                                                                                                       
+                          \\desktop-556tj6m\gpu process memory(pid_4_luid_0x00000000_0x0000909d_phys_0)\total          
+                          committed :                                                                                  
+                          8192                                                                                         
+                                                                                                                       
+                                                                                                                       
+14/03/2026 23:13:58       \\desktop-556tj6m\mssql$sqlexpress:memory manager\external benefit of memory :               
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\mssql$sqlexpress:memory manager\connection memory (kb) :                   
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\mssql$sqlexpress:memory manager\database cache memory (kb) :               
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\mssql$sqlexpress:memory manager\free memory (kb) :                         
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\mssql$sqlexpress:memory manager\granted workspace memory (kb) :            
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\mssql$sqlexpress:memory manager\lock memory (kb) :                         
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\mssql$sqlexpress:memory manager\lock blocks allocated :                    
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\mssql$sqlexpress:memory manager\lock owner blocks allocated :              
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\mssql$sqlexpress:memory manager\lock blocks :                              
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\mssql$sqlexpress:memory manager\lock owner blocks :                        
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\mssql$sqlexpress:memory manager\maximum workspace memory (kb) :            
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\mssql$sqlexpress:memory manager\memory grants outstanding :                
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\mssql$sqlexpress:memory manager\memory grants pending :                    
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\mssql$sqlexpress:memory manager\optimizer memory (kb) :                    
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\mssql$sqlexpress:memory manager\reserved server memory (kb) :              
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\mssql$sqlexpress:memory manager\sql cache memory (kb) :                    
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\mssql$sqlexpress:memory manager\stolen server memory (kb) :                
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\mssql$sqlexpress:memory manager\log pool memory (kb) :                     
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\mssql$sqlexpress:memory manager\target server memory (kb) :                
+                          0                                                                                            
+                                                                                                                       
+                          \\desktop-556tj6m\mssql$sqlexpress:memory manager\total server memory (kb) :                 
+                          0                                                                                            
+                                                                                                                       
+                                                                                                                       
+
+
+
+Get-Counter : L'instance sp‚cifi‚e n'est pas pr‚sente.
+Au caractٹre Ligne:1 : 94
++ ...  -like "*Memory*"} | ForEach-Object {Get-Counter -Counter $_.Counter}
++                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidResult : (:) [Get-Counter], Exception
+    + FullyQualifiedErrorId : CounterApiError,Microsoft.PowerShell.Commands.GetCounterCommand
+ 
+Get-Counter : L'instance sp‚cifi‚e n'est pas pr‚sente.
+Au caractٹre Ligne:1 : 94
++ ...  -like "*Memory*"} | ForEach-Object {Get-Counter -Counter $_.Counter}
++                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidResult : (:) [Get-Counter], Exception
+    + FullyQualifiedErrorId : CounterApiError,Microsoft.PowerShell.Commands.GetCounterCommand
+ 
+Get-Counter : L'instance sp‚cifi‚e n'est pas pr‚sente.
+Au caractٹre Ligne:1 : 94
++ ...  -like "*Memory*"} | ForEach-Object {Get-Counter -Counter $_.Counter}
++                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidResult : (:) [Get-Counter], Exception
+    + FullyQualifiedErrorId : CounterApiError,Microsoft.PowerShell.Commands.GetCounterCommand
+ 
+Get-Counter : L'instance sp‚cifi‚e n'est pas pr‚sente.
+Au caractٹre Ligne:1 : 94
++ ...  -like "*Memory*"} | ForEach-Object {Get-Counter -Counter $_.Counter}
++                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidResult : (:) [Get-Counter], Exception
+    + FullyQualifiedErrorId : CounterApiError,Microsoft.PowerShell.Commands.GetCounterCommand
+ 
+Get-Counter : L'instance sp‚cifi‚e n'est pas pr‚sente.
+Au caractٹre Ligne:1 : 94
++ ...  -like "*Memory*"} | ForEach-Object {Get-Counter -Counter $_.Counter}
++                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidResult : (:) [Get-Counter], Exception
+    + FullyQualifiedErrorId : CounterApiError,Microsoft.PowerShell.Commands.GetCounterCommand
+ 
+Get-Counter : L'instance sp‚cifi‚e n'est pas pr‚sente.
+Au caractٹre Ligne:1 : 94
++ ...  -like "*Memory*"} | ForEach-Object {Get-Counter -Counter $_.Counter}
++                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidResult : (:) [Get-Counter], Exception
+    + FullyQualifiedErrorId : CounterApiError,Microsoft.PowerShell.Commands.GetCounterCommand
+ 
+Get-Counter : L'instance sp‚cifi‚e n'est pas pr‚sente.
+Au caractٹre Ligne:1 : 94
++ ...  -like "*Memory*"} | ForEach-Object {Get-Counter -Counter $_.Counter}
++                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidResult : (:) [Get-Counter], Exception
+    + FullyQualifiedErrorId : CounterApiError,Microsoft.PowerShell.Commands.GetCounterCommand
+ 
+Get-Counter : L'instance sp‚cifi‚e n'est pas pr‚sente.
+Au caractٹre Ligne:1 : 94
++ ...  -like "*Memory*"} | ForEach-Object {Get-Counter -Counter $_.Counter}
++                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidResult : (:) [Get-Counter], Exception
+    + FullyQualifiedErrorId : CounterApiError,Microsoft.PowerShell.Commands.GetCounterCommand
+ 
+Get-Counter : L'instance sp‚cifi‚e n'est pas pr‚sente.
+Au caractٹre Ligne:1 : 94
++ ...  -like "*Memory*"} | ForEach-Object {Get-Counter -Counter $_.Counter}
++                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidResult : (:) [Get-Counter], Exception
+    + FullyQualifiedErrorId : CounterApiError,Microsoft.PowerShell.Commands.GetCounterCommand
+ 
+Get-Counter : L'instance sp‚cifi‚e n'est pas pr‚sente.
+Au caractٹre Ligne:1 : 94
++ ...  -like "*Memory*"} | ForEach-Object {Get-Counter -Counter $_.Counter}
++                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidResult : (:) [Get-Counter], Exception
+    + FullyQualifiedErrorId : CounterApiError,Microsoft.PowerShell.Commands.GetCounterCommand
+ 
+Get-Counter : L'instance sp‚cifi‚e n'est pas pr‚sente.
+Au caractٹre Ligne:1 : 94
++ ...  -like "*Memory*"} | ForEach-Object {Get-Counter -Counter $_.Counter}
++                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidResult : (:) [Get-Counter], Exception
+    + FullyQualifiedErrorId : CounterApiError,Microsoft.PowerShell.Commands.GetCounterCommand
+ 
+Get-Counter : L'instance sp‚cifi‚e n'est pas pr‚sente.
+Au caractٹre Ligne:1 : 94
++ ...  -like "*Memory*"} | ForEach-Object {Get-Counter -Counter $_.Counter}
++                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidResult : (:) [Get-Counter], Exception
+    + FullyQualifiedErrorId : CounterApiError,Microsoft.PowerShell.Commands.GetCounterCommand
+ 
+Get-Counter : L'instance sp‚cifi‚e n'est pas pr‚sente.
+Au caractٹre Ligne:1 : 94
++ ...  -like "*Memory*"} | ForEach-Object {Get-Counter -Counter $_.Counter}
++                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidResult : (:) [Get-Counter], Exception
+    + FullyQualifiedErrorId : CounterApiError,Microsoft.PowerShell.Commands.GetCounterCommand
+ 
+Get-Counter : L'instance sp‚cifi‚e n'est pas pr‚sente.
+Au caractٹre Ligne:1 : 94
++ ...  -like "*Memory*"} | ForEach-Object {Get-Counter -Counter $_.Counter}
++                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidResult : (:) [Get-Counter], Exception
+    + FullyQualifiedErrorId : CounterApiError,Microsoft.PowerShell.Commands.GetCounterCommand
+ 
+Get-Counter : L'instance sp‚cifi‚e n'est pas pr‚sente.
+Au caractٹre Ligne:1 : 94
++ ...  -like "*Memory*"} | ForEach-Object {Get-Counter -Counter $_.Counter}
++                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidResult : (:) [Get-Counter], Exception
+    + FullyQualifiedErrorId : CounterApiError,Microsoft.PowerShell.Commands.GetCounterCommand
+ 
+Get-Counter : L'instance sp‚cifi‚e n'est pas pr‚sente.
+Au caractٹre Ligne:1 : 94
++ ...  -like "*Memory*"} | ForEach-Object {Get-Counter -Counter $_.Counter}
++                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidResult : (:) [Get-Counter], Exception
+    + FullyQualifiedErrorId : CounterApiError,Microsoft.PowerShell.Commands.GetCounterCommand
+ 
+Get-Counter : L'instance sp‚cifi‚e n'est pas pr‚sente.
+Au caractٹre Ligne:1 : 94
++ ...  -like "*Memory*"} | ForEach-Object {Get-Counter -Counter $_.Counter}
++                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidResult : (:) [Get-Counter], Exception
+    + FullyQualifiedErrorId : CounterApiError,Microsoft.PowerShell.Commands.GetCounterCommand
+ 
+Get-Counter : L'instance sp‚cifi‚e n'est pas pr‚sente.
+Au caractٹre Ligne:1 : 94
++ ...  -like "*Memory*"} | ForEach-Object {Get-Counter -Counter $_.Counter}
++                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidResult : (:) [Get-Counter], Exception
+    + FullyQualifiedErrorId : CounterApiError,Microsoft.PowerShell.Commands.GetCounterCommand
+ 
+Get-Counter : L'instance sp‚cifi‚e n'est pas pr‚sente.
+Au caractٹre Ligne:1 : 94
++ ...  -like "*Memory*"} | ForEach-Object {Get-Counter -Counter $_.Counter}
++                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidResult : (:) [Get-Counter], Exception
+    + FullyQualifiedErrorId : CounterApiError,Microsoft.PowerShell.Commands.GetCounterCommand
+ 
+
