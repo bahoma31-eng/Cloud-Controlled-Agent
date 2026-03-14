@@ -1,1 +1,1 @@
-COMMAND: echo "CPU_CHECK:"; Get-Process | Sort-Object CPU -Descending | Select-Object -First 3 -Property Name; echo "DISK_CHECK:"; (Get-PSDrive C).Free / 1GB
+COMMAND: Get-Date
