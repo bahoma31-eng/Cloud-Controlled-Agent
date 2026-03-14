@@ -1,1 +1,1 @@
-COMMAND: Get-Process | Sort-Object CPU -Descending | Select-Object -First 5 -Property Name, CPU; Get-PSDrive C | Select-Object Name, @{n='Free_GB';e={[math]::Round($_.Free/1GB,2)}}, @{n='Used_GB';e={[math]::Round($_.Used/1GB,2)}}
+COMMAND: echo "CPU_CHECK:"; Get-Process | Sort-Object CPU -Descending | Select-Object -First 3 -Property Name; echo "DISK_CHECK:"; (Get-PSDrive C).Free / 1GB
