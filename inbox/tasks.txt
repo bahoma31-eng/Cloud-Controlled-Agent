@@ -1,1 +1,1 @@
-COMMAND: Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, InstallDate | Where-Object { $_.DisplayName -ne $null } | Sort-Object InstallDate -Descending | Select-Object -First 10
+waiting for tasks
