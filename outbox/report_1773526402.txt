@@ -1,0 +1,7 @@
+TaskPresent: False
+Task: N/A
+
+Command: Get-Process -ErrorAction SilentlyContinue | Where-Object {$_.Responding -eq $false} | Stop-Process -Force -ErrorAction SilentlyContinue
+
+Result:
+
