@@ -1,1 +1,1 @@
-COMMAND: Get-Service | Where-Object { $_.Status -eq 'Running' -and ($_.DisplayName -like '*SQL*' -or $_.DisplayName -like '*Edge*') } | Select-Object DisplayName, Name, Status
+waiting for tasks
