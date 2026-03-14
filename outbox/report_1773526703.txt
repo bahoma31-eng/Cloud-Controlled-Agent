@@ -1,0 +1,22 @@
+TaskPresent: False
+Task: N/A
+
+Command: Get-Process | Sort-Object -Property CPU -Descending | Select-Object -First 10
+
+Result:
+
+Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName                                                  
+-------  ------    -----      -----     ------     --  -- -----------                                                  
+   1954      75   176784     171168   2ے113,88   7564   1 comet                                                        
+    403      47   274116      48708   1ے261,08   3364   1 comet                                                        
+    456      41   117204      95584   1ے089,20   8756   1 comet                                                        
+    487      45   315140     244884     526,75  10172   1 Notion                                                       
+    396      28    26812      34584     450,97   7844   1 comet                                                        
+   1689      27    15760      19756     412,92   5416   1 svchost                                                      
+    653      23    62472      41472     402,59   7140   1 ctfmon                                                       
+   4095    1287   105796      51708     327,84   5460   1 explorer                                                     
+    405      43   191472     222604     319,91   2072   1 comet                                                        
+   1184      53   103336      54340     223,88   1984   1 Notion                                                       
+
+
+
