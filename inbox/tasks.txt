@@ -1,17 +1,1 @@
-TASK_ID: 2
-ENGINE: PYTHON
-MODE: SCRIPT
-CONTENT_START
-import os
-
-def list_outbox_files():
-    return list_github_directory('outbox')
-
-def delete_files_except_last_two():
-    files = list_outbox_files()
-    files_to_delete = files[:-2]
-    for file in files_to_delete:
-        delete_file_content(os.path.join('outbox', file), 'Deleted old report file')
-
-delete_files_except_last_two()
-CONTENT_END
+waiting for tasks
