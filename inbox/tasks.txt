@@ -1,6 +1,1 @@
-TASK_ID: 2
-ENGINE: PYTHON
-MODE: COMMAND
-CONTENT_START
-python helper.py
-CONTENT_END
+waiting for tasks
