@@ -1,0 +1,39 @@
+--- EXECUTION REPORT ---
+TIME: 2026-03-15T21:58:41.509055+00:00
+TASK_ID: 4
+ENGINE: PYTHON
+MODE: SCRIPT
+RETURN_CODE: 0
+CONTENT_PREVIEW:
+import psutil
+import platform
+import json
+
+# Collect device information
+device_info = {
+    "platform": platform.system(),
+    "platform_version": platform.version(),
+    "architecture": platform.machine(),
+    "processor": platform.processor(),
+    "ram": str(round(psutil.virtual_memory().total / (1024.0 ** 3))) + " GB"
+}
+
+# Parse device information into a JSON format
+device_info_json = json.dumps(device_info, indent=4)
+
+# Print parsed device information
+print("Parsed device information:")
+print(device_info_json)
+
+print("Device information is parsed correctly.")
+OUTPUT:
+Parsed device information:
+{
+    "platform": "Windows",
+    "platform_version": "10.0.18362",
+    "architecture": "AMD64",
+    "processor": "Intel64 Family 6 Model 55 Stepping 9, GenuineIntel",
+    "ram": "4 GB"
+}
+Device information is parsed correctly.
+--- END REPORT ---
