@@ -1,6 +1,1 @@
-TASK_ID: 1
-ENGINE: POWERSHELL
-MODE: COMMAND
-CONTENT_START
-Write-Output "Planner output malformed; no executable content."
-CONTENT_END
+waiting for tasks
