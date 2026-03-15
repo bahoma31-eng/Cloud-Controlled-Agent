@@ -1,7 +1,7 @@
 # MISSION PLAN
 GOAL: قم بحذف جميع التقارير الموجودة في outbox بإستثناء آخر تقريرين.
 STATE: PROCESSING
-UPDATED_AT: 2026-03-15T22:00:36.132341+00:00
+UPDATED_AT: 2026-03-15T22:01:02.464274+00:00
 
 ## STEP 1
 TITLE: Analyze goal and propose first executable action
@@ -15,8 +15,8 @@ RETRIES: 0
 
 ## STEP 2
 TITLE: Connect to outbox and retrieve list of reports
-STATUS: RETRY
-ENGINE: PYTHON
+STATUS: IN_PROGRESS
+ENGINE: POWERSHELL
 SUCCESS_CRITERIA:
 - List of reports is successfully retrieved.
 COMMAND_HINT:
