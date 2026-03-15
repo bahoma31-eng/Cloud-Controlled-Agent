@@ -1,1 +1,1 @@
-waiting for tasks
+Get-ChildItem -Path C:\Windows\Temp -Recurse -Force | Remove-Item -Recurse -Force
