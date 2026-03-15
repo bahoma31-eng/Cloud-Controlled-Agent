@@ -1,0 +1,10 @@
+--- EXECUTION LOG ---
+CMD: python -c "import os; outbox_dir = '/path/to/outbox'; files = [os.path.join(outbox_dir, f) for f in 
+RESULT:
+
+  File "<string>", line 1
+    import os; outbox_dir = '/path/to/outbox'; files = [os.path.join(outbox_dir, f) for f in os.listdir(outbox_dir) if os.path.isfile(os.path.join(outbox_dir, f)) and f.startswith('report_')]; files.sort(key=lambda x: os.path.getmtime(x)); if len(files) > 2: files_to_delete = files[:-2]; for file in files_to_delete: try: os.remove(file); print(f'Deleted: {file}'); except OSError as e: print(f'Error deleting {file}: {e}'); else: print('Not enough files to delete.')
+                                                                                                                                                                                                                                                ^^
+SyntaxError: invalid syntax
+
+--- END LOG ---
