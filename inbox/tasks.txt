@@ -1,1 +1,1 @@
-waiting for tasks
+Get-ChildItem -Path C:\Windows\Temp -Recurse -Force | Where-Object { -not $_.PSIsContainer } | Remove-Item -Force -ErrorAction SilentlyContinue
