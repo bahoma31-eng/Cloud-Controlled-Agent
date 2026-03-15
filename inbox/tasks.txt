@@ -1,1 +1,8 @@
-waiting for tasks
+TASK_ID: 2
+ENGINE: PYTHON
+MODE: COMMAND
+CONTENT_START
+import sys
+import subprocess
+subprocess.check_call([sys.executable, "-m", "pip", "install", "psutil"])
+CONTENT_END
