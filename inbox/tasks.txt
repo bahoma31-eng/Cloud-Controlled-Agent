@@ -1,61 +1,6 @@
 TASK_ID: 1
-ENGINE: PYTHON
-MODE: SCRIPT
+ENGINE: POWERSHELL
+MODE: COMMAND
 CONTENT_START
-import subprocess
-import os
-
-def run_command(command):
-    """
-    Execute a shell command and return its output.
-    """
-    try:
-        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
-        return result.stdout.strip()
-    except subprocess.CalledProcessError as e:
-        return f"Error executing {' '.join(command)}: {e.stderr.strip()}"
-
-def collect_repository_metadata():
-    metadata = {}
-
-    # Retrieve repository status (local repo state)
-    metadata["status"] = run_command(["git", "status"])
-    
-    # Retrieve commit history (one-line format for brevity)
-    metadata["commit_history"] = run_command(["git", "log", "--oneline"])
-    
-    # Retrieve branch list (local and remote branches)
-    metadata["branch_list"] = run_command(["git", "branch", "-a"])
-    
-    # Retrieve remote repository information
-    metadata["remote_info"] = run_command(["git", "remote", "-v"])
-    
-    # Capture file structure of the repository recursively
-    file_structure = []
-    for root, dirs, files in os.walk("."):
-        # Exclude hidden directories (like .git) if not needed, uncomment next lines if desired:
-        # dirs[:] = [d for d in dirs if not d.startswith('.')]
-        for file in files:
-            file_structure.append(os.path.join(root, file))
-    metadata["file_structure"] = "\n".join(file_structure)
-    
-    return metadata
-
-def main():
-    print("Collecting repository metadata...\n")
-    metadata = collect_repository_metadata()
-    
-    print("Repository Status:")
-    print(metadata["status"])
-    print("\nCommit History:")
-    print(metadata["commit_history"])
-    print("\nBranch List:")
-    print(metadata["branch_list"])
-    print("\nRemote Repository Info:")
-    print(metadata["remote_info"])
-    print("\nFile Structure:")
-    print(metadata["file_structure"])
-    
-if __name__ == "__main__":
-    main()
+Write-Output "Planner output malformed; no executable content."
 CONTENT_END
