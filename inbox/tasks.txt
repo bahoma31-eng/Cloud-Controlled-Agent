@@ -1,3 +1,1 @@
-Get-Process | Sort-Object -Property CPU -Descending; 
-Remove-Item -Path "C:\Users\$env:USERNAME\AppData\Local\Google\Chrome\User Data\Default\Cache" -Recurse -Force; 
-Get-PSDrive -PSProvider FileSystem | Select-Object @{Name='Drive';Expression={$_.Name}}, @{Name='FreeSpace';Expression={$_.Free}}
+waiting for tasks
