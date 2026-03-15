@@ -1,1 +1,25 @@
-waiting for tasks
+Set-Content -Path 'helper.py' -Value 'import requests
+import json
+import os
+
+# GitHub API endpoint and credentials
+github_api = "https://api.github.com"
+username = "your_username"
+repo_name = "your_repo_name"
+token = "your_token"
+
+# Authenticate with GitHub API
+headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+
+# Get files in the outbox directory
+response = requests.get(f"{github_api}/repos/{username}/{repo_name}/contents/outbox", headers=headers)
+
+# Parse JSON response
+files = json.loads(response.text)
+
+# Sort files by last modified date
+files.sort(key=lambda x: x["updated_at"])
+
+# Delete all but the last two files
+for file in files[:-2]:
+    response = requests.delete(f"{github_api}/repos/{username}/{repo_name}/contents/outbox/{file["name"]}", headers=headers, json={"message": "Delete old file", "sha": file["sha"]})'
