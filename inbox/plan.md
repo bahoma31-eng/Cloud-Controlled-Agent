@@ -1,16 +1,39 @@
 # MISSION PLAN
 GOAL: قم بحذف جميع التقارير الموجودة داخل مجلد outbox بإستثناء اخر تقريرين
 STATE: PROCESSING
-UPDATED_AT: 2026-03-15T15:37:54.598300+00:00
+UPDATED_AT: 2026-03-15T15:38:32.325056+00:00
 
 ## STEP 1
 TITLE: Analyze goal and propose first executable action
-STATUS: PENDING
+STATUS: DONE
 ENGINE: AUTO
 SUCCESS_CRITERIA:
 - First concrete executable action is produced.
 COMMAND_HINT:
 - Generate command/script for first action.
+RETRIES: 0
+
+## STEP 2
+TITLE: Execute Python script to delete files
+STATUS: PENDING
+ENGINE: PYTHON
+SUCCESS_CRITERIA:
+- Files are deleted successfully.
+COMMAND_HINT:
+- Run the Python script using the command: python helper.py
+RETRIES: 0
+
+## STEP 3
+TITLE: Verify deletion of files
+STATUS: PENDING
+ENGINE: AUTO
+SUCCESS_CRITERIA:
+- Only the last two files remain in the outbox directory.
+COMMAND_HINT:
+- Check the outbox directory for remaining files.
+RETRIES: 0
 
 ## NOTES
-- Plan generated automatically.
+- The Python script should be executed with caution, as it permanently deletes files without asking for confirmation.
+- Ensure backups of important files are available before executing the script.
+- The correct path to the outbox directory should be provided when prompted by the script.
