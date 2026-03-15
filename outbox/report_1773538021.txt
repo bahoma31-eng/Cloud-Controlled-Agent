@@ -1,8 +1,0 @@
-Task: python helper.py
-Result:
-
-Traceback (most recent call last):
-  File "C:\Users\Revexn\Desktop\helper.py", line 21, in <module>
-    files.sort(key=lambda x: x["updated_at"])
-    ^^^^^^^^^^
-AttributeError: 'dict' object has no attribute 'sort'
