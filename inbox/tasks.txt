@@ -1,3 +1,6 @@
-Get-Process | Where-Object { $_.CPU -gt 0 } | Select-Object ProcessName, CPU, Description; 
-Clear-BrowserCache -BrowserName Chrome; 
-Get-PSDrive -PSProvider FileSystem | Where-Object { $_.Free -gt 0 } | Select-Object @{Name='Drive';Expression={$_.Name}}, @{Name='FreeSpace(GB)';Expression={$_.Free / 1GB}}
+Get-Process | Sort-Object -Property CPU -Descending; 
+Clear-Host; 
+$chromeCachePath = "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Cache"; 
+Remove-Item -Path $chromeCachePath\* -Force -Recurse; 
+$freeSpace = (Get-PSDrive -PSProvider FileSystem | Where-Object {$_.Free -gt 0} | Select-Object -First 1).Free / 1GB; 
+Write-Host "المساحة الحرة المتبقية: $freeSpace GB"
