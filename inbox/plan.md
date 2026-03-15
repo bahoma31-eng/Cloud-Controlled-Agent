@@ -1,7 +1,7 @@
 # MISSION PLAN
 GOAL: Execute Python script to list, sort, and delete files in the "outbox" directory
 STATE: PROCESSING
-UPDATED_AT: 2026-03-15T18:11:59.339694+00:00
+UPDATED_AT: 2026-03-15T18:12:11.116007+00:00
 
 ## STEP 1
 TITLE: Analyze goal and propose first executable action
@@ -15,8 +15,8 @@ RETRIES: 0
 
 ## STEP 2
 TITLE: Execute Python script to list, sort, and delete files
-STATUS: PENDING
-ENGINE: PYTHON
+STATUS: IN_PROGRESS
+ENGINE: POWERSHELL
 SUCCESS_CRITERIA:
 - Files are correctly listed and sorted by their last modification time.
 - All but the last two files are deleted.
