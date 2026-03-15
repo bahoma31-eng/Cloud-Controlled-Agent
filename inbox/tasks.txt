@@ -1,1 +1,18 @@
-python helper.py
+python
+import os
+import datetime
+
+# تحديد المجلد outbox
+outbox_dir = 'outbox'
+
+# الوصول إلى جميع الملفات الموجودة في المجلد
+files = [f for f in os.listdir(outbox_dir) if os.path.isfile(os.path.join(outbox_dir, f))]
+
+# فرز الملفات حسب تاريخ التحديث
+files.sort(key=lambda x: os.path.getmtime(os.path.join(outbox_dir, x)))
+
+# حذف جميع الملفات ما عدا اخر تقريرين
+for file in files[:-2]:
+    os.remove(os.path.join(outbox_dir, file))
+```
+هذا الكود سوف يحذف جميع الملفات الموجودة في المجلد outbox ما عدا اخر تقريرين. يرجى ملاحظة أن هذا الكود سوف يحذف الملفات بشكل دائم، لذلك يرجى التأكد من أن الملفات التي سيتم حذفها ليست مهمة.
