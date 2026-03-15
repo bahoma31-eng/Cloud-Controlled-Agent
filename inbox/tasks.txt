@@ -1,1 +1,1 @@
-waiting for tasks
+Get-Process | Where-Object { $_.WS -gt 100MB } | Select-Object ProcessName, WS | Sort-Object -Property WS -Descending
