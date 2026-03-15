@@ -1,1 +1,33 @@
-waiting for tasks
+TASK_ID: 2
+ENGINE: PYTHON
+MODE: SCRIPT
+CONTENT_START
+import os
+import subprocess
+
+# Define the path to the helper script
+helper_script_path = 'helper.py'
+
+# Function to check the syntax of the helper script
+def check_syntax(script_path):
+    try:
+        subprocess.run(['python', '-m', 'py_compile', script_path], check=True)
+        print("Syntax check passed.")
+    except subprocess.CalledProcessError as e:
+        print(f"Syntax check failed: {e}")
+
+# Function to analyze the helper script for quotation issues
+def analyze_script(script_path):
+    with open(script_path, 'r') as file:
+        content = file.read()
+        if "'" in content and content.count("'") % 2 != 0:
+            print("Warning: Unmatched single quotes found in the script.")
+        if '"' in content and content.count('"') % 2 != 0:
+            print("Warning: Unmatched double quotes found in the script.")
+
+# Run the syntax check
+check_syntax(helper_script_path)
+
+# Analyze the script for quotation issues
+analyze_script(helper_script_path)
+CONTENT_END
