@@ -1,0 +1,11 @@
+--- EXECUTION REPORT ---
+TIME: 2026-03-15T17:39:26.691419+00:00
+TASK_ID: 1
+ENGINE: POWERSHELL
+MODE: COMMAND
+RETURN_CODE: 0
+CONTENT_PREVIEW:
+Write-Output "Planner output malformed; no executable content."
+OUTPUT:
+Planner output malformed; no executable content.
+--- END REPORT ---
