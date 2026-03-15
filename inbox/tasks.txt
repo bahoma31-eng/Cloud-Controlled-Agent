@@ -1,1 +1,1 @@
-Remove-Item -Path "C:\Windows\Prefetch\*" -Recurse -Force; Remove-Item -Path "C:\Windows\Logs\*" -Recurse -Force
+waiting for tasks
