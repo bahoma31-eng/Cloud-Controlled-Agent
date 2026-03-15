@@ -1,0 +1,11 @@
+--- EXECUTION REPORT ---
+TIME: 2026-03-15T22:31:52.725934+00:00
+TASK_ID: 2
+ENGINE: POWERSHELL
+MODE: COMMAND
+RETURN_CODE: 0
+CONTENT_PREVIEW:
+Write-Output "Planner output malformed"
+OUTPUT:
+Planner output malformed
+--- END REPORT ---
