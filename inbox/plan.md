@@ -1,7 +1,7 @@
 # MISSION PLAN
 GOAL: اريد معلومات اولية عن الجهاز الذي استعمله
 STATE: PROCESSING
-UPDATED_AT: 2026-03-15T21:49:41.570241+00:00
+UPDATED_AT: 2026-03-15T21:50:00.215165+00:00
 
 ## STEP 1
 TITLE: Analyze goal and propose first executable action
@@ -25,12 +25,12 @@ RETRIES: 2
 
 ## STEP 3
 TITLE: Execute python script to gather device information
-STATUS: PENDING
+STATUS: IN_PROGRESS
 ENGINE: PYTHON
 SUCCESS_CRITERIA:
 - Device information is collected successfully.
 COMMAND_HINT:
-- Run a python script to collect device information, ensure correct syntax.
+- Run a python script to collect device information, ensure correct syntax and import necessary modules like 'psutil'.
 RETRIES: 0
 
 ## STEP 4
@@ -52,3 +52,4 @@ RETRIES: 0
 - STEP 2 FAIL: The script failed to execute due to a missing 'psutil' module and undefined 'sys'.
 - STEP 2 HINT: Add 'import sys' at the beginning of the script and install 'psutil' using pip.
 - STEP 2 PASS: The 'psutil' module was installed successfully.
+- Proceeding with STEP 3 to execute the python script and gather device information.
