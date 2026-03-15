@@ -1,1 +1,1 @@
-قم بحذف جميع التقارير الموجودة داخل outbox الموجود داخل مجلد Cloud-Controlled-Agent بإستثناء اخر تقريرين 
+PROCESSING
