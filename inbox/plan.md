@@ -1,7 +1,7 @@
 # MISSION PLAN
 GOAL: اجمع معلومات حول هذا المستودع
 STATE: PROCESSING
-UPDATED_AT: 2026-03-15T17:45:11.450065+00:00
+UPDATED_AT: 2026-03-15T17:46:56.426498+00:00
 
 ## STEP 1
 TITLE: Collect Repository Metadata
@@ -25,7 +25,7 @@ COMMAND_HINT:
 - Manually review helper.py for correct usage of quotation marks
 - Run a syntax check using "python -m py_compile helper.py" to verify code integrity
 - Compare execution in both native Python shell and PowerShell to isolate environment-specific issues
-RETRIES: 0
+RETRIES: 1
 
 ## STEP 3
 TITLE: Test & Validate Fixed Python Script
@@ -40,8 +40,20 @@ COMMAND_HINT:
 - Add logging to capture both success and failure scenarios
 RETRIES: 0
 
+## STEP 4
+TITLE: Implement Error Handling and Logging
+STATUS: PENDING
+ENGINE: PYTHON
+SUCCESS_CRITERIA:
+- The script includes try-except blocks to handle potential errors during file operations
+- Logging is implemented to track script execution, successes, and failures
+COMMAND_HINT:
+- Update the script to include error handling for file listing, sorting, and deletion
+- Implement logging using a library like logging or loguru
+RETRIES: 0
+
 ## NOTES
-- Repeated logs indicate the error "Le terminateur ' est manquant dans la chaŒne" persists, suggesting an unresolved quoting issue.
-- There is a possibility that the error stems from execution within a PowerShell context rather than a Python syntax error.
-- Verify that the "outbox" directory path is provided correctly during testing.
-- Further investigation is required to isolate whether the issue is with the script code or its execution environment.
+- The error "Le terminateur ' est manquant dans la chaŒne" persists, indicating a quoting issue that needs resolution.
+- The script execution environment may be contributing to the error, requiring further investigation.
+- The "outbox" directory path must be correctly provided during testing.
+- Additional error handling and logging are necessary to ensure the script's reliability and debuggability.
