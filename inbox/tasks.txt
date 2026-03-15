@@ -1,1 +1,6 @@
-waiting for tasks
+TASK_ID: 2
+ENGINE: POWERSHELL
+MODE: COMMAND
+CONTENT_START
+Write-Output "Planner output malformed"
+CONTENT_END
