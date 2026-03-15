@@ -4,3 +4,5 @@
 4. [DONE] Use the GitHub API to fetch a list of files in the repository, sorting them by 'name'.
 5. [DONE] Identify and delete old files, keeping only the latest ones.
 6. [DONE] Implement error handling for API requests.
+7. [DONE] Replace placeholders with real credentials and implement token in headers.
+8. [DONE] Use requests.delete API to delete old files.
