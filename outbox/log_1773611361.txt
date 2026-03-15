@@ -1,0 +1,17 @@
+--- EXECUTION REPORT ---
+TIME: 2026-03-15T21:49:21.176073+00:00
+TASK_ID: 2
+ENGINE: PYTHON
+MODE: COMMAND
+RETURN_CODE: 0
+CONTENT_PREVIEW:
+import sys
+import subprocess
+subprocess.check_call([sys.executable, "-m", "pip", "install", "psutil"])
+OUTPUT:
+Collecting psutil
+  Downloading psutil-7.2.2-cp37-abi3-win_amd64.whl.metadata (22 kB)
+Downloading psutil-7.2.2-cp37-abi3-win_amd64.whl (137 kB)
+Installing collected packages: psutil
+Successfully installed psutil-7.2.2
+--- END REPORT ---
