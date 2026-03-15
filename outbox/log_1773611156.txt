@@ -1,0 +1,28 @@
+--- EXECUTION REPORT ---
+TIME: 2026-03-15T21:45:56.760423+00:00
+TASK_ID: 2
+ENGINE: PYTHON
+MODE: SCRIPT
+RETURN_CODE: 1
+CONTENT_PREVIEW:
+import platform
+import psutil
+
+def get_device_info():
+    info = {}
+    info['platform'] = platform.system()
+    info['platform-version'] = platform.version()
+    info['architecture'] = platform.machine()
+    info['processor'] = platform.processor()
+    info['ram'] = str(round(psutil.virtual_memory().total / (1024.0 ** 3))) + " GB"
+    return info
+
+device_info = get_device_info()
+print("Device information is collected successfully.")
+print(device_info)
+OUTPUT:
+Traceback (most recent call last):
+  File "C:\Users\Revexn\AppData\Local\Temp\agent_step_kr1o0yoe.py", line 51, in <module>
+    import psutil
+ModuleNotFoundError: No module named 'psutil'
+--- END REPORT ---
