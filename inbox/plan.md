@@ -1,7 +1,7 @@
 # MISSION PLAN
 GOAL: قم بحذف جميع التقارير الموجودة داخل مجلد outbox بإستثناء اخر تقريرين
 STATE: PROCESSING
-UPDATED_AT: 2026-03-15T15:47:07.154412+00:00
+UPDATED_AT: 2026-03-15T15:48:29.895432+00:00
 
 ## STEP 1
 TITLE: Analyze goal and propose first executable action
@@ -15,13 +15,13 @@ RETRIES: 0
 
 ## STEP 2
 TITLE: Execute Python script to delete files
-STATUS: IN_PROGRESS
+STATUS: RETRY
 ENGINE: PYTHON
 SUCCESS_CRITERIA:
 - Files are deleted successfully.
 COMMAND_HINT:
 - Run the Python script using the command: python helper.py
-RETRIES: 5
+RETRIES: 6
 
 ## STEP 3
 TITLE: Verify deletion of files
@@ -51,7 +51,17 @@ SUCCESS_CRITERIA:
 - The script executes without the 'terminator' error.
 COMMAND_HINT:
 - Ensure the correct execution of the Python script using PowerShell, and check for any syntax errors.
-RETRIES: 2
+RETRIES: 3
+
+## STEP 6
+TITLE: Adjust PowerShell command for Python script execution
+STATUS: PENDING
+ENGINE: POWERSHELL
+SUCCESS_CRITERIA:
+- The PowerShell command executes the Python script correctly.
+COMMAND_HINT:
+- Use the correct PowerShell command to execute the Python script.
+RETRIES: 0
 
 ## NOTES
 - The Python script should be executed with caution, as it permanently deletes files without asking for confirmation.
