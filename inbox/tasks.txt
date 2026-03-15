@@ -1,1 +1,36 @@
-waiting for tasks
+TASK_ID: 2
+ENGINE: PYTHON
+MODE: SCRIPT
+CONTENT_START
+import requests
+import json
+
+# Define the outbox API endpoint
+outbox_api_endpoint = "https://api.outbox.com/reports"
+
+# Send a GET request to the outbox API to fetch the list of reports
+response = requests.get(outbox_api_endpoint)
+
+# Check if the request was successful
+if response.status_code == 200:
+    # Parse the response as JSON
+    reports = json.loads(response.content)
+    
+    # Sort the reports by creation date in descending order
+    reports.sort(key=lambda x: x['created_at'], reverse=True)
+    
+    # Delete all reports except the last two
+    for report in reports[:-2]:
+        # Send a DELETE request to the outbox API to delete the report
+        delete_response = requests.delete(f"{outbox_api_endpoint}/{report['id']}")
+        
+        # Check if the deletion was successful
+        if delete_response.status_code == 200:
+            print(f"Report {report['id']} deleted successfully.")
+        else:
+            print(f"Failed to delete report {report['id']}.")
+    
+    print("List of reports is successfully retrieved and processed.")
+else:
+    print("Failed to retrieve list of reports.")
+CONTENT_END
