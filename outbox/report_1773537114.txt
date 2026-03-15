@@ -1,0 +1,11 @@
+Task: Get-ChildItem -Path "./outbox/*.txt" | Sort-Object -Property LastWriteTime | Select-Object -SkipLast 2 | Remove-Item -Force -ErrorAction SilentlyContinue
+Result:
+
+Get-ChildItem : Impossible de trouver le chemin d'accٹs ®ےC:\Users\Revexn\Desktop\outboxے¯, car il n'existe pas.
+Au caractٹre Ligne:1 : 1
++ Get-ChildItem -Path "./outbox/*.txt" | Sort-Object -Property LastWrit ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (C:\Users\Revexn\Desktop\outbox:String) [Get-ChildItem], ItemNotFoundExc 
+   eption
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.GetChildItemCommand
+ 
