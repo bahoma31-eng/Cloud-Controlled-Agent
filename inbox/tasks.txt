@@ -1,1 +1,1 @@
-waiting for tasks
+Get-ChildItem -Path "C:\مجلد outbox" -Filter *.txt | Sort-Object -Property LastWriteTime | Select-Object -SkipLast 2 | Remove-Item -Force -ErrorAction SilentlyContinue
