@@ -1,7 +1,7 @@
 # MISSION PLAN
 GOAL: اريد معلومات اولية عن الجهاز الذي استعمله
 STATE: PROCESSING
-UPDATED_AT: 2026-03-15T21:51:16.802446+00:00
+UPDATED_AT: 2026-03-15T21:51:34.647635+00:00
 
 ## STEP 1
 TITLE: Analyze goal and propose first executable action
@@ -35,12 +35,22 @@ RETRIES: 0
 
 ## STEP 4
 TITLE: Parse device information
-STATUS: PENDING
+STATUS: IN_PROGRESS
 ENGINE: PYTHON
 SUCCESS_CRITERIA:
 - Device information is parsed correctly.
 COMMAND_HINT:
 - Use a python library to parse the collected device information.
+RETRIES: 0
+
+## STEP 5
+TITLE: Format and display device information
+STATUS: PENDING
+ENGINE: PYTHON
+SUCCESS_CRITERIA:
+- Device information is formatted and displayed correctly.
+COMMAND_HINT:
+- Use a python library to format the parsed device information.
 RETRIES: 0
 
 ## NOTES
@@ -54,3 +64,5 @@ RETRIES: 0
 - STEP 2 PASS: The 'psutil' module was installed successfully.
 - Proceeding with STEP 3 to execute the python script and gather device information.
 - STEP 3 PASS: Device information is collected and printed successfully.
+- STEP 4 IN_PROGRESS: Parsing device information using python library.
+- Added new step to format and display device information.
