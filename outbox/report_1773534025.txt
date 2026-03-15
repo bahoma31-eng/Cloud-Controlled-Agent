@@ -1,0 +1,16 @@
+Task: Get-Process | Where-Object { $_.WS -gt 100MB } | Select-Object ProcessName, WS | Sort-Object -Property WS -Descending
+Result:
+
+ProcessName               WS
+-----------               --
+comet              514981888
+Notion             240013312
+comet              228577280
+comet              175747072
+Memory Compression 171585536
+comet              169426944
+MsMpEng            159653888
+comet              110739456
+comet              108716032
+
+
