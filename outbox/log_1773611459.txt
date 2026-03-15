@@ -1,0 +1,32 @@
+--- EXECUTION REPORT ---
+TIME: 2026-03-15T21:50:59.710885+00:00
+TASK_ID: 3
+ENGINE: PYTHON
+MODE: SCRIPT
+RETURN_CODE: 0
+CONTENT_PREVIEW:
+import psutil
+import platform
+
+# Collect device information
+device_info = {
+    "platform": platform.system(),
+    "platform_version": platform.version(),
+    "architecture": platform.machine(),
+    "processor": platform.processor(),
+    "ram": str(round(psutil.virtual_memory().total / (1024.0 ** 3))) + " GB"
+}
+
+# Print device information
+for key, value in device_info.items():
+    print(f"{key}: {value}")
+
+print("Device information is collected successfully.")
+OUTPUT:
+platform: Windows
+platform_version: 10.0.18362
+architecture: AMD64
+processor: Intel64 Family 6 Model 55 Stepping 9, GenuineIntel
+ram: 4 GB
+Device information is collected successfully.
+--- END REPORT ---
