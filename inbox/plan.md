@@ -1,8 +1,16 @@
-1. Define the outbox directory path [DONE]
-2. Check if the path exists [DONE]
-3. List all files in the outbox directory [DONE]
-4. Sort files by their last modification time [DONE]
-5. Keep only the last two files and delete the rest [DONE]
-6. Handle potential errors [DONE]
-7. Execute the script using Python [DONE]
-8. Provide the correct path to the outbox directory and filter files starting with 'report_' [PENDING]
+# MISSION PLAN
+GOAL: No goal
+STATE: PROCESSING
+UPDATED_AT: 2026-03-15T15:34:42.730051+00:00
+
+## STEP 1
+TITLE: Analyze goal and propose first executable action
+STATUS: PENDING
+ENGINE: AUTO
+SUCCESS_CRITERIA:
+- First concrete executable action is produced.
+COMMAND_HINT:
+- Generate command/script for first action.
+
+## NOTES
+- Plan generated automatically.
