@@ -1,0 +1,9 @@
+--- EXECUTION LOG ---
+CMD: python -c "import os; outbox_dir = '/path/to/outbox'; files = [os.path.join(outbox_dir, f) for f in 
+RESULT:
+
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+FileNotFoundError: [WinError 3] Le chemin d’accès spécifié est introuvable: '/path/to/outbox'
+
+--- END LOG ---
