@@ -1,16 +1,38 @@
 # MISSION PLAN
 GOAL: قم بحذف جميع التقارير الموجودة في outbox بإستثناء آخر تقريرين.
 STATE: PROCESSING
-UPDATED_AT: 2026-03-15T21:58:27.847585+00:00
+UPDATED_AT: 2026-03-15T21:59:13.275261+00:00
 
 ## STEP 1
 TITLE: Analyze goal and propose first executable action
-STATUS: PENDING
+STATUS: DONE
 ENGINE: AUTO
 SUCCESS_CRITERIA:
 - First concrete executable action is produced.
 COMMAND_HINT:
 - Generate command/script for first action.
+RETRIES: 0
+
+## STEP 2
+TITLE: Connect to outbox and retrieve list of reports
+STATUS: PENDING
+ENGINE: PYTHON
+SUCCESS_CRITERIA:
+- List of reports is successfully retrieved.
+COMMAND_HINT:
+- Use outbox API to fetch report list.
+RETRIES: 0
+
+## STEP 3
+TITLE: Filter out last two reports from the list
+STATUS: PENDING
+ENGINE: PYTHON
+SUCCESS_CRITERIA:
+- List of reports to be deleted is generated.
+COMMAND_HINT:
+- Use list slicing to exclude last two reports.
+RETRIES: 0
 
 ## NOTES
-- Plan generated automatically.
+- Device information has been parsed correctly.
+- Next steps involve connecting to outbox and filtering reports.
