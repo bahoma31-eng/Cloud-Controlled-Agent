@@ -1,1 +1,1 @@
-[Define the task: DONE, Create a Python script to list, sort, and delete files: DONE, Adjust the script to include error handling: DONE, Save the script to a file and execute it using Python]
+[Define the task: DONE, Create a Python script to list, sort, and delete files: DONE, Adjust the script to include error handling: DONE, Save the script to a file and execute it using Python: DONE, Troubleshoot and rewrite the command: IN PROGRESS]
