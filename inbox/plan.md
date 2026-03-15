@@ -1,7 +1,7 @@
 # MISSION PLAN
 GOAL: قم بحذف جميع ملفات التقارير في مجلد outbox باستثناء آخر ملفين. ملاحظة: استخدم حصراً الدوال البرمجية المدمجة للتعامل مع GitHub (مثل list_outbox_files و delete_file_content) ولا تحاول الاتصال بـ API خارجي.
 STATE: PROCESSING
-UPDATED_AT: 2026-03-15T22:29:36.481260+00:00
+UPDATED_AT: 2026-03-15T22:29:48.668153+00:00
 
 ## STEP 1
 TITLE: Analyze goal and propose first executable action
@@ -15,8 +15,8 @@ RETRIES: 0
 
 ## STEP 2
 TITLE: List all files in outbox directory
-STATUS: PENDING
-ENGINE: POWERSHELL
+STATUS: IN_PROGRESS
+ENGINE: PYTHON
 SUCCESS_CRITERIA:
 - List of files in outbox directory is obtained.
 COMMAND_HINT:
