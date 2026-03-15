@@ -1,0 +1,1 @@
+[Define the task, Create a Python script to list, sort, and delete files, Adjust the script to include error handling, Save the script to a file and execute it using Python]
