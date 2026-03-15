@@ -1,7 +1,7 @@
 # MISSION PLAN
 GOAL: اريد معلومات اولية عن الجهاز الذي استعمله
 STATE: PROCESSING
-UPDATED_AT: 2026-03-15T21:48:08.077050+00:00
+UPDATED_AT: 2026-03-15T21:48:21.268900+00:00
 
 ## STEP 1
 TITLE: Analyze goal and propose first executable action
@@ -15,7 +15,7 @@ RETRIES: 0
 
 ## STEP 2
 TITLE: Install required python modules
-STATUS: RETRY
+STATUS: IN_PROGRESS
 ENGINE: PYTHON
 SUCCESS_CRITERIA:
 - 'psutil' module is installed successfully.
