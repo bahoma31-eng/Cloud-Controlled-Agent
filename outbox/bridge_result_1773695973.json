@@ -1,0 +1,11 @@
+{
+  "task_id": "fb_task_008",
+  "status": "FAILED",
+  "return_code": 1,
+  "engine": "PYTHON",
+  "description": "بحث سريع بـ findstr + قراءة ملفات الإعدادات",
+  "command_preview": "import os, subprocess\npath = r'C:\\Users\\Revexn\\Desktop\\antigravity\\seconde-exp'\nresult = subprocess.run(['findstr', '/s', '/i', '/m', 'page_id access_token', path + r'\\*.*'], capture_output=True, text=True, timeout=20, cwd=path)\nprint('STDOUT:', result.stdout[:2000])\nprint('STDERR:', result.stderr[:500])\nprint('---')\nfor f in ['.env', '.env.local', 'config.json', 'settings.json', 'fb_config.json', 'facebook.json', 'credentials.json']:\n    fp = os.path.join(path, f)\n    if os.path.exists(fp):\n   ",
+  "output": "[STDERR]\nTraceback (most recent call last):\r\n  File \"<string>\", line 3, in <module>\r\n  File \"C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\subprocess.py\", line 550, in run\r\n    stdout, stderr = process.communicate(input, timeout=timeout)\r\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\subprocess.py\", line 1209, in communicate\r\n    stdout, stderr = self._communicate(input, endtime, timeout)\r\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\subprocess.py\", line 1630, in _communicate\r\n    raise TimeoutExpired(self.args, orig_timeout)\r\nsubprocess.TimeoutExpired: Command '['findstr', '/s', '/i', '/m', 'page_id access_token', 'C:\\\\Users\\\\Revexn\\\\Desktop\\\\antigravity\\\\seconde-exp\\\\*.*']' timed out after 20 seconds",
+  "timestamp": "2026-03-16T21:19:33.053502+00:00",
+  "executed_on": "local_machine"
+}
