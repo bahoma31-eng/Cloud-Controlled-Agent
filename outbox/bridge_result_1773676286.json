@@ -1,0 +1,11 @@
+{
+  "task_id": "diag-002",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "PYTHON",
+  "description": "System diagnostic: collect OS, CPU, RAM, disk, network info",
+  "command_preview": "import platform, os, socket\nprint('=' * 50)\nprint('  SYSTEM DIAGNOSTIC REPORT')\nprint('=' * 50)\nprint()\nprint('[OS]')\nprint('  System   :', platform.system())\nprint('  Release  :', platform.release())\nprint('  Version  :', platform.version())\nprint('  Machine  :', platform.machine())\nprint('  Processor:', platform.processor())\nprint()\nprint('[USER]')\nprint('  Username :', os.getlogin())\nprint('  Home     :', os.path.expanduser('~'))\nprint('  CWD      :', os.getcwd())\nprint()\nprint('[NETWORK]')\np",
+  "output": "==================================================\r\n  SYSTEM DIAGNOSTIC REPORT\r\n==================================================\r\n\r\n[OS]\r\n  System   : Windows\r\n  Release  : 10\r\n  Version  : 10.0.18362\r\n  Machine  : AMD64\r\n  Processor: Intel64 Family 6 Model 55 Stepping 9, GenuineIntel\r\n\r\n[USER]\r\n  Username : Revexn\r\n  Home     : C:\\Users\\Revexn\r\n  CWD      : C:\\Users\\Revexn\\Cloud-Controlled-Agent\r\n\r\n[NETWORK]\r\n  Hostname : DESKTOP-556TJ6M\r\n  Local IP : 10.166.227.208\r\n\r\n[DISK - C:]\r\n  Total    : 59.0 GB\r\n  Used     : 48.3 GB\r\n  Free     : 10.7 GB\r\n  Usage    : 81.9 %\r\n\r\n[PYTHON]\r\n  Version  : 3.12.3\r\n  Compiler : MSC v.1938 64 bit (AMD64)\r\n\r\n==================================================\r\n  Diagnostic complete!\r\n==================================================",
+  "timestamp": "2026-03-16T15:51:26.920943+00:00",
+  "executed_on": "local_machine"
+}
