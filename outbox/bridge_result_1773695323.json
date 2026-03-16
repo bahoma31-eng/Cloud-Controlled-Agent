@@ -1,0 +1,11 @@
+{
+  "task_id": "fb_task_002",
+  "status": "FAILED",
+  "return_code": 124,
+  "engine": "POWERSHELL",
+  "description": "سرد جميع الملفات في المجلد المحدد لتحديد أيها يحتوي على معلومات فيسبوك",
+  "command_preview": "Get-ChildItem -Path 'C:\\Users\\Revexn\\Desktop\\antigravity\\seconde-exp' -Recurse -File | Select-Object FullName, Length, Extension | Format-Table -AutoSize",
+  "output": "Timeout expired after 60s",
+  "timestamp": "2026-03-16T21:08:43.944319+00:00",
+  "executed_on": "local_machine"
+}
