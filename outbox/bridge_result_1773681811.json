@@ -1,0 +1,11 @@
+{
+  "task_id": "antigravity-html-report",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "PYTHON",
+  "description": "Generate antigravity exploration HTML report and open in browser",
+  "command_preview": "import json, os, datetime, webbrowser\n\nprint('=== GENERATING ANTIGRAVITY HTML REPORT ===')\nhome = os.path.expanduser('~')\nreport_dir = os.path.join(home, 'agent_reports')\nnow = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')\n\n# Load exploration data\ndata = {}\ntry:\n    with open(os.path.join(report_dir, 'antigravity_explore.json'), 'r', encoding='utf-8') as f:\n        data = json.load(f)\n    print('Loaded exploration data')\nexcept Exception as e:\n    print(f'Error: {e}')\n    exit(1)\n\ntotal_",
+  "output": "=== GENERATING ANTIGRAVITY HTML REPORT ===\r\nLoaded exploration data\r\nReport saved: C:\\Users\\Revexn\\agent_reports\\antigravity_report.html\r\nSize: 20749 bytes\r\nBrowser opened!\r\n=== REPORT COMPLETE ===",
+  "timestamp": "2026-03-16T17:23:31.091928+00:00",
+  "executed_on": "local_machine"
+}
