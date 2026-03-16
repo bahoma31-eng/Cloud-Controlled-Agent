@@ -1,0 +1,10 @@
+{
+  "task_id": "test-001",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "command_preview": "Write-Host '=== معلومات النظام ===' ; Write-Host \"الجهاز: $env:COMPUTERNAME\" ; Write-Host \"المستخدم: $env:USERNAME\" ; Write-Host \"النظام: $([System.Environment]::OSVersion.VersionString)\" ; Write-Host \"Python: $(python --version 2>&1)\" ; Write-Host \"المسار الحالي: $(Get-Location)\" ; Write-Host \"الوقت: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')\" ; Write-Host '=== تم بنجاح ==='",
+  "output": "=== ??????? ?????? ===\n??????: DESKTOP-556TJ6M\n????????: Revexn\n??????: Microsoft Windows NT 10.0.18362.0\nPython: Python 3.12.3\n?????? ??????: C:\\Users\\Revexn\\Cloud-Controlled-Agent\n?????: 2026-03-16 16:37:29\n=== ?? ????? ===",
+  "timestamp": "2026-03-16T15:37:30.041888+00:00",
+  "executed_on": "local_machine"
+}
