@@ -1,0 +1,11 @@
+{
+  "task_id": "mission-step-4",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "PYTHON",
+  "description": "Step 4/5: Disk usage analysis + top 10 largest folders in user profile",
+  "command_preview": "import os, json, shutil\n\nprint('=== STEP 4/5: Disk & Folder Analysis ===')\nprint()\n\nresults = {}\n\n# 1. All drives\nprint('[Disk Usage - All Drives]')\ndrives_info = []\nfor letter in 'CDEFGHIJ':\n    drive = letter + ':\\\\'\n    try:\n        total, used, free = shutil.disk_usage(drive)\n        pct = round(used / total * 100, 1)\n        print('  ', drive, '  Total:', round(total/(1024**3),1), 'GB  |  Used:', round(used/(1024**3),1), 'GB  |  Free:', round(free/(1024**3),1), 'GB  |', pct, '%')\n        dr",
+  "output": "=== STEP 4/5: Disk & Folder Analysis ===\r\n\r\n[Disk Usage - All Drives]\r\n   C:\\   Total: 59.0 GB  |  Used: 48.0 GB  |  Free: 11.0 GB  | 81.3 %\r\n\r\n[Top 15 Largest Folders in User Profile]\r\n   Desktop                            1914.9 MB  ###################\r\n   AppData                            1211.9 MB  ############\r\n   .gemini                             580.9 MB  #####\r\n   Downloads                           469.3 MB  ####\r\n   .rustup                             294.3 MB  ##\r\n   .cache                              152.8 MB  #\r\n   .vscode                              58.0 MB  \r\n   .antigravity                         35.6 MB  \r\n   agent                                31.1 MB  \r\n   node_modules                         21.3 MB  \r\n   Documents                             5.1 MB  \r\n   MicrosoftEdgeBackups                  4.5 MB  \r\n   Pictures                              1.7 MB  \r\n   .continue                             0.9 MB  \r\n   Cloud-Controlled-Agent                0.5 MB  \r\n\r\n[Temp Folders]\r\n   C:\\Users\\Revexn\\AppData\\Local\\Temp : 263.3 MB ( 2418 files)\r\n   C:\\Users\\Revexn\\AppData\\Local\\Temp : 263.3 MB ( 2418 files)\r\n\r\nReport saved to: C:\\Users\\Revexn\\agent_reports\\step4_disk.json\r\n=== STEP 4 COMPLETE ===",
+  "timestamp": "2026-03-16T16:10:01.109636+00:00",
+  "executed_on": "local_machine"
+}
