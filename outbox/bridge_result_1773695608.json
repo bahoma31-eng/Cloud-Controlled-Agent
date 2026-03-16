@@ -1,0 +1,11 @@
+{
+  "task_id": "fb_task_005",
+  "status": "FAILED",
+  "return_code": 124,
+  "engine": "PYTHON",
+  "description": "البحث المستهدف عن معلومات فيسبوك مع تجاهل .venv",
+  "command_preview": "import os\nimport re\npath = r'C:\\Users\\Revexn\\Desktop\\antigravity\\seconde-exp'\nskip = {'.venv', '.pytest_cache', '__pycache__', 'node_modules', '.git'}\nfor root, dirs, files in os.walk(path):\n    dirs[:] = [d for d in dirs if d not in skip]\n    for f in files:\n        fp = os.path.join(root, f)\n        try:\n            sz = os.path.getsize(fp)\n            if sz < 50000:\n                with open(fp, 'r', encoding='utf-8', errors='ignore') as fh:\n                    content = fh.read()\n           ",
+  "output": "Timeout expired after 60s",
+  "timestamp": "2026-03-16T21:13:28.743047+00:00",
+  "executed_on": "local_machine"
+}
