@@ -1,7 +1,1 @@
-{
-  "task_id": "fb_task_012",
-  "engine": "CMD",
-  "command": "cd /d C:\\Users\\Revexn\\Desktop\\antigravity\\seconde-exp\\proverbs_extractor && dir /b && echo === && if exist .env type .env && echo === && if exist config.py type config.py && echo === && if exist config.json type config.json && echo === && if exist settings.py type settings.py && echo === && if exist app.py type app.py",
-  "description": "قراءة ملفات التكوين في proverbs_extractor",
-  "timeout": 15
-}
+waiting
