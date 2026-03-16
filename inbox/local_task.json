@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "sysinfo_001",
+  "engine": "POWERSHELL",
+  "command": "$computerName = $env:COMPUTERNAME; $os = (Get-CimInstance Win32_OperatingSystem); $cpu = (Get-CimInstance Win32_Processor); Write-Output \"=== System Info ===\"; Write-Output \"Computer Name: $computerName\"; Write-Output \"OS: $($os.Caption) $($os.Version)\"; Write-Output \"OS Build: $($os.BuildNumber)\"; Write-Output \"CPU: $($cpu.Name)\"; Write-Output \"CPU Cores: $($cpu.NumberOfCores) cores, $($cpu.NumberOfLogicalProcessors) logical processors\"",
+  "description": "معلومات النظام الأساسية: اسم الجهاز، نظام التشغيل، المعالج",
+  "timeout": 120
+}
