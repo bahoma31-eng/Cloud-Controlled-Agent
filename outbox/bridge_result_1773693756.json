@@ -1,0 +1,11 @@
+{
+  "task_id": "sysinfo_003",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "معلومات الشبكة: عنوان IP واسم الشبكة المتصل بها",
+  "command_preview": "$adapters = Get-NetAdapter | Where-Object {$_.Status -eq 'Up'}; Write-Output \"=== Network Info ===\"; foreach ($a in $adapters) { $ip = (Get-NetIPAddress -InterfaceIndex $a.ifIndex -AddressFamily IPv4 -ErrorAction SilentlyContinue).IPAddress; Write-Output \"Interface: $($a.Name)\"; Write-Output \"Type: $($a.InterfaceDescription)\"; Write-Output \"IP Address: $ip\"; Write-Output \"MAC: $($a.MacAddress)\"; Write-Output \"---\" }; $wifi = Get-NetConnectionProfile -ErrorAction SilentlyContinue; if ($wifi) { Wr",
+  "output": "=== Network Info ===\r\nInterface: Wi-Fi\r\nType: 802.11n USB Wireless LAN Card\r\nIP Address: 10.166.227.208\r\nMAC: 8C-88-2B-00-02-8F\r\n---\r\nConnected Network: Galaxy S20 476c\r\nNetwork Category: Private",
+  "timestamp": "2026-03-16T20:42:36.749404+00:00",
+  "executed_on": "local_machine"
+}
