@@ -1,0 +1,11 @@
+{
+  "task_id": "token_search_002",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "استكشاف بنية مجلد proverbs_extractor باستخدام PowerShell",
+  "command_preview": "Get-ChildItem -Path 'C:\\Users\\Revexn\\Desktop\\antigravity\\seconde-exp\\proverbs_extractor' -Name",
+  "output": ".pytest_cache\r\nassets\r\nbin\r\ndata\r\ndocs\r\nlogs\r\nmodels\r\nroutes\r\nscenarios\r\nscripts\r\nstatic\r\ntemplates\r\ntests\r\nutils\r\nvenv\r\n__pycache__\r\n.env\r\n.env.example\r\n.gitignore\r\napi_diagnostic_error.txt\r\napp.py\r\nconfig.py\r\ncredentials.json\r\ndashboard_server.py\r\ndebugging.py\r\ndownload_fonts.py\r\nerror.log\r\nREADME.md\r\nREADME_AR.md\r\nrequirements.txt\r\nrun_csrf_check.py\r\nsheets_config.py\r\nstop_servers.bat\r\nstop_servers.ps1\r\ntest_catbox.jpg\r\ntest_dummy.jpg\r\ntest_img.txt\r\ntest_instagram.jpg\r\ntest_output.txt\r\ntest_output_debug.txt\r\ntest_sheets.py\r\ntest_tmpfiles.jpg\r\ntest_upload_marker.txt\r\nverify_api.py",
+  "timestamp": "2026-03-16T21:56:50.923030+00:00",
+  "executed_on": "local_machine"
+}
