@@ -1,7 +1,1 @@
-{
-    "task_id": "mission-step-1",
-    "description": "Step 1/5: Scan all installed Python packages and save to report file",
-    "engine": "PYTHON",
-    "command": "import subprocess, json, os\n\nprint('=== STEP 1/5: Python Packages Scan ===')\nprint()\n\n# Get pip list as JSON\nresult = subprocess.run(['pip', 'list', '--format=json'], capture_output=True, text=True, timeout=60)\npackages = json.loads(result.stdout)\n\nprint('Total packages found:', len(packages))\nprint()\nprint('Top packages:')\nfor pkg in sorted(packages, key=lambda x: x['name'])[:30]:\n    print('  ', pkg['name'].ljust(30), pkg['version'])\n\nif len(packages) > 30:\n    print('  ... and', len(packages) - 30, 'more')\n\n# Save full list to file for later use\nreport_dir = os.path.join(os.path.expanduser('~'), 'agent_reports')\nos.makedirs(report_dir, exist_ok=True)\n\nreport_path = os.path.join(report_dir, 'step1_python_packages.json')\nwith open(report_path, 'w', encoding='utf-8') as f:\n    json.dump({'total': len(packages), 'packages': packages}, f, indent=2)\n\nprint()\nprint('Full list saved to:', report_path)\nprint()\nprint('=== STEP 1 COMPLETE ===')",
-    "timeout": 60
-}
+waiting
