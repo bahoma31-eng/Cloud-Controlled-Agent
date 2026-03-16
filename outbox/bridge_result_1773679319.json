@@ -1,0 +1,11 @@
+{
+  "task_id": "cleanup-step-2-clean",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "PYTHON",
+  "description": "Step 2: Clean Temp folder + .cache folder + delete old installers from Downloads",
+  "command_preview": "import os, shutil, json, datetime\n\nprint('=== CLEANUP STEP 2: Clean Temp + .cache + Downloads installers ===')\nprint()\n\nhome = os.path.expanduser('~')\nlog = {'temp': {}, 'cache': {}, 'downloads': {}}\n\n# 1. Clean Temp folder\ntemp_dir = os.path.join(home, 'AppData', 'Local', 'Temp')\nprint('[1] Cleaning Temp folder...')\ntemp_freed = 0\ntemp_deleted = 0\ntemp_failed = 0\nif os.path.exists(temp_dir):\n    for item in os.listdir(temp_dir):\n        fp = os.path.join(temp_dir, item)\n        try:\n           ",
+  "output": "=== CLEANUP STEP 2: Clean Temp + .cache + Downloads installers ===\r\n\r\n[1] Cleaning Temp folder...\r\n  Freed: 228.4 MB\r\n  Deleted: 47 items, Failed: 11 (locked by system)\r\n\r\n[2] Cleaning .cache folder...\r\n  Freed: 239.9 MB\r\n  Deleted: 3 items, Failed: 0\r\n\r\n[3] Cleaning old installers from Downloads...\r\n  Deleted: Antigravity.exe (164.8 MB)\r\n  Deleted: VSCodeUserSetup-x64-1.111.0.exe (125.4 MB)\r\n  Deleted: Notion Setup 7.7.0.exe (92.9 MB)\r\n  Deleted: python-3.15.0a6-amd64.exe (39.7 MB)\r\n  Deleted: python-3.12.3-amd64.exe (25.5 MB)\r\n  Deleted: gh_2.87.3_windows_amd64.msi (13.5 MB)\r\n  Deleted: wiztree_4_30_portable.zip (7.4 MB)\r\n  Total freed: 469.1 MB\r\n\r\n=== TOTAL FREED: 937.4000000000001 MB ===\r\nLog saved to: C:\\Users\\Revexn\\agent_reports\\cleanup_step2_log.json\r\n=== STEP 2 COMPLETE ===",
+  "timestamp": "2026-03-16T16:41:59.112194+00:00",
+  "executed_on": "local_machine"
+}
