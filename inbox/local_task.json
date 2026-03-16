@@ -1,7 +1,1 @@
-{
-  "task_id": "token_search_002",
-  "engine": "POWERSHELL",
-  "command": "Get-ChildItem -Path 'C:\\Users\\Revexn\\Desktop\\antigravity\\seconde-exp\\proverbs_extractor' -Name",
-  "description": "استكشاف بنية مجلد proverbs_extractor باستخدام PowerShell",
-  "timeout": 30
-}
+waiting
