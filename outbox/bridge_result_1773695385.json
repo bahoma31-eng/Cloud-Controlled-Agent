@@ -1,0 +1,11 @@
+{
+  "task_id": "fb_task_003",
+  "status": "FAILED",
+  "return_code": 1,
+  "engine": "CMD",
+  "description": "سرد الملفات باستخدام CMD dir - أسرع من PowerShell",
+  "command_preview": "dir /s /b \"C:\\Users\\Revexn\\Desktop\\antigravity\\seconde-exp\"",
+  "output": "[STDERR]\nLa syntaxe du nom de fichier, de r�pertoire ou de volume est incorrecte.",
+  "timestamp": "2026-03-16T21:09:45.885403+00:00",
+  "executed_on": "local_machine"
+}
