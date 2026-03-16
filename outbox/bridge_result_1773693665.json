@@ -1,0 +1,11 @@
+{
+  "task_id": "sysinfo_002",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "معلومات الذاكرة والتخزين: RAM والقرص C:",
+  "command_preview": "$os = Get-CimInstance Win32_OperatingSystem; $totalRAM = [math]::Round($os.TotalVisibleMemorySize/1MB, 2); $freeRAM = [math]::Round($os.FreePhysicalMemory/1MB, 2); $usedRAM = [math]::Round($totalRAM - $freeRAM, 2); $disk = Get-CimInstance Win32_LogicalDisk -Filter \"DeviceID='C:'\"; $totalDisk = [math]::Round($disk.Size/1GB, 2); $freeDisk = [math]::Round($disk.FreeSpace/1GB, 2); $usedDisk = [math]::Round($totalDisk - $freeDisk, 2); Write-Output \"=== Memory & Storage ===\"; Write-Output \"RAM Total: ",
+  "output": "=== Memory & Storage ===\r\nRAM Total: 3.89 GB\r\nRAM Used: 2.49 GB\r\nRAM Free: 1.4 GB\r\nRAM Usage: 64%\r\n---\r\nDisk C: Total: 59 GB\r\nDisk C: Used: 48.81 GB\r\nDisk C: Free: 10.19 GB\r\nDisk C: Usage: 82.7%",
+  "timestamp": "2026-03-16T20:41:05.329793+00:00",
+  "executed_on": "local_machine"
+}
