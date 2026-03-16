@@ -1,0 +1,11 @@
+{
+  "task_id": "token_search_005",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "البحث عن كلمات مفتاحية متعلقة بالتوكن في ملف .env",
+  "command_preview": "Select-String -Path 'C:\\Users\\Revexn\\Desktop\\antigravity\\seconde-exp\\proverbs_extractor\\.env' -Pattern 'token|TOKEN|page_id|PAGE_ID|EAA|access' -SimpleMatch:$false | Select-Object -First 20 | Format-Table LineNumber,Line -AutoSize",
+  "output": "",
+  "timestamp": "2026-03-16T22:01:24.903738+00:00",
+  "executed_on": "local_machine"
+}
