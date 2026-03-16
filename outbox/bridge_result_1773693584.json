@@ -1,0 +1,11 @@
+{
+  "task_id": "sysinfo_001",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "معلومات النظام الأساسية: اسم الجهاز، نظام التشغيل، المعالج",
+  "command_preview": "$computerName = $env:COMPUTERNAME; $os = (Get-CimInstance Win32_OperatingSystem); $cpu = (Get-CimInstance Win32_Processor); Write-Output \"=== System Info ===\"; Write-Output \"Computer Name: $computerName\"; Write-Output \"OS: $($os.Caption) $($os.Version)\"; Write-Output \"OS Build: $($os.BuildNumber)\"; Write-Output \"CPU: $($cpu.Name)\"; Write-Output \"CPU Cores: $($cpu.NumberOfCores) cores, $($cpu.NumberOfLogicalProcessors) logical processors\"",
+  "output": "=== System Info ===\r\nComputer Name: DESKTOP-556TJ6M\r\nOS: Microsoft Windows 10 Professionnel 10.0.18362\r\nOS Build: 18362\r\nCPU: Intel(R) Celeron(R) CPU  J1900  @ 1.99GHz\r\nCPU Cores: 4 cores, 4 logical processors",
+  "timestamp": "2026-03-16T20:39:44.939718+00:00",
+  "executed_on": "local_machine"
+}
