@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "sysinfo_003",
+  "engine": "POWERSHELL",
+  "command": "$adapters = Get-NetAdapter | Where-Object {$_.Status -eq 'Up'}; Write-Output \"=== Network Info ===\"; foreach ($a in $adapters) { $ip = (Get-NetIPAddress -InterfaceIndex $a.ifIndex -AddressFamily IPv4 -ErrorAction SilentlyContinue).IPAddress; Write-Output \"Interface: $($a.Name)\"; Write-Output \"Type: $($a.InterfaceDescription)\"; Write-Output \"IP Address: $ip\"; Write-Output \"MAC: $($a.MacAddress)\"; Write-Output \"---\" }; $wifi = Get-NetConnectionProfile -ErrorAction SilentlyContinue; if ($wifi) { Write-Output \"Connected Network: $($wifi.Name)\"; Write-Output \"Network Category: $($wifi.NetworkCategory)\" }",
+  "description": "معلومات الشبكة: عنوان IP واسم الشبكة المتصل بها",
+  "timeout": 120
+}
