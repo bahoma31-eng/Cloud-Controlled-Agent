@@ -1,7 +1,1 @@
-{
-  "task_id": "fb_post_004",
-  "engine": "PYTHON",
-  "command": "import requests\nimport json\n\npage_id = '104244552728514'\naccess_token = 'EAAkTS3fejiABQgbv7dEpHTzlPmvopZBZCLPiZA0PvE4CZAp7i6YOdBZB966uDmXHslaR3HaHnKeMV1LfKeqnhdU6BdSD5PrirODqZBTDb7FPU21Vo4RuBrSxsxt1X3CDxlE66kbMKkN5K5tZCKcSgZBaibUEBtPZCgZAfvPeGjOaLUmamZCjUuZAcI2K9YSywy37Bb9pqagZD'\nimage_path = r'C:\\Users\\Revexn\\Desktop\\fb_post_image.png'\n\nurl = f'https://graph.facebook.com/v19.0/{page_id}/photos'\n\nmessage_text = '''\\U0001f680 First automated post from Cloud Controlled Agent!\\n\\nThis post was created, generated, and published entirely by AI running on Notion, with no human intervention.\\nThe image was auto-generated, and publishing was done via Facebook Graph API.\\n\\n\\U0001f916 Cloud-Controlled-Agent | Powered by Notion AI'''\n\nwith open(image_path, 'rb') as img:\n    response = requests.post(\n        url,\n        files={'source': img},\n        data={\n            'message': message_text,\n            'access_token': access_token\n        }\n    )\n\nprint(f'Status Code: {response.status_code}')\nresult = response.json()\nprint(f'Response: {json.dumps(result, indent=2)}')\n\nif 'id' in result:\n    post_id = result['id']\n    print(f'Post ID: {post_id}')\n    if '_' in post_id:\n        parts = post_id.split('_')\n        print(f'Post URL: https://www.facebook.com/{page_id}/posts/{parts[-1]}')\n    else:\n        print(f'Post URL: https://www.facebook.com/{page_id}/posts/{post_id}')\n    print('SUCCESS: Post published!')\nelse:\n    print(f'ERROR: {result}')",
-  "description": "نشر الصورة مع النص على صفحة فيسبوك عبر Graph API",
-  "timeout": 120
-}
+waiting
