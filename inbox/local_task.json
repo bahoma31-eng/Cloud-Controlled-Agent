@@ -1,1 +1,11 @@
-waiting
+{
+  "task_id": "4",
+  "description": "البحث عن مجلدات المشاريع التي تحتوي على package.json وجمع قوائم الحزم المثبتة وأحجامها",
+  "engine": "POWERSHELL",
+  "command": "# Step 1: Find all project folders with package.json (excluding node_modules)\n$projects = Get-ChildItem -Path $env:USERPROFILE -Recurse -Filter 'package.json' -ErrorAction SilentlyContinue | Where-Object { $_.FullName -notmatch 'node_modules|antigravity|\\.gemini' } | Select-Object -First 10 -ExpandProperty DirectoryName\n\nWrite-Output '=== PROJECT FOLDERS FOUND ==='\n$projects | ForEach-Object { Write-Output $_ }\n\n# Step 2: For each project, list dependencies and node_modules sizes\nforeach ($proj in $projects) {\n    Write-Output \"`n=== PROJECT: $proj ===\"\n    $pkgFile = Join-Path $proj 'package.json'\n    if (Test-Path $pkgFile) {\n        $pkg = Get-Content $pkgFile -Raw | ConvertFrom-Json\n        Write-Output '--- dependencies ---'\n        if ($pkg.dependencies) { $pkg.dependencies.PSObject.Properties | ForEach-Object { Write-Output \"  $($_.Name): $($_.Value)\" } }\n        Write-Output '--- devDependencies ---'\n        if ($pkg.devDependencies) { $pkg.devDependencies.PSObject.Properties | ForEach-Object { Write-Output \"  $($_.Name): $($_.Value)\" } }\n    }\n    $nmPath = Join-Path $proj 'node_modules'\n    if (Test-Path $nmPath) {\n        Write-Output '--- node_modules top-level sizes (MB) ---'\n        Get-ChildItem -Path $nmPath -Directory | ForEach-Object {\n            $size = (Get-ChildItem -Path $_.FullName -Recurse -File -ErrorAction SilentlyContinue | Measure-Object -Property Length -Sum).Sum / 1MB\n            Write-Output \"  $($_.Name): $([math]::Round($size, 2)) MB\"\n        } | Sort-Object -Descending\n    }\n}\n",
+  "timeout": 300,
+  "source": "notion-agent",
+  "email_thread_id": "19cf7bf24e67780e",
+  "reply_to": "bahoma31@gmail.com",
+  "timestamp": "2026-03-16T18:35:00+01:00"
+}
