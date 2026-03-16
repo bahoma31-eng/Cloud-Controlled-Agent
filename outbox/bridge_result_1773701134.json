@@ -1,0 +1,11 @@
+{
+  "task_id": "fb_post_003",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "PYTHON",
+  "description": "قراءة Access Token و Page ID من ملف social_tokens.json",
+  "command_preview": "import json\nwith open(r'C:\\Users\\Revexn\\Desktop\\antigravity\\seconde-exp\\proverbs_extractor\\data\\proverbs\\social_tokens.json', 'r', encoding='utf-8') as f:\n    data = json.load(f)\nprint('Keys found:', list(data.keys()))\nif 'facebook_access_token' in data:\n    token = data['facebook_access_token']\n    print(f'facebook_access_token: {token[:20]}...{token[-10:]}')\n    print(f'Token length: {len(token)}')\nelse:\n    for k, v in data.items():\n        if 'facebook' in k.lower() or 'token' in k.lower() o",
+  "output": "Keys found: ['facebook_access_token', 'facebook_page_id', 'instagram_access_token', 'instagram_account_id', 'tiktok_access_token', 'tiktok_refresh_token', 'tiktok_open_id', 'tiktok_expires_at']\r\nfacebook_access_token: EAAkTS3fejiABQgbv7dE...7Bb9pqagZD\r\nToken length: 206\r\nfacebook_page_id: 104244552728514\r\nFULL_TOKEN_START\r\nEAAkTS3fejiABQgbv7dEpHTzlPmvopZBZCLPiZA0PvE4CZAp7i6YOdBZB966uDmXHslaR3HaHnKeMV1LfKeqnhdU6BdSD5PrirODqZBTDb7FPU21Vo4RuBrSxsxt1X3CDxlE66kbMKkN5K5tZCKcSgZBaibUEBtPZCgZAfvPeGjOaLUmamZCjUuZAcI2K9YSywy37Bb9pqagZD\r\nFULL_TOKEN_END\r\nPAGE_ID: 104244552728514",
+  "timestamp": "2026-03-16T22:45:34.967280+00:00",
+  "executed_on": "local_machine"
+}
