@@ -1,0 +1,11 @@
+{
+  "task_id": "fb_post_001",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "CMD",
+  "description": "تثبيت مكتبات Pillow و requests لتوليد الصورة والنشر على فيسبوك",
+  "command_preview": "pip install Pillow requests",
+  "output": "Collecting Pillow\r\n  Using cached pillow-12.1.1-cp312-cp312-win_amd64.whl.metadata (9.0 kB)\r\nRequirement already satisfied: requests in C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages (2.32.5)\r\nRequirement already satisfied: charset_normalizer<4,>=2 in C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages (from requests) (3.4.5)\r\nRequirement already satisfied: idna<4,>=2.5 in C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages (from requests) (3.11)\r\nRequirement already satisfied: urllib3<3,>=1.21.1 in C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages (from requests) (2.6.3)\r\nRequirement already satisfied: certifi>=2017.4.17 in C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages (from requests) (2026.2.25)\r\nUsing cached pillow-12.1.1-cp312-cp312-win_amd64.whl (7.0 MB)\r\nInstalling collected packages: Pillow\r\nSuccessfully installed Pillow-12.1.1",
+  "timestamp": "2026-03-16T22:40:55.737034+00:00",
+  "executed_on": "local_machine"
+}
