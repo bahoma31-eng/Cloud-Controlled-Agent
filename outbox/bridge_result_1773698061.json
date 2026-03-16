@@ -1,0 +1,11 @@
+{
+  "task_id": "token_search_001",
+  "status": "FAILED",
+  "return_code": 1,
+  "engine": "CMD",
+  "description": "استكشاف بنية مجلد proverbs_extractor",
+  "command_preview": "dir /b \"C:\\Users\\Revexn\\Desktop\\antigravity\\seconde-exp\\proverbs_extractor\"",
+  "output": "[STDERR]\nLa syntaxe du nom de fichier, de r�pertoire ou de volume est incorrecte.",
+  "timestamp": "2026-03-16T21:54:21.776029+00:00",
+  "executed_on": "local_machine"
+}
