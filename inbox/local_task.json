@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "fb_task_008",
+  "engine": "PYTHON",
+  "command": "import os, subprocess\npath = r'C:\\Users\\Revexn\\Desktop\\antigravity\\seconde-exp'\nresult = subprocess.run(['findstr', '/s', '/i', '/m', 'page_id access_token', path + r'\\*.*'], capture_output=True, text=True, timeout=20, cwd=path)\nprint('STDOUT:', result.stdout[:2000])\nprint('STDERR:', result.stderr[:500])\nprint('---')\nfor f in ['.env', '.env.local', 'config.json', 'settings.json', 'fb_config.json', 'facebook.json', 'credentials.json']:\n    fp = os.path.join(path, f)\n    if os.path.exists(fp):\n        print(f'FOUND: {fp}')\n        with open(fp, 'r', errors='ignore') as fh:\n            print(fh.read()[:2000])\n        print('---')\nprint('=== .vscode/settings.json ===')\nvs = os.path.join(path, '.vscode', 'settings.json')\nif os.path.exists(vs):\n    with open(vs, 'r', errors='ignore') as fh:\n        print(fh.read())\nprint('=== run_everything.bat ===')\nbat = os.path.join(path, 'run_everything.bat')\nif os.path.exists(bat):\n    with open(bat, 'r', errors='ignore') as fh:\n        print(fh.read())",
+  "description": "بحث سريع بـ findstr + قراءة ملفات الإعدادات",
+  "timeout": 30
+}
