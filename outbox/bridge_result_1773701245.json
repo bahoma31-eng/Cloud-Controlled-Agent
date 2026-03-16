@@ -1,0 +1,11 @@
+{
+  "task_id": "fb_post_004",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "PYTHON",
+  "description": "نشر الصورة مع النص على صفحة فيسبوك عبر Graph API",
+  "command_preview": "import requests\nimport json\n\npage_id = '104244552728514'\naccess_token = 'EAAkTS3fejiABQgbv7dEpHTzlPmvopZBZCLPiZA0PvE4CZAp7i6YOdBZB966uDmXHslaR3HaHnKeMV1LfKeqnhdU6BdSD5PrirODqZBTDb7FPU21Vo4RuBrSxsxt1X3CDxlE66kbMKkN5K5tZCKcSgZBaibUEBtPZCgZAfvPeGjOaLUmamZCjUuZAcI2K9YSywy37Bb9pqagZD'\nimage_path = r'C:\\Users\\Revexn\\Desktop\\fb_post_image.png'\n\nurl = f'https://graph.facebook.com/v19.0/{page_id}/photos'\n\nmessage_text = '''\\U0001f680 First automated post from Cloud Controlled Agent!\\n\\nThis post was crea",
+  "output": "Status Code: 200\r\nResponse: {\r\n  \"id\": \"794109753740065\",\r\n  \"post_id\": \"104244552728514_794109787073395\"\r\n}\r\nPost ID: 794109753740065\r\nPost URL: https://www.facebook.com/104244552728514/posts/794109753740065\r\nSUCCESS: Post published!",
+  "timestamp": "2026-03-16T22:47:25.828522+00:00",
+  "executed_on": "local_machine"
+}
