@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "fb_task_007",
+  "engine": "PYTHON",
+  "command": "import os, glob\npath = r'C:\\Users\\Revexn\\Desktop\\antigravity\\seconde-exp'\nprint('=== .env files ===')\nfor root, dirs, files in os.walk(path):\n    dirs[:] = [d for d in dirs if d not in {'.venv','__pycache__','node_modules','.git'}]\n    for f in files:\n        if '.env' in f.lower() or f.lower() in ('config.json','settings.json','credentials.json','secrets.json','facebook.json','fb_config.json'):\n            fp = os.path.join(root, f)\n            print(f'FOUND: {fp}')\n            try:\n                with open(fp,'r',errors='ignore') as fh:\n                    print(fh.read()[:2000])\n            except: pass\n            print('---')\nprint('=== Root files content ===')\nfor f in os.listdir(path):\n    fp = os.path.join(path, f)\n    if os.path.isfile(fp):\n        print(f'FILE: {f}')\n        try:\n            with open(fp,'r',errors='ignore') as fh:\n                print(fh.read()[:1000])\n        except: pass\n        print('---')",
+  "description": "بحث مستهدف عن ملفات .env و config وقراءة ملفات الجذر",
+  "timeout": 30
+}
