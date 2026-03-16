@@ -1,7 +1,1 @@
-{
-  "task_id": "token_search_007",
-  "engine": "POWERSHELL",
-  "command": "Get-Content 'C:\\Users\\Revexn\\Desktop\\antigravity\\seconde-exp\\proverbs_extractor\\credentials.json' -Raw | Select-Object -First 1",
-  "description": "قراءة ملف credentials.json للبحث عن Page Access Token",
-  "timeout": 30
-}
+waiting
