@@ -1,7 +1,1 @@
-{
-  "task_id": "token_search_010",
-  "engine": "POWERSHELL",
-  "command": "Get-ChildItem 'C:\\Users\\Revexn\\Desktop\\antigravity\\seconde-exp\\proverbs_extractor' -Recurse -Filter 'social_tokens.json' -ErrorAction SilentlyContinue | ForEach-Object { Write-Output \"PATH: $($_.FullName)\"; Get-Content $_.FullName -Raw }",
-  "description": "قراءة ملف social_tokens.json الذي يحتوي على بيانات فيسبوك",
-  "timeout": 30
-}
+waiting
