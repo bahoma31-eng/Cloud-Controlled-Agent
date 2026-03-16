@@ -1,7 +1,1 @@
-{
-  "task_id": "fb_task_003",
-  "engine": "CMD",
-  "command": "dir /s /b \"C:\\Users\\Revexn\\Desktop\\antigravity\\seconde-exp\"",
-  "description": "سرد الملفات باستخدام CMD dir - أسرع من PowerShell",
-  "timeout": 30
-}
+waiting
