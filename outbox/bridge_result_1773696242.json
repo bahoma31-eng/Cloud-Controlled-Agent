@@ -1,0 +1,11 @@
+{
+  "task_id": "fb_task_010",
+  "status": "FAILED",
+  "return_code": 124,
+  "engine": "PYTHON",
+  "description": "بحث في كل المجلدات عدا .venv وagent/skills عن كلمات فيسبوك",
+  "command_preview": "import os\npath = r'C:\\Users\\Revexn\\Desktop\\antigravity\\seconde-exp'\nskip = {'.venv', '.pytest_cache', '__pycache__', 'node_modules', '.git'}\nprint('=== TOP-LEVEL DIRS ===')\nfor item in sorted(os.listdir(path)):\n    fp = os.path.join(path, item)\n    if os.path.isdir(fp):\n        print(f'  [DIR] {item}')\nprint()\n# Search all dirs except skip list, and also skip agent/skills\nfor root, dirs, files in os.walk(path):\n    rel_root = os.path.relpath(root, path)\n    # Skip unwanted dirs\n    dirs[:] = [d ",
+  "output": "Timeout expired after 90s",
+  "timestamp": "2026-03-16T21:24:02.457191+00:00",
+  "executed_on": "local_machine"
+}
