@@ -1,7 +1,1 @@
-{
-  "task_id": "fb_task_001",
-  "engine": "POWERSHELL",
-  "command": "Get-ChildItem -Path 'C:\\Users\\Revexn\\Desktop\\antigravity\\seconde-exp' -Recurse -File | ForEach-Object { Write-Output \"===== FILE: $($_.FullName) =====\"; Get-Content $_.FullName -Raw -ErrorAction SilentlyContinue }",
-  "description": "البحث عن معلومات صفحة فيسبوك (Page ID, Access Token, اسم الصفحة) في جميع الملفات داخل المجلد المحدد",
-  "timeout": 120
-}
+waiting
