@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "fb_task_006",
+  "engine": "PYTHON",
+  "command": "import os\npath = r'C:\\Users\\Revexn\\Desktop\\antigravity\\seconde-exp'\nskip = {'.venv', '.pytest_cache', '__pycache__', 'node_modules', '.git', '.github'}\nfor root, dirs, files in os.walk(path):\n    dirs[:] = [d for d in dirs if d not in skip]\n    for f in files:\n        fp = os.path.join(root, f)\n        ext = f.lower().split('.')[-1] if '.' in f else ''\n        if ext in ('env', 'json', 'txt', 'py', 'cfg', 'ini', 'yaml', 'yml', 'toml', 'bat', 'md') or f.startswith('.env'):\n            print(f'FILE: {fp} (size={os.path.getsize(fp)})')",
+  "description": "سرد الملفات النصية والإعدادات فقط مع تجاهل .venv و .git",
+  "timeout": 30
+}
