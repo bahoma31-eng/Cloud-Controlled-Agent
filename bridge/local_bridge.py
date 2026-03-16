@@ -10,7 +10,7 @@ Local Bridge Script — يربط جهازك المحلي بالوكيل السح
 الاستخدام:
     python bridge/local_bridge.py
 
-المتطيرات المطلوبة في .env:
+المتغيرات المطلوبة في .env:
     GITHUB_TOKEN
     REPO_OWNER  (اختياري، افتراضي: bahoma31-eng)
     REPO_NAME   (اختياري، افتراضي: Cloud-Controlled-Agent)
@@ -30,7 +30,7 @@ try:
     import requests
     from dotenv import load_dotenv
 except ImportError:
-    print("❌ مكتبات مفقودة. شغّل: pip install requests python-dotenv")
+    print("مكتبات مفقودة. شغّل: pip install requests python-dotenv")
     sys.exit(1)
 
 # ---------------------------------------------------------------------------
@@ -47,21 +47,23 @@ RESULT_DIR = "outbox"
 POLL_INTERVAL = int(os.getenv("BRIDGE_POLL_SECONDS", "10"))
 COMMAND_TIMEOUT = int(os.getenv("BRIDGE_TIMEOUT", "120"))
 
+GITHUB_API_BASE = "https://api.github.com"
+
 # ANSI colors
-_R = "\033[0m"   # Reset
-_C = "\033[96m"  # Cyan
-_G = "\033[92m"  # Green
-_Y = "\033[93m"  # Yellow
-_RED = "\033[91m" # Red
-_M = "\033[95m"  # Magenta
-_B = "\033[1m"   # Bold
+_R = "\033[0m"
+_C = "\033[96m"
+_G = "\033[92m"
+_Y = "\033[93m"
+_RED = "\033[91m"
+_M = "\033[95m"
+_B = "\033[1m"
 
 
-def _now() -> str:
+def _now():
     return datetime.now(timezone.utc).isoformat()
 
 
-def _box(title: str, content: str, color: str = _C) -> None:
+def _box(title, content, color=_C):
     border = color + "=" * 70 + _R
     print(f"\n{border}")
     print(f"{color}{_B}  {title}{_R}")
@@ -75,17 +77,17 @@ def _box(title: str, content: str, color: str = _C) -> None:
 # ---------------------------------------------------------------------------
 def _headers():
     return {
-        "Authorization": f"token {GITHUB_TOKEN}",
+        "Authorization": "token " + GITHUB_TOKEN,
         "Accept": "application/vnd.github+json",
         "User-Agent": "Local-Bridge-Agent",
     }
 
 
-def _content_url(path: str) -> str:
-    return f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents/{path}"
+def _content_url(path):
+    return GITHUB_API_BASE + "/repos/" + REPO_OWNER + "/" + REPO_NAME + "/contents/" + path
 
 
-def gh_get_file(path: str):
+def gh_get_file(path):
     """Return (content_str, sha) or (None, None)."""
     try:
         r = requests.get(_content_url(path), headers=_headers(), timeout=20)
@@ -93,12 +95,16 @@ def gh_get_file(path: str):
             data = r.json()
             content = base64.b64decode(data["content"]).decode("utf-8", errors="replace")
             return content, data.get("sha")
+        elif r.status_code == 404:
+            pass  # File doesn't exist yet
+        else:
+            print(f"{_RED}[GitHub] GET {path} -> {r.status_code}{_R}")
     except Exception as e:
-        print(f"{_RED}❌ خطأ في قراءة {path}: {e}{_R}")
+        print(f"{_RED}خطأ في قراءة {path}: {e}{_R}")
     return None, None
 
 
-def gh_put_file(path: str, content: str, message: str) -> bool:
+def gh_put_file(path, content, message):
     """Create or update a file on GitHub."""
     try:
         url = _content_url(path)
@@ -114,14 +120,14 @@ def gh_put_file(path: str, content: str, message: str) -> bool:
         r = requests.put(url, headers=_headers(), json=payload, timeout=30)
         return r.status_code in (200, 201)
     except Exception as e:
-        print(f"{_RED}❌ خطأ في رفع {path}: {e}{_R}")
+        print(f"{_RED}خطأ في رفع {path}: {e}{_R}")
         return False
 
 
 # ---------------------------------------------------------------------------
 # Task execution (with manual confirmation)
 # ---------------------------------------------------------------------------
-def execute_command(engine: str, content: str, timeout: int) -> tuple:
+def execute_command(engine, content, timeout):
     """Execute a command locally. Returns (returncode, output)."""
     try:
         if engine.upper() == "POWERSHELL":
@@ -133,7 +139,7 @@ def execute_command(engine: str, content: str, timeout: int) -> tuple:
         elif engine.upper() == "CMD":
             cmd = ["cmd", "/c", content]
         else:
-            return 1, f"محرك غير مدعوم: {engine}"
+            return 1, "محرك غير مدعوم: " + engine
 
         p = subprocess.run(
             cmd,
@@ -146,44 +152,40 @@ def execute_command(engine: str, content: str, timeout: int) -> tuple:
         return p.returncode, (stdout + ("\n" + stderr if stderr else "")).strip()
 
     except subprocess.TimeoutExpired:
-        return 124, "⏱️ انتهت مهلة التنفيذ (TimeoutExpired)"
+        return 124, "انتهت مهلة التنفيذ (TimeoutExpired)"
     except FileNotFoundError:
-        return 1, f"❌ المحرك '{engine}' غير متوفر على هذا النظام"
+        return 1, "المحرك '" + engine + "' غير متوفر على هذا النظام"
     except Exception as e:
-        return 1, f"❌ خطأ في التنفيذ: {e}"
+        return 1, "خطأ في التنفيذ: " + str(e)
 
 
-def ask_confirmation(task: dict) -> str:
-    """Display task details and ask for user confirmation.
-    
-    Returns:
-        'y' = execute, 'n' = skip, 'e' = edit then execute, 'q' = quit
-    """
+def ask_confirmation(task):
+    """Display task details and ask for user confirmation."""
     _box(
-        "📨 مهمة جديدة وردت من الوكيل السحابي",
-        f"المعرّف  : {task.get('task_id', '?')}\n"
-        f"الوصف   : {task.get('description', 'بدون وصف')}\n"
-        f"المحرك  : {task.get('engine', '?')}\n"
-        f"المهلة  : {task.get('timeout', COMMAND_TIMEOUT)} ثانية",
+        "مهمة جديدة وردت من الوكيل السحابي",
+        "المعرف  : " + str(task.get("task_id", "?")) + "\n"
+        "الوصف   : " + str(task.get("description", "بدون وصف")) + "\n"
+        "المحرك  : " + str(task.get("engine", "?")) + "\n"
+        "المهلة  : " + str(task.get("timeout", COMMAND_TIMEOUT)) + " ثانية",
         _M,
     )
 
-    print(f"{_Y}{_B}📜 الأمر المطلوب تنفيذه:{_R}")
-    print(f"{_Y}" + "-" * 70 + _R)
+    print(_Y + _B + "الأمر المطلوب تنفيذه:" + _R)
+    print(_Y + "-" * 70 + _R)
     print(task.get("command", ""))
-    print(f"{_Y}" + "-" * 70 + _R)
+    print(_Y + "-" * 70 + _R)
 
-    print(f"\n{_G}[y]{_R} تنفيذ   {_RED}[n]{_R} تخطي   {_C}[e]{_R} تعديل ثم تنفيذ   {_RED}[q]{_R} إنهاء البريدج")
+    print("\n" + _G + "[y]" + _R + " تنفيذ   " + _RED + "[n]" + _R + " تخطي   " + _C + "[e]" + _R + " تعديل ثم تنفيذ   " + _RED + "[q]" + _R + " إنهاء البريدج")
     while True:
-        choice = input(f"\n{_B}اختيارك ▸ {_R}").strip().lower()
+        choice = input("\n" + _B + "اختيارك > " + _R).strip().lower()
         if choice in ("y", "n", "e", "q", ""):
             return choice if choice else "n"
-        print("  ⚠️  اختيار غير صالح. استخدم y / n / e / q")
+        print("  اختيار غير صالح. استخدم y / n / e / q")
 
 
-def edit_command(original: str) -> str:
+def edit_command(original):
     """Allow user to edit the command before execution."""
-    print(f"\n{_C}📝 أدخل الأمر المعدّل (اكتب 'done' في سطر جديد للإنهاء):{_R}")
+    print("\n" + _C + "أدخل الأمر المعدّل (اكتب 'done' في سطر جديد للإنهاء):" + _R)
     lines = []
     while True:
         line = input()
@@ -192,7 +194,7 @@ def edit_command(original: str) -> str:
         lines.append(line)
     edited = "\n".join(lines)
     if not edited.strip():
-        print(f"{_Y}⚠️ الأمر فارغ، سيتم استخدام الأمر الأصلي.{_R}")
+        print(_Y + "الأمر فارغ، سيتم استخدام الأمر الأصلي." + _R)
         return original
     return edited
 
@@ -203,17 +205,17 @@ def edit_command(original: str) -> str:
 def main():
     # Startup checks
     if not GITHUB_TOKEN:
-        print(f"{_RED}❌ GITHUB_TOKEN مفقود! أضفه في ملف .env{_R}")
+        print(_RED + "GITHUB_TOKEN مفقود! أضفه في ملف .env" + _R)
         sys.exit(1)
 
     _box(
-        "🌉 Local Bridge Agent V1.0",
-        f"المستودع    : {REPO_OWNER}/{REPO_NAME}\n"
-        f"ملف المهام  : {TASK_FILE}\n"
-        f"فترة الفحص  : كل {POLL_INTERVAL} ثانية\n"
-        f"مهلة التنفيذ : {COMMAND_TIMEOUT} ثانية\n\n"
-        "⚡ الجسر يعمل الآن... في انتظار المهام.\n"
-        "🛡️  لن يُنفَّذ أي أمر بدون موافقتك الصريحة.\n"
+        "Local Bridge Agent V1.0",
+        "المستودع    : " + REPO_OWNER + "/" + REPO_NAME + "\n"
+        "ملف المهام  : " + TASK_FILE + "\n"
+        "فترة الفحص  : كل " + str(POLL_INTERVAL) + " ثانية\n"
+        "مهلة التنفيذ : " + str(COMMAND_TIMEOUT) + " ثانية\n\n"
+        "الجسر يعمل الآن... في انتظار المهام.\n"
+        "لن يُنفَّذ أي أمر بدون موافقتك الصريحة.\n"
         "   اضغط Ctrl+C للإيقاف.",
         _G,
     )
@@ -246,20 +248,19 @@ def main():
             choice = ask_confirmation(task)
 
             if choice == "q":
-                print(f"\n{_Y}👋 إيقاف الجسر. مع السلامة!{_R}")
+                print("\n" + _Y + "إيقاف الجسر. مع السلامة!" + _R)
                 break
 
             if choice == "n":
-                print(f"{_Y}⏭️  تم تخطي المهمة.{_R}")
+                print(_Y + "تم تخطي المهمة." + _R)
                 last_task_hash = task_hash
-                # Mark as skipped
                 result = {
                     "task_id": task.get("task_id"),
                     "status": "SKIPPED",
                     "message": "تم تخطي المهمة من قبل المستخدم",
                     "timestamp": _now(),
                 }
-                result_name = f"{RESULT_DIR}/bridge_result_{int(time.time())}.json"
+                result_name = RESULT_DIR + "/bridge_result_" + str(int(time.time())) + ".json"
                 gh_put_file(result_name, json.dumps(result, ensure_ascii=False, indent=2), "Bridge: task skipped by user")
                 gh_put_file(TASK_FILE, "waiting", "Bridge: task processed")
                 time.sleep(POLL_INTERVAL)
@@ -273,16 +274,17 @@ def main():
             engine = task.get("engine", "POWERSHELL")
             timeout = task.get("timeout", COMMAND_TIMEOUT)
 
-            print(f"\n{_G}⚡ جارٍ التنفيذ...{_R}")
+            print("\n" + _G + "جارٍ التنفيذ..." + _R)
             rc, output = execute_command(engine, command, timeout)
 
             # Display result
-            status = "✅ نجح" if rc == 0 else "❌ فشل"
+            status_text = "نجح" if rc == 0 else "فشل"
+            result_color = _G if rc == 0 else _RED
             _box(
-                f"📊 نتيجة التنفيذ — {status}",
-                f"كود الخروج : {rc}\n"
-                f"المخرجات:\n{output[:3000]}",
-                _G if rc == 0 else _RED,
+                "نتيجة التنفيذ — " + status_text,
+                "كود الخروج : " + str(rc) + "\n"
+                "المخرجات:\n" + output[:3000],
+                result_color,
             )
 
             # Upload result to GitHub
@@ -297,15 +299,15 @@ def main():
                 "executed_on": "local_machine",
             }
 
-            result_name = f"{RESULT_DIR}/bridge_result_{int(time.time())}.json"
+            result_name = RESULT_DIR + "/bridge_result_" + str(int(time.time())) + ".json"
             if gh_put_file(
                 result_name,
                 json.dumps(result, ensure_ascii=False, indent=2),
-                f"Bridge: executed task {task.get('task_id', '?')}",
+                "Bridge: executed task " + str(task.get("task_id", "?")),
             ):
-                print(f"{_G}📤 تم رفع النتيجة إلى {result_name}{_R}")
+                print(_G + "تم رفع النتيجة إلى " + result_name + _R)
             else:
-                print(f"{_RED}⚠️ فشل رفع النتيجة إلى GitHub{_R}")
+                print(_RED + "فشل رفع النتيجة إلى GitHub" + _R)
 
             # Clear task file
             gh_put_file(TASK_FILE, "waiting", "Bridge: task processed")
@@ -314,10 +316,10 @@ def main():
             time.sleep(POLL_INTERVAL)
 
         except KeyboardInterrupt:
-            print(f"\n\n{_Y}👋 تم إيقاف الجسر. مع السلامة!{_R}")
+            print("\n\n" + _Y + "تم إيقاف الجسر. مع السلامة!" + _R)
             break
         except Exception as e:
-            print(f"{_RED}❌ خطأ غير متوقع: {e}{_R}")
+            print(_RED + "خطأ غير متوقع: " + str(e) + _R)
             time.sleep(POLL_INTERVAL)
 
 
