@@ -1,7 +1,1 @@
-{
-  "task_id": "token_search_001",
-  "engine": "CMD",
-  "command": "dir /b \"C:\\Users\\Revexn\\Desktop\\antigravity\\seconde-exp\\proverbs_extractor\"",
-  "description": "استكشاف بنية مجلد proverbs_extractor",
-  "timeout": 30
-}
+waiting
