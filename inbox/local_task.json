@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "fb_task_004",
+  "engine": "PYTHON",
+  "command": "import os\npath = r'C:\\Users\\Revexn\\Desktop\\antigravity\\seconde-exp'\nif os.path.exists(path):\n    for root, dirs, files in os.walk(path):\n        for f in files:\n            fp = os.path.join(root, f)\n            print(f'FILE: {fp} (size={os.path.getsize(fp)})')\nelse:\n    print(f'PATH NOT FOUND: {path}')\n    parent = os.path.dirname(path)\n    if os.path.exists(parent):\n        print(f'Parent exists. Contents of {parent}:')\n        for item in os.listdir(parent):\n            print(f'  {item}')\n    else:\n        print(f'Parent not found either: {parent}')",
+  "description": "البحث عن الملفات باستخدام Python os.walk - معالجة أفضل للمسارات",
+  "timeout": 30
+}
