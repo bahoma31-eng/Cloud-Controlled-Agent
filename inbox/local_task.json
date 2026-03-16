@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "sysinfo_002",
+  "engine": "POWERSHELL",
+  "command": "$os = Get-CimInstance Win32_OperatingSystem; $totalRAM = [math]::Round($os.TotalVisibleMemorySize/1MB, 2); $freeRAM = [math]::Round($os.FreePhysicalMemory/1MB, 2); $usedRAM = [math]::Round($totalRAM - $freeRAM, 2); $disk = Get-CimInstance Win32_LogicalDisk -Filter \"DeviceID='C:'\"; $totalDisk = [math]::Round($disk.Size/1GB, 2); $freeDisk = [math]::Round($disk.FreeSpace/1GB, 2); $usedDisk = [math]::Round($totalDisk - $freeDisk, 2); Write-Output \"=== Memory & Storage ===\"; Write-Output \"RAM Total: $totalRAM GB\"; Write-Output \"RAM Used: $usedRAM GB\"; Write-Output \"RAM Free: $freeRAM GB\"; Write-Output \"RAM Usage: $([math]::Round(($usedRAM/$totalRAM)*100, 1))%\"; Write-Output \"---\"; Write-Output \"Disk C: Total: $totalDisk GB\"; Write-Output \"Disk C: Used: $usedDisk GB\"; Write-Output \"Disk C: Free: $freeDisk GB\"; Write-Output \"Disk C: Usage: $([math]::Round(($usedDisk/$totalDisk)*100, 1))%\"",
+  "description": "معلومات الذاكرة والتخزين: RAM والقرص C:",
+  "timeout": 120
+}
