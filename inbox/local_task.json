@@ -1,7 +1,1 @@
-{
-  "task_id": "token_search_008",
-  "engine": "POWERSHELL",
-  "command": "Set-Location 'C:\\Users\\Revexn\\Desktop\\antigravity\\seconde-exp\\proverbs_extractor'; Select-String -Path *.py,*.json,*.env*,*.cfg,*.ini,*.yaml,*.yml,*.txt -Pattern 'page_access_token|PAGE_TOKEN|FB_PAGE_TOKEN|fb_token|FACEBOOK_PAGE_ACCESS_TOKEN|page_id|PAGE_ID|EAA' -ErrorAction SilentlyContinue | Select-Object -First 30 | Format-Table Filename,LineNumber,Line -AutoSize -Wrap",
-  "description": "البحث عن كلمات مفتاحية للتوكن في كل ملفات الجذر",
-  "timeout": 60
-}
+waiting
