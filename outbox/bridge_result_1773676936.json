@@ -1,0 +1,11 @@
+{
+  "task_id": "mission-step-1",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "PYTHON",
+  "description": "Step 1/5: Scan all installed Python packages and save to report file",
+  "command_preview": "import subprocess, json, os\n\nprint('=== STEP 1/5: Python Packages Scan ===')\nprint()\n\n# Get pip list as JSON\nresult = subprocess.run(['pip', 'list', '--format=json'], capture_output=True, text=True, timeout=60)\npackages = json.loads(result.stdout)\n\nprint('Total packages found:', len(packages))\nprint()\nprint('Top packages:')\nfor pkg in sorted(packages, key=lambda x: x['name'])[:30]:\n    print('  ', pkg['name'].ljust(30), pkg['version'])\n\nif len(packages) > 30:\n    print('  ... and', len(packages)",
+  "output": "=== STEP 1/5: Python Packages Scan ===\r\n\r\nTotal packages found: 44\r\n\r\nTop packages:\r\n   annotated-types                0.7.0\r\n   anyio                          4.12.1\r\n   certifi                        2026.2.25\r\n   cffi                           2.0.0\r\n   charset-normalizer             3.4.5\r\n   colorama                       0.4.6\r\n   cryptography                   46.0.5\r\n   distro                         1.9.0\r\n   google-ai-generativelanguage   0.6.15\r\n   google-api-core                2.30.0\r\n   google-api-python-client       2.192.0\r\n   google-auth                    2.49.1\r\n   google-auth-httplib2           0.3.0\r\n   google-genai                   1.67.0\r\n   google-generativeai            0.8.6\r\n   googleapis-common-protos       1.73.0\r\n   groq                           1.1.1\r\n   grpcio                         1.78.0\r\n   grpcio-status                  1.71.2\r\n   h11                            0.16.0\r\n   httpcore                       1.0.9\r\n   httplib2                       0.31.2\r\n   httpx                          0.28.1\r\n   idna                           3.11\r\n   pip                            26.0.1\r\n   proto-plus                     1.27.1\r\n   protobuf                       5.29.6\r\n   psutil                         7.2.2\r\n   pyasn1                         0.6.2\r\n   pyasn1_modules                 0.4.2\r\n  ... and 14 more\r\n\r\nFull list saved to: C:\\Users\\Revexn\\agent_reports\\step1_python_packages.json\r\n\r\n=== STEP 1 COMPLETE ===",
+  "timestamp": "2026-03-16T16:02:16.889566+00:00",
+  "executed_on": "local_machine"
+}
