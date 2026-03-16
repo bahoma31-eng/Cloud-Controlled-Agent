@@ -1,7 +1,1 @@
-{
-  "task_id": "token_search_004",
-  "engine": "POWERSHELL",
-  "command": "Get-Content 'C:\\Users\\Revexn\\Desktop\\antigravity\\seconde-exp\\proverbs_extractor\\.env' -Raw",
-  "description": "قراءة ملف .env للبحث عن Page Access Token",
-  "timeout": 30
-}
+waiting
