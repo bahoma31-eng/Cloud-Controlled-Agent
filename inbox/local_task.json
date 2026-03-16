@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "fb_post_003",
+  "engine": "PYTHON",
+  "command": "import json\nwith open(r'C:\\Users\\Revexn\\Desktop\\antigravity\\seconde-exp\\proverbs_extractor\\data\\proverbs\\social_tokens.json', 'r', encoding='utf-8') as f:\n    data = json.load(f)\nprint('Keys found:', list(data.keys()))\nif 'facebook_access_token' in data:\n    token = data['facebook_access_token']\n    print(f'facebook_access_token: {token[:20]}...{token[-10:]}')\n    print(f'Token length: {len(token)}')\nelse:\n    for k, v in data.items():\n        if 'facebook' in k.lower() or 'token' in k.lower() or 'access' in k.lower():\n            val = str(v)\n            print(f'{k}: {val[:20]}...{val[-10:] if len(val) > 20 else val}')\nif 'facebook_page_id' in data:\n    print(f'facebook_page_id: {data[\"facebook_page_id\"]}')\nelse:\n    for k, v in data.items():\n        if 'page' in k.lower() or 'id' in k.lower():\n            print(f'{k}: {v}')\nprint('FULL_TOKEN_START')\nprint(data.get('facebook_access_token', 'NOT_FOUND'))\nprint('FULL_TOKEN_END')\nprint('PAGE_ID:', data.get('facebook_page_id', 'NOT_FOUND'))",
+  "description": "قراءة Access Token و Page ID من ملف social_tokens.json",
+  "timeout": 30
+}
