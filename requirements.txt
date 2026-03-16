@@ -1,0 +1,7 @@
+# ========================
+# Cloud Controlled Agent V13 - Dependencies
+# ========================
+
+groq>=0.4.0
+requests>=2.31.0
+python-dotenv>=1.0.0
