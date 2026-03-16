@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "token_search_006",
+  "engine": "POWERSHELL",
+  "command": "Get-Content 'C:\\Users\\Revexn\\Desktop\\antigravity\\seconde-exp\\proverbs_extractor\\config.py' -Raw | Select-Object -First 1",
+  "description": "قراءة ملف config.py للبحث عن Page Access Token",
+  "timeout": 30
+}
