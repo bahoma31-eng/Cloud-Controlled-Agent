@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "fb_post_001",
+  "engine": "CMD",
+  "command": "pip install Pillow requests",
+  "description": "تثبيت مكتبات Pillow و requests لتوليد الصورة والنشر على فيسبوك",
+  "timeout": 120
+}
