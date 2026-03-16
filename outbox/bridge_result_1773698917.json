@@ -1,0 +1,11 @@
+{
+  "task_id": "token_search_010",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "قراءة ملف social_tokens.json الذي يحتوي على بيانات فيسبوك",
+  "command_preview": "Get-ChildItem 'C:\\Users\\Revexn\\Desktop\\antigravity\\seconde-exp\\proverbs_extractor' -Recurse -Filter 'social_tokens.json' -ErrorAction SilentlyContinue | ForEach-Object { Write-Output \"PATH: $($_.FullName)\"; Get-Content $_.FullName -Raw }",
+  "output": "PATH: C:\\Users\\Revexn\\Desktop\\antigravity\\seconde-exp\\proverbs_extractor\\data\\proverbs\\social_tokens.json\r\n{\r\n  \"facebook_access_token\": \"EAAkTS3fejiABQgbv7dEpHTzlPmvopZBZCLPiZA0PvE4CZAp7i6YOdBZB966uDmXHslaR3HaHnKeMV1LfKeqnhdU6BdSD5PrirODqZBTDb7FPU21Vo4RuBrSxsxt1X3CDxlE66kbMKkN5K5tZCKcSgZBaibUEBtPZCgZAfvPeGjOaLUmamZCjUuZAcI2K9YSywy37Bb9pqagZD\",\r\n  \"facebook_page_id\": \"104244552728514\",\r\n  \"instagram_access_token\": \"EAAkTS3fejiABQvsu2umhFZBzCmGuOnXmNedWAZCR2y1Wk0ZAhdKgrvXZBslhbvWI2gZBbAYMedD1qrBzyKDdDZBtZC77wYsN5fdPUlHZBiRNeuzG2bghMC9Bl5YjLZCzyotVpZCZBolJYH7S9uyNJTjmQjSCgOmymPjCa4Uw7xvuYpKQwfvyOuggPZBNq82E3IOfZBAFgoxArZBIEZD\",\r\n  \"instagram_account_id\": \"17841475439406945\",\r\n  \"tiktok_access_token\": \"act.ebEB1tfnZF53Vw1fhzgnDkGYbNUO2bBUHUhdLNjyiWkGAxle12aEl85xmyzC!4711.va\",\r\n  \"tiktok_refresh_token\": \"rft.rrgIsIo7MVCND81lQ9afs2Z8fPZp9vCY7jJFYIibm3RH8W0pbmm1si9YPMs6!4688.va\",\r\n  \"tiktok_open_id\": \"-000A6oW-iRkMRcHaXrCwoGT34txwLN7KRqA\",\r\n  \"tiktok_expires_at\": \"2026-02-02T13:28:23.056298\"\r\n}",
+  "timestamp": "2026-03-16T22:08:37.027445+00:00",
+  "executed_on": "local_machine"
+}
