@@ -1,0 +1,7 @@
+{
+    "task_id": "test-001",
+    "description": "مهمة تجريبية: عرض معلومات النظام ومسار العمل الحالي",
+    "engine": "POWERSHELL",
+    "command": "Write-Host '=== معلومات النظام ===' ; Write-Host \"الجهاز: $env:COMPUTERNAME\" ; Write-Host \"المستخدم: $env:USERNAME\" ; Write-Host \"النظام: $([System.Environment]::OSVersion.VersionString)\" ; Write-Host \"Python: $(python --version 2>&1)\" ; Write-Host \"المسار الحالي: $(Get-Location)\" ; Write-Host \"الوقت: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')\" ; Write-Host '=== تم بنجاح ==='",
+    "timeout": 30
+}
