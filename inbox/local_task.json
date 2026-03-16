@@ -1,7 +1,1 @@
-{
-    "task_id": "diag-002",
-    "description": "System diagnostic: collect OS, CPU, RAM, disk, network info",
-    "engine": "PYTHON",
-    "command": "import platform, os, socket\nprint('=' * 50)\nprint('  SYSTEM DIAGNOSTIC REPORT')\nprint('=' * 50)\nprint()\nprint('[OS]')\nprint('  System   :', platform.system())\nprint('  Release  :', platform.release())\nprint('  Version  :', platform.version())\nprint('  Machine  :', platform.machine())\nprint('  Processor:', platform.processor())\nprint()\nprint('[USER]')\nprint('  Username :', os.getlogin())\nprint('  Home     :', os.path.expanduser('~'))\nprint('  CWD      :', os.getcwd())\nprint()\nprint('[NETWORK]')\nprint('  Hostname :', socket.gethostname())\ntry:\n    print('  Local IP :', socket.gethostbyname(socket.gethostname()))\nexcept:\n    print('  Local IP : N/A')\nprint()\nprint('[DISK - C:]')\ntry:\n    import shutil\n    total, used, free = shutil.disk_usage('C:\\\\')\n    print('  Total    :', round(total / (1024**3), 1), 'GB')\n    print('  Used     :', round(used / (1024**3), 1), 'GB')\n    print('  Free     :', round(free / (1024**3), 1), 'GB')\n    print('  Usage    :', round(used / total * 100, 1), '%')\nexcept:\n    print('  N/A')\nprint()\nprint('[PYTHON]')\nprint('  Version  :', platform.python_version())\nprint('  Compiler :', platform.python_compiler())\nprint()\nprint('=' * 50)\nprint('  Diagnostic complete!')\nprint('=' * 50)",
-    "timeout": 30
-}
+waiting
