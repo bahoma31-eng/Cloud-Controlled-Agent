@@ -4,13 +4,10 @@
 # - Chooses empty region for text (px) + dominant colors + brightness theme + font size + suggested copy
 # - Rotates across multiple API keys (round-robin) each call.
 #
-# IMPORTANT (Windows): Do NOT pass image bytes/base64 on the command line.
-# This script accepts --image_path and reads the file, then sends base64 in the HTTP request.
-#
 # Env:
 #   GEMINI_API_KEYS=key1,key2,key3,key4
 #   GEMINI_MODEL=gemini-2.5-flash
-#   GEMINI_ENDPOINT={{https://generativelanguage.googleapis.com/v1beta/models/{MODEL}}}:generateContent
+#   GEMINI_ENDPOINT=https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent
 # Optional:
 #   GEMINI_TIMEOUT_SECONDS=60
 
@@ -91,7 +88,7 @@ def main():
 	model = (os.getenv("GEMINI_MODEL", "gemini-2.5-flash") or "gemini-2.5-flash").strip()
 	endpoint_tpl = (os.getenv(
 		"GEMINI_ENDPOINT",
-		"{{https://generativelanguage.googleapis.com/v1beta/models/{MODEL}}}:generateContent",
+		"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent",
 	) or "").strip()
 	endpoint = endpoint_tpl.replace("{MODEL}", model)
 
