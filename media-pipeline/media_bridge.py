@@ -34,6 +34,7 @@ WAIT_FONTS_MS = int(os.getenv("PLAYWRIGHT_WAIT_FONTS_MS", "3000"))
 USE_GEMINI_WATCHER = (os.getenv("USE_GEMINI_WATCHER", "0").strip() in ("1", "true", "yes"))
 PRINT_META_TO_TERMINAL = (os.getenv("PRINT_META_TO_TERMINAL", "1").strip() in ("1", "true", "yes"))
 PRINT_GEMINI_RAW_TO_TERMINAL = (os.getenv("PRINT_GEMINI_RAW_TO_TERMINAL", "1").strip() in ("1", "true", "yes"))
+FALLBACK_TO_OPENCV_ON_GEMINI_FAIL = (os.getenv("FALLBACK_TO_OPENCV_ON_GEMINI_FAIL", "1").strip() in ("1", "true", "yes"))
 
 BRAND = os.getenv("BRAND_NAME", "boncoin restaurant")
 FACEBOOK = os.getenv("FACEBOOK_NAME", "Boncoin restaurant")
@@ -85,7 +86,7 @@ def gh_headers():
 	return {
 		"Authorization": f"token {GITHUB_TOKEN}",
 		"Accept": "application/vnd.github+json",
-		"User-Agent": "media-bridge/2.4",
+		"User-Agent": "media-bridge/2.5",
 	}
 
 
@@ -114,9 +115,7 @@ def gh_list_dir(path):
 
 def gh_download_file(path):
 	data = gh_get_json(gh_contents_url(path))
-	if not data:
-		return None, None, None
-	if data.get("type") != "file":
+	if not data or data.get("type") != "file":
 		return None, None, None
 	raw = base64.b64decode(data.get("content", ""))
 	return raw, data.get("sha"), data.get("name")
@@ -160,7 +159,7 @@ def run_watcher_opencv(local_img_path: str, out_meta_path: str):
 	cmd = [sys.executable, os.path.join(os.path.dirname(__file__), "image_watcher.py"), "--image", local_img_path, "--out", out_meta_path]
 	p = subprocess.run(cmd, capture_output=True, text=True)
 	if p.returncode != 0:
-		raise RuntimeError(f"watcher failed: {p.stdout}\n{p.stderr}")
+		raise RuntimeError(f"opencv watcher failed: {p.stdout}\n{p.stderr}")
 
 
 def _print_raw_if_exists(out_meta_path: str, w: int, h: int):
@@ -192,7 +191,6 @@ def run_watcher_gemini(final_canvas_path: str, mime: str, w: int, h: int, filena
 	]
 	p = subprocess.run(cmd, capture_output=True, text=True)
 	if p.returncode != 0:
-		# even on failure, watcher should have written .raw.txt (best effort)
 		_print_raw_if_exists(out_meta_path, w, h)
 		raise RuntimeError(f"gemini watcher failed:\n{p.stdout}\n{p.stderr}")
 
@@ -281,11 +279,11 @@ def export_variants(image_bytes: bytes, image_name: str):
 		w = s["w"]
 		h = s["h"]
 
+		# background-only canvas
 		bg_html = f"""<!doctype html><html><head><meta charset='utf-8'/><style>
 			html,body{{margin:0;padding:0;width:{w}px;height:{h}px;overflow:hidden;}}
 			.bg{{position:absolute;inset:0;background-image:url('{bg_url}');background-size:cover;background-position:center;}}
 		</style></head><body><div class='bg'></div></body></html>"""
-
 		bg_html_path = os.path.join(LOCAL_HTML, f"{base}_{w}x{h}_bg.html")
 		bg_png_path = os.path.join(LOCAL_OUT, f"{base}_{w}x{h}_bg.png")
 		with open(bg_html_path, "w", encoding="utf-8") as f:
@@ -294,8 +292,19 @@ def export_variants(image_bytes: bytes, image_name: str):
 
 		meta_name = f"{image_name}.{w}x{h}.json"
 		local_meta = os.path.join(LOCAL_META, meta_name)
+
+		# Run watcher
 		if USE_GEMINI_WATCHER:
-			run_watcher_gemini(bg_png_path, "image/png", w, h, image_name, local_meta)
+			try:
+				run_watcher_gemini(bg_png_path, "image/png", w, h, image_name, local_meta)
+			except Exception as e:
+				log(str(e).strip())
+				if FALLBACK_TO_OPENCV_ON_GEMINI_FAIL:
+					log(f"Falling back to OpenCV watcher for {w}x{h}...")
+					local_img = os.path.join(LOCAL_WORKDIR, image_name)
+					run_watcher_opencv(local_img, local_meta)
+				else:
+					raise
 		else:
 			local_img = os.path.join(LOCAL_WORKDIR, image_name)
 			run_watcher_opencv(local_img, local_meta)
