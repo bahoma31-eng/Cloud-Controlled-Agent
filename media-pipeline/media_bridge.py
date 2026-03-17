@@ -9,12 +9,14 @@
 # - adds a fixed footer for boncoin restaurant
 # - places a headline in a safe area (avoids important regions using saliency)
 # - exports 1080x1350 and 1080x1920 variants
-# - uploads results to media-pipeline/output/
+# - saves results locally to media-pipeline/output-local/
+# - optionally uploads results to media-pipeline/output/ on GitHub
 # - moves originals to media-pipeline/archive/
 
 import os
 import sys
 import time
+import json
 import base64
 import shutil
 from io import BytesIO
@@ -24,6 +26,14 @@ import requests
 import numpy as np
 import cv2
 from PIL import Image, ImageDraw, ImageFont
+
+# Optional Arabic reshaping for proper connected-letter rendering
+try:
+	import arabic_reshaper
+	from bidi.algorithm import get_display
+	HAS_ARABIC_SUPPORT = True
+except ImportError:
+	HAS_ARABIC_SUPPORT = False
 
 try:
 	from dotenv import load_dotenv
@@ -45,6 +55,14 @@ INPUT_DIR = "media-pipeline/input/"
 OUTPUT_DIR = "media-pipeline/output/"
 ARCHIVE_DIR = "media-pipeline/archive/"
 
+# Output handling
+UPLOAD_OUTPUT = os.getenv("UPLOAD_OUTPUT", "false").strip().lower() == "true"
+ARCHIVE_ORIGINAL = os.getenv("ARCHIVE_ORIGINAL", "true").strip().lower() == "true"
+
+# Paths relative to this script
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+LOCAL_OUTPUT_DIR = os.path.join(SCRIPT_DIR, "output-local")
+
 # Branding (fixed footer)
 BRAND = os.getenv("BRAND_NAME", "boncoin restaurant")
 FACEBOOK = os.getenv("FACEBOOK_NAME", "Boncoin restaurant")
@@ -53,11 +71,30 @@ TIKTOK = os.getenv("TIKTOK_HANDLE", "boncoin_fastfood")
 WHATSAPP = os.getenv("WHATSAPP_NUMBER", "0795235138")
 
 # Text overlay defaults
-DEFAULT_HEADLINE = os.getenv("HEADLINE_TEXT", "عرض اليوم")
-DEFAULT_CTA = os.getenv("CTA_TEXT", "اطلب الآن")
+DEFAULT_HEADLINE = os.getenv("HEADLINE_TEXT", "\u0639\u0631\u0636 \u0627\u0644\u064a\u0648\u0645")
+DEFAULT_CTA = os.getenv("CTA_TEXT", "\u0627\u0637\u0644\u0628 \u0627\u0644\u0622\u0646")
 
-# Font (optional). If not set, uses a default font; Arabic shaping may not be perfect.
+# Font configuration
+# Priority: FONT_PATH env > bundled fonts > Pillow default
 FONT_PATH = os.getenv("FONT_PATH", "").strip()
+
+BUNDLED_FONTS_DIR = os.path.join(SCRIPT_DIR, "fonts")
+BUNDLED_FONT_NAMES = ["Cairo-Regular.ttf", "Tajawal-Regular.ttf"]
+
+def _resolve_font_path():
+	"""Resolve font path: ENV > bundled fonts > None (Pillow default)."""
+	if FONT_PATH and os.path.isfile(FONT_PATH):
+		return FONT_PATH
+	for fname in BUNDLED_FONT_NAMES:
+		candidate = os.path.join(BUNDLED_FONTS_DIR, fname)
+		if os.path.isfile(candidate):
+			return candidate
+	return None
+
+RESOLVED_FONT = _resolve_font_path()
+
+# Task file for dynamic text (overrides env defaults)
+TASK_JSON_PATH = os.path.join(SCRIPT_DIR, "task.json")
 
 # Local temp workspace
 LOCAL_WORKDIR = os.path.join(os.getcwd(), ".media_bridge_tmp")
@@ -65,6 +102,55 @@ LOCAL_OUT = os.path.join(LOCAL_WORKDIR, "out")
 
 GITHUB_API_BASE = "https://api.github.com"
 ALLOWED_EXT = (".png", ".jpg", ".jpeg", ".webp")
+
+
+# ----------------------------
+# Arabic text helpers
+# ----------------------------
+def _is_arabic(text):
+	"""Check if text contains Arabic characters."""
+	for ch in text:
+		if '\u0600' <= ch <= '\u06FF' or '\u0750' <= ch <= '\u077F' or \
+		   '\uFB50' <= ch <= '\uFDFF' or '\uFE70' <= ch <= '\uFEFF':
+			return True
+	return False
+
+
+def reshape_arabic(text):
+	"""Apply Arabic reshaping and bidi reordering if libraries are available."""
+	if not HAS_ARABIC_SUPPORT:
+		return text
+	try:
+		reshaped = arabic_reshaper.reshape(text)
+		bidi_text = get_display(reshaped)
+		return bidi_text
+	except Exception:
+		return text
+
+
+def prepare_text(text):
+	"""Prepare text for rendering: reshape Arabic if needed."""
+	if _is_arabic(text):
+		return reshape_arabic(text)
+	return text
+
+
+# ----------------------------
+# Task.json reader
+# ----------------------------
+def read_task_json():
+	"""Read headline and CTA from task.json if it exists, else use env defaults."""
+	if os.path.isfile(TASK_JSON_PATH):
+		try:
+			with open(TASK_JSON_PATH, "r", encoding="utf-8") as f:
+				data = json.load(f)
+			headline = data.get("headline", DEFAULT_HEADLINE)
+			cta = data.get("cta", DEFAULT_CTA)
+			log(f"Loaded text from task.json: headline='{headline}', cta='{cta}'")
+			return headline, cta
+		except Exception as e:
+			log(f"Warning: could not read task.json: {e}")
+	return DEFAULT_HEADLINE, DEFAULT_CTA
 
 
 # ----------------------------
@@ -155,6 +241,7 @@ def gh_delete_file(path, message):
 # ----------------------------
 def ensure_dirs():
 	os.makedirs(LOCAL_OUT, exist_ok=True)
+	os.makedirs(LOCAL_OUTPUT_DIR, exist_ok=True)
 
 
 def pil_to_cv(img_pil):
@@ -198,41 +285,59 @@ def mild_food_enhance(img_cv):
 
 
 def get_font(size):
-	if FONT_PATH and os.path.isfile(FONT_PATH):
-		return ImageFont.truetype(FONT_PATH, size=size)
+	"""Load resolved font at given size, or fall back to Pillow default."""
+	if RESOLVED_FONT and os.path.isfile(RESOLVED_FONT):
+		return ImageFont.truetype(RESOLVED_FONT, size=size)
 	return ImageFont.load_default()
 
 
 def draw_footer(pil_img):
+	"""Draw an orange gradient footer with brand name + 4 social media items."""
 	w, h = pil_img.size
 	footer_h = int(h * 0.18)
 
 	overlay = Image.new("RGBA", (w, h), (0, 0, 0, 0))
 	d = ImageDraw.Draw(overlay)
 
+	# --- Orange gradient background ---
 	orange1 = (230, 115, 40, 255)
 	orange2 = (255, 160, 60, 255)
 	for y in range(h - footer_h, h):
 		t = (y - (h - footer_h)) / max(1, footer_h - 1)
 		r = int(orange1[0] * (1 - t) + orange2[0] * t)
 		g = int(orange1[1] * (1 - t) + orange2[1] * t)
-		b = int(orange1[2] * (1 - t) + orange2[2] * t)
-		d.line([(0, y), (w, y)], fill=(r, g, b, 255))
+		b_val = int(orange1[2] * (1 - t) + orange2[2] * t)
+		d.line([(0, y), (w, y)], fill=(r, g, b_val, 255))
 
-	title_font = get_font(max(28, int(h * 0.06)))
-	small_font = get_font(max(16, int(h * 0.035)))
+	# --- Font sizes ---
+	title_font = get_font(max(28, int(h * 0.055)))
+	small_font = get_font(max(14, int(h * 0.025)))
 
-	title = BRAND
-	title_w = d.textlength(title, font=title_font)
-	d.text(((w - title_w) / 2, h - footer_h + int(footer_h * 0.18)), title, font=title_font, fill=(255, 255, 255, 255))
+	# --- Line 1: Brand name centered ---
+	brand_text = prepare_text(BRAND)
+	title_w = d.textlength(brand_text, font=title_font)
+	title_y = h - footer_h + int(footer_h * 0.10)
+	d.text(((w - title_w) / 2, title_y), brand_text,
+	       font=title_font, fill=(255, 255, 255, 255))
 
-	row_y = h - footer_h + int(footer_h * 0.63)
-	info = f"facebook: {FACEBOOK}    instagram: {INSTAGRAM}    tiktok: {TIKTOK}    whatsapp: {WHATSAPP}"
-	max_chars = 140
-	if len(info) > max_chars:
-		info = info[: max_chars - 3] + "..."
-	info_w = d.textlength(info, font=small_font)
-	d.text(((w - info_w) / 2, row_y), info, font=small_font, fill=(255, 255, 255, 235))
+	# --- Line 2: 4 social media items in columns ---
+	items = [
+		f"Facebook: {FACEBOOK}",
+		f"Instagram: {INSTAGRAM}",
+		f"TikTok: {TIKTOK}",
+		f"WhatsApp: {WHATSAPP}",
+	]
+
+	row_y = h - footer_h + int(footer_h * 0.58)
+	padding = int(w * 0.02)
+	section_w = (w - 2 * padding) / len(items)
+
+	for i, item_text in enumerate(items):
+		item_w = d.textlength(item_text, font=small_font)
+		# Center each item within its column section
+		x = padding + section_w * i + (section_w - item_w) / 2
+		d.text((x, row_y), item_text,
+		       font=small_font, fill=(255, 255, 255, 230))
 
 	out = Image.alpha_composite(pil_img.convert("RGBA"), overlay).convert("RGB")
 	return out
@@ -300,13 +405,17 @@ def draw_headline(pil_img, headline, cta=None):
 	head_font = get_font(max(24, int(h * 0.055)))
 	cta_font = get_font(max(18, int(h * 0.04)))
 
+	# Prepare Arabic text
+	headline_display = prepare_text(headline)
+
 	tx = box[0] + int((box[2] - box[0]) * 0.06)
 	ty = box[1] + int((box[3] - box[1]) * 0.18)
-	d.text((tx, ty), headline, font=head_font, fill=(255, 255, 255, 245))
+	d.text((tx, ty), headline_display, font=head_font, fill=(255, 255, 255, 245))
 
 	if cta:
+		cta_display = prepare_text(cta)
 		ty2 = ty + int((box[3] - box[1]) * 0.55)
-		d.text((tx, ty2), cta, font=cta_font, fill=(255, 220, 180, 245))
+		d.text((tx, ty2), cta_display, font=cta_font, fill=(255, 220, 180, 245))
 
 	out = Image.alpha_composite(pil_img.convert("RGBA"), overlay).convert("RGB")
 	return out
@@ -364,6 +473,13 @@ def upload_output_file(local_path, remote_path):
 	return ok, resp
 
 
+def save_output_locally(local_path):
+	"""Copy processed file to the local output directory."""
+	dest = os.path.join(LOCAL_OUTPUT_DIR, os.path.basename(local_path))
+	shutil.copy2(local_path, dest)
+	return dest
+
+
 def move_to_archive(src_path):
 	raw, sha, name = gh_download_file(src_path)
 	if not raw:
@@ -393,11 +509,21 @@ def main():
 	log("Starting media_bridge.py")
 	log(f"Repo: {REPO_OWNER}/{REPO_NAME} (branch: {BRANCH})")
 	log(f"Input: {INPUT_DIR}")
-	log(f"Output: {OUTPUT_DIR}")
-	log(f"Archive: {ARCHIVE_DIR}")
+	log(f"Output (GitHub): {OUTPUT_DIR} (upload={'ON' if UPLOAD_OUTPUT else 'OFF'})")
+	log(f"Output (local): {LOCAL_OUTPUT_DIR}")
+	log(f"Archive: {ARCHIVE_DIR} ({'ON' if ARCHIVE_ORIGINAL else 'OFF'})")
 	log(f"Polling every {POLL_INTERVAL}s")
-	if not FONT_PATH:
-		log("NOTE: FONT_PATH is not set. Arabic text may not render perfectly. Set FONT_PATH to an Arabic TTF if needed.")
+
+	if RESOLVED_FONT:
+		log(f"Font: {RESOLVED_FONT}")
+	else:
+		log("NOTE: No Arabic font found. Arabic text may not render perfectly.")
+		log(f"  Tip: Place Cairo-Regular.ttf or Tajawal-Regular.ttf in {BUNDLED_FONTS_DIR}/")
+
+	if HAS_ARABIC_SUPPORT:
+		log("Arabic reshaping: ENABLED (arabic-reshaper + python-bidi)")
+	else:
+		log("Arabic reshaping: DISABLED (install arabic-reshaper and python-bidi for better Arabic)")
 
 	while True:
 		try:
@@ -411,6 +537,9 @@ def main():
 
 			log(f"Found {len(files)} image(s) in input.")
 
+			# Read dynamic text from task.json (falls back to env defaults)
+			headline, cta = read_task_json()
+
 			for fmeta in files:
 				path = fmeta["path"]
 				name = fmeta["name"]
@@ -423,25 +552,32 @@ def main():
 
 				pil_img = Image.open(BytesIO(raw)).convert("RGB")
 
-				headline = DEFAULT_HEADLINE
-				cta = DEFAULT_CTA
-
 				final_img = process_one_image(pil_img, headline=headline, cta=cta)
 				out_files = export_variants(final_img, base_name=base, out_dir=LOCAL_OUT)
 
 				for local_path in out_files:
-					remote = OUTPUT_DIR.rstrip("/") + "/" + os.path.basename(local_path)
-					ok, resp = upload_output_file(local_path, remote)
-					if ok:
-						log(f"Uploaded: {remote}")
-					else:
-						log(f"Upload failed: {remote} -> {resp[:200]}")
+					# Always save locally
+					local_dest = save_output_locally(local_path)
+					log(f"Saved locally: {local_dest}")
 
-				ok, msg = move_to_archive(path)
-				if ok:
-					log(f"Archived original: {name}")
+					# Optionally upload to GitHub
+					if UPLOAD_OUTPUT:
+						remote = OUTPUT_DIR.rstrip("/") + "/" + os.path.basename(local_path)
+						ok, resp = upload_output_file(local_path, remote)
+						if ok:
+							log(f"Uploaded to GitHub: {remote}")
+						else:
+							log(f"Upload failed: {remote} -> {resp[:200]}")
+
+				# Archive original (optional)
+				if ARCHIVE_ORIGINAL:
+					ok, msg = move_to_archive(path)
+					if ok:
+						log(f"Archived original: {name}")
+					else:
+						log(f"Archive failed for {name}: {msg}")
 				else:
-					log(f"Archive failed for {name}: {msg}")
+					log(f"Skipping archive for {name} (ARCHIVE_ORIGINAL=false)")
 
 			log("Done processing current batch. Waiting...")
 			time.sleep(POLL_INTERVAL)
