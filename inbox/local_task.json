@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "html_banner_001",
+  "engine": "CMD",
+  "command": "pip install playwright && playwright install chromium",
+  "description": "تثبيت مكتبة playwright ومتصفح Chromium لتحويل HTML إلى صورة",
+  "timeout": 120
+}
