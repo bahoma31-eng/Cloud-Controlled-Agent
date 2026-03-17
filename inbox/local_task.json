@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "img_v2_002",
+  "engine": "POWERSHELL",
+  "command": "Get-ChildItem 'C:\\Windows\\Fonts\\' -Filter '*.ttf' | Where-Object { $_.Name -match 'amiri|arabic|tahoma|arial|simplified|traditional' } | Select-Object Name, FullName | Format-Table -AutoSize",
+  "description": "البحث عن خطوط عربية متاحة في مجلد خطوط النظام",
+  "timeout": 60
+}
