@@ -1,58 +1,61 @@
 # Media Bridge (Local)
 
-This script runs locally and automates the GitHub media pipeline:
+هذا السكريبت يعمل محلياً ويقوم بأتمتة خط معالجة الصور عبر GitHub.
 
 - **Input**: `media-pipeline/input/`
-- **Output**: `media-pipeline/output/`
+- **Meta**: `media-pipeline/meta/` (ملفات JSON ناتجة عن تحليل الصورة)
+- **Output**: `media-pipeline/output/` (صور PNG بالمقاسات القياسية)
 - **Archive**: `media-pipeline/archive/`
 
-It downloads all images in `input/`, applies safe enhancements, adds a fixed footer for **boncoin restaurant**, places a headline in a safe area, exports post + vertical variants, uploads results to `output/`, then moves originals to `archive/`.
+التدفق:
 
-## 1) Requirements
+1. تنزيل جميع الصور من `input/`
+2. تشغيل سكريبت التحليل `image_watcher.py` لإنتاج ملف ميتاداتا JSON (مناطق كتابة + ألوان + سطوع + ستايل + نصوص مقترحة)
+3. توليد HTML+CSS ثم تحويله إلى PNG عبر **Playwright + Chromium** (مع انتظار 3000ms لتحميل خطوط Google Fonts)
+4. رفع المخرجات إلى `output/` ورفع الميتاداتا إلى `meta/`
+5. نقل الصور الأصلية إلى `archive/` وحذفها من `input/`
+
+## 1) المتطلبات
 
 - Python 3.9+
 
-Install dependencies:
+تثبيت الاعتماديات:
 
 ```bash
-pip install requests pillow opencv-python numpy python-dotenv
+pip install requests pillow python-dotenv playwright opencv-python numpy
+python -m playwright install chromium
 ```
 
-## 2) Setup (no code edits needed)
+## 2) الإعداد
 
-Create a `.env` file in the same folder where you run the script (or export env vars):
+أنشئ ملف `.env` في نفس مكان التشغيل:
 
 ```env
 GITHUB_TOKEN=YOUR_GITHUB_PAT
-# Optional:
 REPO_OWNER=bahoma31-eng
 REPO_NAME=Cloud-Controlled-Agent
 REPO_BRANCH=main
 BRIDGE_POLL_SECONDS=20
 
-# Optional brand overrides:
+# Brand
 BRAND_NAME=boncoin restaurant
 FACEBOOK_NAME=Boncoin restaurant
 INSTAGRAM_HANDLE=boncoin_fastfood
 TIKTOK_HANDLE=boncoin_fastfood
 WHATSAPP_NUMBER=0795235138
 
-# Optional headline:
+# Optional copy defaults
 HEADLINE_TEXT=عرض اليوم
 CTA_TEXT=اطلب الآن
 
-# Optional font for better Arabic rendering:
-# FONT_PATH=/path/to/arabic-font.ttf
+# Playwright
+PLAYWRIGHT_WAIT_FONTS_MS=3000
 ```
 
-> Without `FONT_PATH`, Arabic may not render perfectly depending on the system.
-
-## 3) Run
-
-From the repo root (after you clone it):
+## 3) التشغيل
 
 ```bash
 python media-pipeline/media_bridge.py
 ```
 
-Stop with `Ctrl+C`.
+إيقاف: `Ctrl+C`.
