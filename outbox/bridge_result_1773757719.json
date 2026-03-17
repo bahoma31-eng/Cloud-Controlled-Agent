@@ -1,0 +1,11 @@
+{
+  "task_id": "img_v2_002",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "البحث عن خطوط عربية متاحة في مجلد خطوط النظام",
+  "command_preview": "Get-ChildItem 'C:\\Windows\\Fonts\\' -Filter '*.ttf' | Where-Object { $_.Name -match 'amiri|arabic|tahoma|arial|simplified|traditional' } | Select-Object Name, FullName | Format-Table -AutoSize",
+  "output": "Name         FullName                     \r\n----         --------                     \r\narial.ttf    C:\\Windows\\Fonts\\arial.ttf   \r\narialbd.ttf  C:\\Windows\\Fonts\\arialbd.ttf \r\narialbi.ttf  C:\\Windows\\Fonts\\arialbi.ttf \r\nariali.ttf   C:\\Windows\\Fonts\\ariali.ttf  \r\nARIALN.TTF   C:\\Windows\\Fonts\\ARIALN.TTF  \r\nARIALNB.TTF  C:\\Windows\\Fonts\\ARIALNB.TTF \r\nARIALNBI.TTF C:\\Windows\\Fonts\\ARIALNBI.TTF\r\nARIALNI.TTF  C:\\Windows\\Fonts\\ARIALNI.TTF \r\nARIALUNI.TTF C:\\Windows\\Fonts\\ARIALUNI.TTF\r\ntahoma.ttf   C:\\Windows\\Fonts\\tahoma.ttf  \r\ntahomabd.ttf C:\\Windows\\Fonts\\tahomabd.ttf",
+  "timestamp": "2026-03-17T14:28:39.992749+00:00",
+  "executed_on": "local_machine"
+}
