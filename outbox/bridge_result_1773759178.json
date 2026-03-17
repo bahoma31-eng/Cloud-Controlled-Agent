@@ -1,0 +1,11 @@
+{
+  "task_id": "html_banner_003",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "PYTHON",
+  "description": "تحويل ملف HTML إلى صورة PNG باستخدام Playwright بدقة 1920x1080",
+  "command_preview": "from playwright.sync_api import sync_playwright\nimport os\n\ndesktop = os.path.join(os.path.expanduser('~'), 'Desktop')\nhtml_path = os.path.join(desktop, 'restaurant_design.html')\noutput_path = os.path.join(desktop, 'restaurant_banner_v3.png')\n\nwith sync_playwright() as p:\n    browser = p.chromium.launch()\n    page = browser.new_page(viewport={'width': 1920, 'height': 1080})\n    page.goto('file:///' + html_path.replace('\\\\', '/'))\n    page.wait_for_timeout(3000)\n    page.screenshot(path=output_pat",
+  "output": "Image saved to: C:\\Users\\Revexn\\Desktop\\restaurant_banner_v3.png\r\nFile size: 662491 bytes",
+  "timestamp": "2026-03-17T14:52:58.798454+00:00",
+  "executed_on": "local_machine"
+}
