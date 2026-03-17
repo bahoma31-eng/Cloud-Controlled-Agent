@@ -1,7 +1,1 @@
-{
-  "task_id": "pip-upgrade-001",
-  "engine": "CMD",
-  "command": "python -m pip install --upgrade pip",
-  "description": "تحديث pip إلى أحدث إصدار",
-  "timeout": 120
-}
+waiting
