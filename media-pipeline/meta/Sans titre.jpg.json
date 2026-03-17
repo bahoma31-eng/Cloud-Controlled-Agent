@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "generated_at": "2026-03-17T16:48:21.483326+00:00",
+  "source_image": {
+    "filename": "Sans titre.jpg",
+    "width": 1024,
+    "height": 768
+  },
+  "analysis": {
+    "dominant_colors": [
+      "#252522",
+      "#0a0e0c",
+      "#8b8373"
+    ],
+    "brightness": 0.2751,
+    "recommended_text_theme": "light"
+  },
+  "layout": {
+    "empty_regions_px": [
+      {
+        "x": 512,
+        "y": 61,
+        "w": 460,
+        "h": 122,
+        "score": 0.5011
+      },
+      {
+        "x": 512,
+        "y": 245,
+        "w": 460,
+        "h": 122,
+        "score": 1.5466
+      },
+      {
+        "x": 61,
+        "y": 245,
+        "w": 460,
+        "h": 122,
+        "score": 3.707
+      },
+      {
+        "x": 512,
+        "y": 552,
+        "w": 460,
+        "h": 122,
+        "score": 4.0237
+      }
+    ],
+    "chosen_region_px": {
+      "x": 512,
+      "y": 61,
+      "w": 460,
+      "h": 122
+    }
+  },
+  "text_style": {
+    "font_family": "Cairo",
+    "font_weight": 800,
+    "font_size_px": 42,
+    "color": "#ffffff",
+    "shadow": {
+      "enabled": true,
+      "blur": 14,
+      "opacity": 0.28,
+      "x": 0,
+      "y": 8
+    }
+  },
+  "filters": {
+    "brightness": 1.03,
+    "contrast": 1.06,
+    "saturation": 1.05,
+    "sharpness": 1.1,
+    "background_blur_px": 0
+  },
+  "copy": {
+    "title": "عرض اليوم",
+    "cta": "اطلب الآن"
+  }
+}
