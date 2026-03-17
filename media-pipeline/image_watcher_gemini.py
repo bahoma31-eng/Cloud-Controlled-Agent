@@ -3,13 +3,6 @@
 # Gemini 2.5 Flash (Vision) watcher: analyzes the final-canvas image and outputs meta JSON.
 # - Chooses empty region for text (px) + dominant colors + brightness theme + font size + suggested copy
 # - Rotates across multiple API keys (round-robin) each call.
-#
-# Env:
-#   GEMINI_API_KEYS=key1,key2,key3,key4
-#   GEMINI_MODEL=gemini-2.5-flash
-#   GEMINI_ENDPOINT=https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent
-# Optional:
-#   GEMINI_TIMEOUT_SECONDS=60
 
 import os
 import re
@@ -59,13 +52,33 @@ def get_next_key(out_path: str):
 	return key
 
 
+def _strip_code_fences(s: str) -> str:
+	# remove ```json ... ``` or ``` ... ```
+	s = re.sub(r"^```(?:json)?\s*", "", s.strip(), flags=re.I)
+	s = re.sub(r"\s*```$", "", s.strip())
+	return s.strip()
+
+
 def extract_json(text: str):
-	m = re.search(r"```json\s*(\{.*?\})\s*```", text, flags=re.S)
+	"""Best-effort extraction of a JSON object from model output."""
+	if not text:
+		raise ValueError("Empty model response")
+
+	# Prefer fenced block
+	m = re.search(r"```json\s*(\{.*?\})\s*```", text, flags=re.S | re.I)
 	if m:
 		return json.loads(m.group(1))
+
+	# If whole response looks like JSON (possibly fenced)
+	candidate = _strip_code_fences(text)
+	if candidate.startswith("{") and candidate.endswith("}"):
+		return json.loads(candidate)
+
+	# Otherwise find first {...} block
 	m2 = re.search(r"(\{.*\})", text, flags=re.S)
 	if m2:
 		return json.loads(m2.group(1))
+
 	raise ValueError("Model did not return valid JSON")
 
 
@@ -95,28 +108,49 @@ def main():
 	key = get_next_key(args.out)
 	timeout = int(os.getenv("GEMINI_TIMEOUT_SECONDS", "60"))
 
+	# Strongly constrain output format
 	prompt = (
-		"حلّل الصورة التالية (صورة طعام لمطعم أكل خفيف). نحتاج إعدادات تصميم إعلان عربي RTL. "
-		"أعد JSON فقط بدون أي شرح.\n"
-		"المطلوب:\n"
-		"- اختر أفضل منطقة فارغة للكتابة chosen_region_px على شكل x,y,w,h بالبيكسل داخل مساحة {W}x{H}.\n"
-		"- أعد empty_regions_px: قائمة 4 مناطق مرشحة مع score (الأفضل أصغر score).\n"
-		"- dominant_colors: 3 ألوان مهيمنة HEX.\n"
-		"- brightness رقم 0..1 و recommended_text_theme: light أو dark.\n"
-		"- text_style: font_family=Cairo, font_weight (700-900), font_size_px مناسب للمقاس، color HEX متباين، shadow.\n"
-		"- copy: title و cta بالعربية (قصيرين وواضحين).\n"
-		"ملاحظات: تجنب وضع النص فوق الطبق أو الموضوع الرئيسي.\n"
-		"أعد JSON بهذا الشكل تماماً:\n"
+		"أنت نظام يقوم بإرجاع JSON فقط. ممنوع أي نص خارج JSON.\n"
+		"حلّل الصورة التالية (صورة طعام). نحتاج إعدادات تصميم إعلان عربي RTL.\n"
+		"أعد كائن JSON واحد فقط مطابقاً تماماً للمفاتيح التالية.\n"
+		"لا تستخدم Markdown ولا ``` ولا أي شرح.\n"
+		"\n"
+		"JSON schema (keys required):\n"
 		"{\n"
-		"  'version': 1,\n"
-		"  'source_image': {'filename': '...', 'width': W, 'height': H},\n"
-		"  'analysis': {'dominant_colors': ['#...'], 'brightness': 0.0, 'recommended_text_theme': 'light|dark'},\n"
-		"  'layout': {'empty_regions_px': [{'x':0,'y':0,'w':0,'h':0,'score':0.0}], 'chosen_region_px': {'x':0,'y':0,'w':0,'h':0}},\n"
-		"  'text_style': {'font_family':'Cairo','font_weight':800,'font_size_px':48,'color':'#ffffff','shadow':{'enabled':true,'blur':14,'opacity':0.28,'x':0,'y':8}},\n"
-		"  'filters': {'brightness': 1.03, 'contrast': 1.06, 'saturation': 1.05, 'sharpness': 1.1, 'background_blur_px': 0},\n"
-		"  'copy': {'title':'...', 'cta':'...'}\n"
+		"  \"version\": 1,\n"
+		"  \"source_image\": {\"filename\": \"...\", \"width\": W, \"height\": H},\n"
+		"  \"analysis\": {\n"
+		"    \"dominant_colors\": [\"#RRGGBB\", \"#RRGGBB\", \"#RRGGBB\"],\n"
+		"    \"brightness\": 0.0,\n"
+		"    \"recommended_text_theme\": \"light\"\n"
+		"  },\n"
+		"  \"layout\": {\n"
+		"    \"empty_regions_px\": [\n"
+		"      {\"x\":0,\"y\":0,\"w\":0,\"h\":0,\"score\":0.0},\n"
+		"      {\"x\":0,\"y\":0,\"w\":0,\"h\":0,\"score\":0.0},\n"
+		"      {\"x\":0,\"y\":0,\"w\":0,\"h\":0,\"score\":0.0},\n"
+		"      {\"x\":0,\"y\":0,\"w\":0,\"h\":0,\"score\":0.0}\n"
+		"    ],\n"
+		"    \"chosen_region_px\": {\"x\":0,\"y\":0,\"w\":0,\"h\":0}\n"
+		"  },\n"
+		"  \"text_style\": {\n"
+		"    \"font_family\": \"Cairo\",\n"
+		"    \"font_weight\": 800,\n"
+		"    \"font_size_px\": 48,\n"
+		"    \"color\": \"#ffffff\",\n"
+		"    \"shadow\": {\"enabled\": true, \"blur\": 14, \"opacity\": 0.28, \"x\": 0, \"y\": 8}\n"
+		"  },\n"
+		"  \"filters\": {\n"
+		"    \"brightness\": 1.03, \"contrast\": 1.06, \"saturation\": 1.05, \"sharpness\": 1.1, \"background_blur_px\": 0\n"
+		"  },\n"
+		"  \"copy\": {\n"
+		"    \"title\": \"عرض اليوم\",\n"
+		"    \"cta\": \"اطلب الآن\"\n"
+		"  }\n"
 		"}\n"
-	).replace("{W}", str(args.width)).replace("{H}", str(args.height))
+		"\n"
+		"قواعد: تجنب وضع النص فوق الطبق أو الموضوع الرئيسي. اختر مناطق منخفضة التفاصيل.\n"
+	).replace("W", str(args.width)).replace("H", str(args.height))
 
 	payload = {
 		"contents": [
@@ -128,7 +162,7 @@ def main():
 				],
 			}
 		],
-		"generationConfig": {"temperature": 0.4, "maxOutputTokens": 1200},
+		"generationConfig": {"temperature": 0.2, "maxOutputTokens": 1400},
 	}
 
 	r = requests.post(endpoint, params={"key": key}, json=payload, timeout=timeout)
@@ -136,10 +170,14 @@ def main():
 		raise SystemExit(f"Gemini API error {r.status_code}: {r.text[:2000]}")
 
 	data = r.json()
+	parts = []
 	try:
-		text = data["candidates"][0]["content"]["parts"][0].get("text", "")
+		for p in data.get("candidates", [])[0].get("content", {}).get("parts", []):
+			if "text" in p:
+				parts.append(p["text"])
 	except Exception:
-		text = json.dumps(data, ensure_ascii=False)
+		pass
+	text = "\n".join(parts).strip() if parts else json.dumps(data, ensure_ascii=False)
 
 	meta = extract_json(text)
 	meta["version"] = 1
