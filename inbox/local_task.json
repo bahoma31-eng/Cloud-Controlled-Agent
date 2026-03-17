@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "install-packages-002",
+  "engine": "CMD",
+  "command": "pip install requests pillow opencv-python numpy python-dotenv",
+  "description": "تثبيت حزم معالجة الصور المطلوبة",
+  "timeout": 120
+}
