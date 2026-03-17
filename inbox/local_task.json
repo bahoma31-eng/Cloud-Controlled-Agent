@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "104",
+  "engine": "POWERSHELL",
+  "command": "$dest = \"$env:USERPROFILE\\Cloud-Controlled-Agent\\media-pipeline\\fonts\" ; if (-not (Test-Path $dest)) { New-Item -ItemType Directory -Path $dest -Force | Out-Null ; Write-Host \"Created directory: $dest\" } else { Write-Host \"Directory already exists: $dest\" } ; $src = \"$env:USERPROFILE\\Desktop\\projects\\my-restaurant-app\\boncoin\\Amiri-Bold.ttf\" ; Copy-Item -Path $src -Destination $dest -Force ; Write-Host 'Copied Amiri-Bold.ttf' ; Write-Host '=== VERIFY ===' ; Get-ChildItem -Path $dest | Select-Object Name, Length | Format-Table -AutoSize",
+  "description": "إنشاء مجلد media-pipeline/fonts ونسخ خط Amiri-Bold.ttf إليه",
+  "timeout": 30
+}
