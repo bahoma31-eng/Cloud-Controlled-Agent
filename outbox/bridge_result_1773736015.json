@@ -1,0 +1,11 @@
+{
+  "task_id": "disk_check_004",
+  "status": "FAILED",
+  "return_code": 1,
+  "engine": "CMD",
+  "description": "فحص سريع للمجلدات الأكثر استهلاكاً: Temp, Windows Update, Downloads, سلة المحذوفات",
+  "command_preview": "echo === TEMP FOLDERS === & dir /s /a C:\\Windows\\Temp 2>nul | findstr /i \"File(s)\" & dir /s /a C:\\Users\\pc\\AppData\\Local\\Temp 2>nul | findstr /i \"File(s)\" & echo === WINDOWS UPDATE === & dir /s /a C:\\Windows\\SoftwareDistribution\\Download 2>nul | findstr /i \"File(s)\" & echo === RECENT DOWNLOADS === & dir /o-d C:\\Users\\pc\\Downloads 2>nul | more +1 & echo === RECYCLE BIN === & dir /s /a C:\\$Recycle.Bin 2>nul | findstr /i \"File(s)\"",
+  "output": "=== TEMP FOLDERS === \r\n=== WINDOWS UPDATE === \r\n=== RECENT DOWNLOADS === \r\n=== RECYCLE BIN ===",
+  "timestamp": "2026-03-17T08:26:55.681219+00:00",
+  "executed_on": "local_machine"
+}
