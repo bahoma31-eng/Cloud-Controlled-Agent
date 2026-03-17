@@ -61,17 +61,71 @@ def extract_json(text: str):
 	if not text:
 		raise ValueError("Empty model response")
 
-	m = re.search(r"```json\s*(\{.*?\})\s*```", text, flags=re.S | re.I)
-	if m:
-		return json.loads(m.group(1))
-
 	candidate = _strip_code_fences(text)
-	start = candidate.find("{")
-	end = candidate.rfind("}")
-	if start != -1 and end != -1 and end > start:
-		return json.loads(candidate[start : end + 1])
 
-	raise ValueError("Model did not return valid JSON")
+	# 1) direct parse
+	try:
+		return json.loads(candidate)
+	except Exception:
+		pass
+
+	# 2) extract first balanced JSON object robustly
+	start = candidate.find("{")
+	if start == -1:
+		raise ValueError("Model did not return JSON object")
+
+	depth = 0
+	end = -1
+	in_str = False
+	esc = False
+	for i, ch in enumerate(candidate[start:], start=start):
+		if in_str:
+			if esc:
+				esc = False
+			elif ch == "\\":
+				esc = True
+			elif ch == '"':
+				in_str = False
+			continue
+
+		if ch == '"':
+			in_str = True
+		elif ch == "{":
+			depth += 1
+		elif ch == "}":
+			depth -= 1
+			if depth == 0:
+				end = i
+				break
+
+	if end == -1:
+		raise ValueError("Incomplete JSON from model (truncated output)")
+
+	return json.loads(candidate[start : end + 1])
+
+
+def _normalize_region(item, w: int, h: int):
+	# Accept dict {"x","y","w","h","score"} OR list [x1,y1,x2,y2]
+	if isinstance(item, dict):
+		x = int(item.get("x", int(w * 0.55)))
+		y = int(item.get("y", int(h * 0.08)))
+		rw = int(item.get("w", int(w * 0.40)))
+		rh = int(item.get("h", int(h * 0.16)))
+		score = float(item.get("score", 0.0)) if isinstance(item.get("score", 0.0), (int, float)) else 0.0
+		return {"x": x, "y": y, "w": rw, "h": rh, "score": score}
+
+	if isinstance(item, (list, tuple)) and len(item) >= 4:
+		x1, y1, x2, y2 = item[:4]
+		try:
+			x1 = int(x1)
+			y1 = int(y1)
+			x2 = int(x2)
+			y2 = int(y2)
+			return {"x": x1, "y": y1, "w": max(1, x2 - x1), "h": max(1, y2 - y1), "score": 0.0}
+		except Exception:
+			return None
+
+	return None
 
 
 def coerce_schema(meta: dict, filename: str, w: int, h: int) -> dict:
@@ -92,10 +146,19 @@ def coerce_schema(meta: dict, filename: str, w: int, h: int) -> dict:
 	chosen = layout.get("chosen_region_px") if isinstance(layout.get("chosen_region_px"), dict) else {}
 	if not chosen:
 		chosen = {"x": int(w * 0.55), "y": int(h * 0.08), "w": int(w * 0.40), "h": int(h * 0.16)}
+
+	raw_empty = layout.get("empty_regions_px") if isinstance(layout.get("empty_regions_px"), list) else []
+	normalized_empty = []
+	for r in raw_empty:
+		n = _normalize_region(r, w, h)
+		if n:
+			normalized_empty.append(n)
+
+	if not normalized_empty:
+		normalized_empty = [{"x": chosen["x"], "y": chosen["y"], "w": chosen["w"], "h": chosen["h"], "score": 0.0}]
+
 	out["layout"] = {
-		"empty_regions_px": layout.get("empty_regions_px") if isinstance(layout.get("empty_regions_px"), list) else [
-			{"x": chosen["x"], "y": chosen["y"], "w": chosen["w"], "h": chosen["h"], "score": 0.0}
-		],
+		"empty_regions_px": normalized_empty,
 		"chosen_region_px": {"x": int(chosen["x"]), "y": int(chosen["y"]), "w": int(chosen["w"]), "h": int(chosen["h"])},
 	}
 
@@ -134,11 +197,26 @@ def call_gemini(endpoint: str, key: str, payload: dict, timeout: int) -> str:
 	if r.status_code != 200:
 		raise RuntimeError(f"Gemini API error {r.status_code}: {r.text[:2000]}")
 	data = r.json()
+
+	candidates = data.get("candidates") or []
+	if not candidates:
+		raise RuntimeError(f"Gemini returned no candidates: {json.dumps(data)[:2000]}")
+
+	content = (candidates[0].get("content") or {})
+	parts_src = content.get("parts") or []
 	parts = []
-	for p in data.get("candidates", [])[0].get("content", {}).get("parts", []):
-		if "text" in p:
-			parts.append(p["text"])
-	return "\n".join(parts).strip()
+	for p in parts_src:
+		t = p.get("text")
+		if t:
+			parts.append(t)
+
+	text = "\n".join(parts).strip()
+	if not text:
+		finish_reason = candidates[0].get("finishReason", "")
+		raise RuntimeError(
+			f"Gemini returned empty text. finishReason={finish_reason}. raw={json.dumps(data)[:2000]}"
+		)
+	return text
 
 
 def main():
@@ -163,7 +241,9 @@ def main():
 
 	prompt = (
 		"أعد JSON فقط بدون أي نص إضافي.\n"
-		"المفاتيح المطلوبة: analysis, layout(empty_regions_px, chosen_region_px), text_style, filters, copy.\n"
+		"المفاتيح المطلوبة فقط: analysis, layout(empty_regions_px, chosen_region_px), text_style, filters, copy.\n"
+		"لا تضف أي مفاتيح إضافية مثل objects أو mood أو lighting.\n"
+		"empty_regions_px يجب أن تكون قائمة من كائنات بالشكل: {x,y,w,h,score}\n"
 	)
 
 	payload = {
@@ -178,7 +258,7 @@ def main():
 		],
 		"generationConfig": {
 			"temperature": 0.2,
-			"maxOutputTokens": 1600,
+			"maxOutputTokens": 2400,
 			"response_mime_type": "application/json",
 		},
 	}
