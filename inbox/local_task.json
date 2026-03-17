@@ -1,7 +1,1 @@
-{
-  "task_id": "101",
-  "engine": "POWERSHELL",
-  "command": "Write-Host '=== TOP LEVEL ===' ; Get-ChildItem -Path \"$env:USERPROFILE\\Desktop\\projects\" | Select-Object Name, PSIsContainer, Length | Format-Table -AutoSize ; Write-Host '=== FONT FILES ===' ; Get-ChildItem -Path \"$env:USERPROFILE\\Desktop\\projects\" -Recurse -Include *.ttf,*.otf,*.woff,*.woff2 -ErrorAction SilentlyContinue | Select-Object Name, FullName, Length | Format-Table -AutoSize ; Write-Host '=== ARABIC RELATED ===' ; Get-ChildItem -Path \"$env:USERPROFILE\\Desktop\\projects\" -Recurse -Include *arab*,*cairo*,*tajawal*,*noto*,*font* -ErrorAction SilentlyContinue | Where-Object { $_.FullName -notmatch 'venv|node_modules|__pycache__|.git' } | Select-Object Name, FullName | Format-Table -AutoSize",
-  "description": "البحث عن ملفات الخطوط العربية في مجلد projects وعرض بنية المجلد",
-  "timeout": 60
-}
+waiting
