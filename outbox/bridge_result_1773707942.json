@@ -1,0 +1,11 @@
+{
+  "task_id": "install-packages-002",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "CMD",
+  "description": "تثبيت حزم معالجة الصور المطلوبة",
+  "command_preview": "pip install requests pillow opencv-python numpy python-dotenv",
+  "output": "Requirement already satisfied: requests in C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages (2.32.5)\r\nRequirement already satisfied: pillow in C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages (12.1.1)\r\nCollecting opencv-python\r\n  Using cached opencv_python-4.13.0.92-cp37-abi3-win_amd64.whl.metadata (20 kB)\r\nCollecting numpy\r\n  Using cached numpy-2.4.3-cp312-cp312-win_amd64.whl.metadata (6.6 kB)\r\nRequirement already satisfied: python-dotenv in C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages (1.2.2)\r\nRequirement already satisfied: charset_normalizer<4,>=2 in C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages (from requests) (3.4.5)\r\nRequirement already satisfied: idna<4,>=2.5 in C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages (from requests) (3.11)\r\nRequirement already satisfied: urllib3<3,>=1.21.1 in C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages (from requests) (2.6.3)\r\nRequirement already satisfied: certifi>=2017.4.17 in C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages (from requests) (2026.2.25)\r\nUsing cached opencv_python-4.13.0.92-cp37-abi3-win_amd64.whl (40.2 MB)\r\nUsing cached numpy-2.4.3-cp312-cp312-win_amd64.whl (12.3 MB)\r\nInstalling collected packages: numpy, opencv-python\r\n\r\nSuccessfully installed numpy-2.4.3 opencv-python-4.13.0.92",
+  "timestamp": "2026-03-17T00:39:02.754785+00:00",
+  "executed_on": "local_machine"
+}
