@@ -5,23 +5,23 @@
 # Runs locally and:
 # - polls media-pipeline/input/ for images
 # - downloads all images
-# - runs image_watcher to produce meta JSON in media-pipeline/meta/
+# - generates meta JSON in media-pipeline/meta/
+#   - default: OpenCV heuristic watcher (image_watcher.py)
+#   - optional: Gemini 2.5 Flash watcher (image_watcher_gemini.py) if USE_GEMINI_WATCHER=1
 # - renders ad creatives using HTML+CSS + Playwright (Chromium) to PNG
 # - uploads results to media-pipeline/output/
 # - moves originals to media-pipeline/archive/
 
 import os
 import sys
-import time
 import json
+import time
 import base64
 import shutil
 import subprocess
-from io import BytesIO
-from datetime import datetime, timezone
+from datetime import datetime
 
 import requests
-from PIL import Image
 
 try:
 	from dotenv import load_dotenv
@@ -45,6 +45,7 @@ ARCHIVE_DIR = "media-pipeline/archive/"
 META_DIR = "media-pipeline/meta/"
 
 WAIT_FONTS_MS = int(os.getenv("PLAYWRIGHT_WAIT_FONTS_MS", "3000"))
+USE_GEMINI_WATCHER = (os.getenv("USE_GEMINI_WATCHER", "0").strip() in ("1", "true", "yes"))
 
 # Branding (fixed)
 BRAND = os.getenv("BRAND_NAME", "boncoin restaurant")
@@ -53,7 +54,7 @@ INSTAGRAM = os.getenv("INSTAGRAM_HANDLE", "boncoin_fastfood")
 TIKTOK = os.getenv("TIKTOK_HANDLE", "boncoin_fastfood")
 WHATSAPP = os.getenv("WHATSAPP_NUMBER", "0795235138")
 
-# Text defaults (can be overridden by watcher meta)
+# Text defaults
 DEFAULT_HEADLINE = os.getenv("HEADLINE_TEXT", "عرض اليوم")
 DEFAULT_CTA = os.getenv("CTA_TEXT", "اطلب الآن")
 
@@ -105,7 +106,7 @@ def gh_headers():
 	return {
 		"Authorization": f"token {GITHUB_TOKEN}",
 		"Accept": "application/vnd.github+json",
-		"User-Agent": "media-bridge/2.0",
+		"User-Agent": "media-bridge/2.1",
 	}
 
 
@@ -114,7 +115,7 @@ def gh_contents_url(path):
 	return f"{GITHUB_API_BASE}/repos/{REPO_OWNER}/{REPO_NAME}/contents/{path}"
 
 
-def gh_get_json(url, timeout=30):
+def gh_get_json(url, timeout=60):
 	r = requests.get(url, headers=gh_headers(), timeout=timeout)
 	if r.status_code == 200:
 		return r.json()
@@ -146,7 +147,7 @@ def gh_download_file(path):
 
 def gh_put_file(path, content_bytes, message):
 	url = gh_contents_url(path)
-	old = requests.get(url, headers=gh_headers(), timeout=30)
+	old = requests.get(url, headers=gh_headers(), timeout=60)
 	sha = old.json().get("sha") if old.status_code == 200 else None
 
 	payload = {
@@ -157,19 +158,19 @@ def gh_put_file(path, content_bytes, message):
 	if sha:
 		payload["sha"] = sha
 
-	r = requests.put(url, headers=gh_headers(), json=payload, timeout=60)
+	r = requests.put(url, headers=gh_headers(), json=payload, timeout=120)
 	return r.status_code in (200, 201), r.text
 
 
 def gh_delete_file(path, message):
 	url = gh_contents_url(path)
-	old = requests.get(url, headers=gh_headers(), timeout=30)
+	old = requests.get(url, headers=gh_headers(), timeout=60)
 	if old.status_code != 200:
 		return False, f"Not found: {path}"
 
 	sha = old.json().get("sha")
 	payload = {"message": message, "sha": sha, "branch": BRANCH}
-	r = requests.delete(url, headers=gh_headers(), json=payload, timeout=60)
+	r = requests.delete(url, headers=gh_headers(), json=payload, timeout=120)
 	return r.status_code in (200, 204), r.text
 
 
@@ -190,7 +191,7 @@ def guess_mime(name: str):
 	return "image/jpeg"
 
 
-def run_watcher(local_img_path: str, out_meta_path: str):
+def run_watcher_opencv(local_img_path: str, out_meta_path: str):
 	cmd = [
 		sys.executable,
 		os.path.join(os.path.dirname(__file__), "image_watcher.py"),
@@ -202,6 +203,29 @@ def run_watcher(local_img_path: str, out_meta_path: str):
 	p = subprocess.run(cmd, capture_output=True, text=True)
 	if p.returncode != 0:
 		raise RuntimeError(f"watcher failed: {p.stdout}\n{p.stderr}")
+
+
+def run_watcher_gemini(bg_bytes: bytes, mime: str, w: int, h: int, filename: str, out_meta_path: str):
+	b64 = base64.b64encode(bg_bytes).decode("utf-8")
+	cmd = [
+		sys.executable,
+		os.path.join(os.path.dirname(__file__), "image_watcher_gemini.py"),
+		"--image_b64",
+		b64,
+		"--mime",
+		mime,
+		"--width",
+		str(w),
+		"--height",
+		str(h),
+		"--filename",
+		filename,
+		"--out",
+		out_meta_path,
+	]
+	p = subprocess.run(cmd, capture_output=True, text=True)
+	if p.returncode != 0:
+		raise RuntimeError(f"gemini watcher failed: {p.stdout}\n{p.stderr}")
 
 
 def build_html(bg_data_url: str, target_w: int, target_h: int, meta: dict):
@@ -226,7 +250,6 @@ def build_html(bg_data_url: str, target_w: int, target_h: int, meta: dict):
 		blur = int(shadow.get("blur", 12))
 		shadow_css = f"{sx}px {sy}px {blur}px rgba(0,0,0,{op})"
 
-	# scale box from source image to target canvas
 	src = meta.get("source_image", {})
 	src_w = int(src.get("width", target_w))
 	src_h = int(src.get("height", target_h))
@@ -238,7 +261,6 @@ def build_html(bg_data_url: str, target_w: int, target_h: int, meta: dict):
 
 	footer_h = int(target_h * 0.18)
 
-	# NOTE: Use Chromium RTL. Keep it simple; avoid quotes-heavy content.
 	html = f"""<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
@@ -251,7 +273,7 @@ def build_html(bg_data_url: str, target_w: int, target_h: int, meta: dict):
 		html, body {{ margin: 0; padding: 0; width: {target_w}px; height: {target_h}px; overflow: hidden; background: #000; }}
 		.canvas {{ position: relative; width: {target_w}px; height: {target_h}px; font-family: '{font_family}', system-ui, -apple-system; }}
 		.bg {{ position: absolute; inset: 0; background-image: url('{bg_data_url}'); background-size: cover; background-position: center; filter: none; }}
-		.textbox {{ position: absolute; left: {x}px; top: {y}px; width: {bw}px; height: {bh}px; padding: 18px 22px; box-sizing: border-box; border-radius: 18px; background: rgba(0,0,0,0.28); backdrop-filter: blur(0px); }}
+		.textbox {{ position: absolute; left: {x}px; top: {y}px; width: {bw}px; height: {bh}px; padding: 18px 22px; box-sizing: border-box; border-radius: 18px; background: rgba(0,0,0,0.22); backdrop-filter: blur(0px); }}
 		.h1 {{ margin: 0; font-size: {font_size}px; font-weight: {font_weight}; color: {color}; text-shadow: {shadow_css}; line-height: 1.1; unicode-bidi: plaintext; }}
 		.cta {{ margin-top: 10px; font-size: max(22px, {int(font_size*0.58)}px); font-weight: 700; color: #fff; opacity: 0.95; text-shadow: {shadow_css}; unicode-bidi: plaintext; }}
 		.footer {{ position: absolute; left: 0; right: 0; bottom: 0; height: {footer_h}px; background: linear-gradient(180deg, #e67328 0%, #ffa03c 100%); display:flex; flex-direction:column; justify-content:center; align-items:center; gap: 10px; }}
@@ -296,7 +318,7 @@ def render_with_playwright(html_path: str, out_png_path: str, w: int, h: int):
 		raise RuntimeError(f"playwright render failed: {p.stdout}\n{p.stderr}")
 
 
-def export_variants(image_bytes: bytes, image_name: str, meta: dict):
+def export_variants(image_bytes: bytes, image_name: str):
 	out_files = []
 	mime = guess_mime(image_name)
 	bg_url = to_data_url(image_bytes, mime)
@@ -305,13 +327,46 @@ def export_variants(image_bytes: bytes, image_name: str, meta: dict):
 	for s in SIZES:
 		w = s["w"]
 		h = s["h"]
+
+		# build final-canvas background by rendering a pure background HTML first
+		# for now we simply resize via CSS cover, and also let watcher read the final canvas bytes
+		# watcher inputs should be W/H accurate -> we render background-only to PNG and pass to watcher.
+
+		# Render background-only HTML
+		bg_html = f"""<!doctype html><html><head><meta charset='utf-8'/><style>
+			html,body{{margin:0;padding:0;width:{w}px;height:{h}px;overflow:hidden;}}
+			.bg{{position:absolute;inset:0;background-image:url('{bg_url}');background-size:cover;background-position:center;}}
+		</style></head><body><div class='bg'></div></body></html>"""
+
+		bg_html_path = os.path.join(LOCAL_HTML, f"{base}_{w}x{h}_bg.html")
+		bg_png_path = os.path.join(LOCAL_OUT, f"{base}_{w}x{h}_bg.png")
+		with open(bg_html_path, "w", encoding="utf-8") as f:
+			f.write(bg_html)
+		render_with_playwright(bg_html_path, bg_png_path, w, h)
+
+		with open(bg_png_path, "rb") as f:
+			final_canvas_bytes = f.read()
+
+		# watcher -> meta per size
+		local_meta = os.path.join(LOCAL_META, f"{image_name}.json")
+		if USE_GEMINI_WATCHER:
+			run_watcher_gemini(final_canvas_bytes, "image/png", w, h, image_name, local_meta)
+		else:
+			# fallback uses original image path; not W/H exact.
+			# keep legacy behavior.
+			local_img = os.path.join(LOCAL_WORKDIR, image_name)
+			run_watcher_opencv(local_img, local_meta)
+
+		with open(local_meta, "r", encoding="utf-8") as f:
+			meta = json.load(f)
+
 		html = build_html(bg_url, w, h, meta)
 		html_path = os.path.join(LOCAL_HTML, f"{base}_{w}x{h}.html")
 		png_path = os.path.join(LOCAL_OUT, f"{base}_{w}x{h}.png")
 		with open(html_path, "w", encoding="utf-8") as f:
 			f.write(html)
 		render_with_playwright(html_path, png_path, w, h)
-		out_files.append((png_path, f"{base}_{w}x{h}.png"))
+		out_files.append((png_path, f"{base}_{w}x{h}.png", local_meta))
 
 	return out_files
 
@@ -373,6 +428,7 @@ def main():
 	log(f"Archive: {ARCHIVE_DIR}")
 	log(f"Meta: {META_DIR}")
 	log(f"Playwright wait fonts: {WAIT_FONTS_MS}ms")
+	log(f"Gemini watcher: {'ON' if USE_GEMINI_WATCHER else 'OFF'}")
 	log(f"Polling every {POLL_INTERVAL}s")
 
 	while True:
@@ -390,42 +446,38 @@ def main():
 			for fmeta in files:
 				path = fmeta["path"]
 				name = fmeta["name"]
-				base = os.path.splitext(name)[0]
 
 				raw, sha, _ = gh_download_file(path)
 				if not raw:
 					log(f"Skip: cannot download {path}")
 					continue
 
-				# save locally
+				# save locally (needed for OpenCV watcher)
 				local_img = os.path.join(LOCAL_WORKDIR, name)
+				os.makedirs(os.path.dirname(local_img), exist_ok=True)
 				with open(local_img, "wb") as f:
 					f.write(raw)
 
-				# run watcher -> meta json
-				local_meta = os.path.join(LOCAL_META, f"{name}.json")
-				run_watcher(local_img, local_meta)
-				with open(local_meta, "r", encoding="utf-8") as f:
-					meta = json.load(f)
+				out_files = export_variants(raw, name)
 
-				# export variants via playwright
-				out_files = export_variants(raw, name, meta)
-
-				# upload meta + outputs
-				remote_meta = META_DIR.rstrip("/") + "/" + os.path.basename(local_meta)
-				okm, resp_m = upload_meta_file(local_meta, remote_meta)
-				if okm:
-					log(f"Uploaded meta: {remote_meta}")
-				else:
-					log(f"Meta upload failed: {resp_m[:200]}")
-
-				for local_path, out_name in out_files:
+				# upload outputs and meta (meta produced per size; upload the last one for now)
+				last_meta_path = None
+				for local_path, out_name, meta_path in out_files:
 					remote = OUTPUT_DIR.rstrip("/") + "/" + out_name
 					ok, resp = upload_output_file(local_path, remote)
 					if ok:
 						log(f"Uploaded: {remote}")
 					else:
 						log(f"Upload failed: {remote} -> {resp[:200]}")
+					last_meta_path = meta_path
+
+				if last_meta_path and os.path.isfile(last_meta_path):
+					remote_meta = META_DIR.rstrip("/") + "/" + os.path.basename(last_meta_path)
+					okm, resp_m = upload_meta_file(last_meta_path, remote_meta)
+					if okm:
+						log(f"Uploaded meta: {remote_meta}")
+					else:
+						log(f"Meta upload failed: {resp_m[:200]}")
 
 				ok, msg = move_to_archive(path)
 				if ok:
