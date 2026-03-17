@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "generated_at": "2026-03-17T22:35:40.353849+00:00",
+  "source_image": {
+    "filename": "Sans titre.jpg",
+    "width": 400,
+    "height": 400
+  },
+  "analysis": {
+    "dominant_colors": [
+      "#111111",
+      "#ffffff",
+      "#e67328"
+    ],
+    "brightness": 0.5,
+    "recommended_text_theme": "light"
+  },
+  "layout": {
+    "empty_regions_px": [
+      {
+        "x": 50,
+        "y": 50,
+        "w": 900,
+        "h": 200,
+        "score": 0.85
+      },
+      {
+        "x": 50,
+        "y": 750,
+        "w": 400,
+        "h": 200,
+        "score": 0.6
+      }
+    ],
+    "chosen_region_px": {
+      "x": 200,
+      "y": 300,
+      "w": 700,
+      "h": 650
+    }
+  },
+  "text_style": {
+    "font_family": "Cairo",
+    "font_weight": 800,
+    "font_size_px": 28,
+    "color": "#ffffff",
+    "shadow": {
+      "enabled": true,
+      "blur": 14,
+      "opacity": 0.28,
+      "x": 0,
+      "y": 8
+    }
+  },
+  "filters": {
+    "brightness": 1.05,
+    "contrast": 1.1,
+    "saturation": 1.05,
+    "sharpness": 1.1,
+    "background_blur_px": 0
+  },
+  "copy": {
+    "title": "عرض اليوم",
+    "cta": "اطلب الآن"
+  }
+}
