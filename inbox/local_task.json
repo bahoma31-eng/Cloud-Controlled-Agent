@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "102",
+  "engine": "POWERSHELL",
+  "command": "Write-Host '=== ARABIC FONTS IN MY-RESTAURANT-APP ===' ; Get-ChildItem -Path \"$env:USERPROFILE\\Desktop\\projects\\my-restaurant-app\" -Recurse -Include *.ttf,*.otf -ErrorAction SilentlyContinue | Select-Object Name, FullName, Length | Format-List ; Write-Host '=== FONTS FOLDER STRUCTURE ===' ; Get-ChildItem -Path \"$env:USERPROFILE\\Desktop\\projects\" -Recurse -Directory -Filter '*font*' -ErrorAction SilentlyContinue | Select-Object FullName | Format-List ; Write-Host '=== LOCAL REPO PATH ===' ; Get-ChildItem -Path C:\\ -Directory -Filter 'Cloud-Controlled-Agent' -Recurse -Depth 4 -ErrorAction SilentlyContinue | Select-Object FullName | Format-List",
+  "description": "البحث عن مسار الخطوط العربية ومسار المستودع المحلي",
+  "timeout": 60
+}
