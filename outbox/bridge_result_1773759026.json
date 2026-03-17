@@ -1,0 +1,11 @@
+{
+  "task_id": "html_banner_002",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "PYTHON",
+  "description": "إنشاء ملف HTML للتصميم الإعلاني على سطح المكتب",
+  "command_preview": "import os\ndesktop = os.path.join(os.path.expanduser('~'), 'Desktop')\nhtml_content = '''<!DOCTYPE html>\n<html dir=\"rtl\" lang=\"ar\">\n<head>\n<meta charset=\"UTF-8\">\n<link href=\"https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@500;700;900&display=swap\" rel=\"stylesheet\">\n<style>\n* { margin: 0; padding: 0; box-sizing: border-box; }\nbody { width: 1920px; height: 1080px; background: radial-gradient(ellipse at center, #5c1a1a 0%, #2a0a0a 50%, #0a0000 100%); display: flex; fle",
+  "output": "HTML file created at: C:\\Users\\Revexn\\Desktop\\restaurant_design.html\r\nFile size: 3299 bytes",
+  "timestamp": "2026-03-17T14:50:26.768225+00:00",
+  "executed_on": "local_machine"
+}
