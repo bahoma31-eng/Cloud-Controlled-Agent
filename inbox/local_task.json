@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "103",
+  "engine": "POWERSHELL",
+  "command": "Get-ChildItem -Path \"$env:USERPROFILE\\Desktop\\projects\\final agent\\agent\\skills\\canvas-design\\canvas-fonts\" -Include *cairo*,*tajawal*,*amiri*,*noto*arab*,*arabic* -Recurse -ErrorAction SilentlyContinue | Select-Object Name, FullName, Length | Format-List",
+  "description": "البحث عن خطوط عربية محددة (Cairo, Tajawal, Amiri) في مجلد canvas-fonts",
+  "timeout": 30
+}
