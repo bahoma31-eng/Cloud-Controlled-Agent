@@ -1,7 +1,1 @@
-{
-  "task_id": "net-001",
-  "engine": "POWERSHELL",
-  "command": "Get-NetIPConfiguration | Select-Object InterfaceAlias, InterfaceDescription, @{N='IPv4';E={($_.IPv4Address).IPAddress}}, @{N='Subnet';E={($_.IPv4Address).PrefixLength}}, @{N='Gateway';E={($_.IPv4DefaultGateway).NextHop}}, @{N='DNS';E={($_.DNSServer | Where-Object {$_.AddressFamily -eq 2}).ServerAddresses -join ', '}} | Format-List",
-  "description": "الحصول على إعدادات الشبكة الأساسية - IP, Subnet, Gateway, DNS",
-  "timeout": 60
-}
+waiting
