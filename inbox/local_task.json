@@ -1,7 +1,1 @@
-{
-  "task_id": "verify-packages-003",
-  "engine": "CMD",
-  "command": "pip list | findstr /i \"requests pillow opencv numpy dotenv\"",
-  "description": "التحقق من الحزم المثبّتة وإصداراتها",
-  "timeout": 60
-}
+waiting
