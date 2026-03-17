@@ -4,18 +4,20 @@
 # - Chooses empty region for text (px) + dominant colors + brightness theme + font size + suggested copy
 # - Rotates across multiple API keys (round-robin) each call.
 #
+# IMPORTANT (Windows): Do NOT pass image bytes/base64 on the command line.
+# This script accepts --image_path and reads the file, then sends base64 in the HTTP request.
+#
 # Env:
 #   GEMINI_API_KEYS=key1,key2,key3,key4
 #   GEMINI_MODEL=gemini-2.5-flash
-#   GEMINI_ENDPOINT=https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent
+#   GEMINI_ENDPOINT={{https://generativelanguage.googleapis.com/v1beta/models/{MODEL}}}:generateContent
 # Optional:
 #   GEMINI_TIMEOUT_SECONDS=60
-#
-# Output JSON schema matches image_watcher.py (version=1)
 
 import os
 import re
 import json
+import base64
 import argparse
 from datetime import datetime, timezone
 
@@ -27,12 +29,10 @@ def utc_now():
 
 
 def _split_keys(raw: str):
-	keys = [k.strip() for k in (raw or "").split(",") if k.strip()]
-	return keys
+	return [k.strip() for k in (raw or "").split(",") if k.strip()]
 
 
 def _key_index_path(out_path: str):
-	# persist index next to output meta folder so rotation survives restarts
 	base_dir = os.path.dirname(os.path.abspath(out_path))
 	return os.path.join(base_dir, ".gemini_key_index")
 
@@ -63,11 +63,9 @@ def get_next_key(out_path: str):
 
 
 def extract_json(text: str):
-	# Prefer fenced ```json ... ```
 	m = re.search(r"```json\s*(\{.*?\})\s*```", text, flags=re.S)
 	if m:
 		return json.loads(m.group(1))
-	# Otherwise first {...} block
 	m2 = re.search(r"(\{.*\})", text, flags=re.S)
 	if m2:
 		return json.loads(m2.group(1))
@@ -76,7 +74,7 @@ def extract_json(text: str):
 
 def main():
 	ap = argparse.ArgumentParser()
-	ap.add_argument("--image_b64", required=True, help="Base64 string of the FINAL-canvas image")
+	ap.add_argument("--image_path", required=True, help="Path to the FINAL-canvas image (PNG/JPG)")
 	ap.add_argument("--mime", required=True, help="image/png or image/jpeg")
 	ap.add_argument("--width", type=int, required=True)
 	ap.add_argument("--height", type=int, required=True)
@@ -84,11 +82,17 @@ def main():
 	ap.add_argument("--out", required=True)
 	args = ap.parse_args()
 
-	model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash").strip() or "gemini-2.5-flash"
-	endpoint_tpl = os.getenv(
+	if not os.path.isfile(args.image_path):
+		raise SystemExit(f"Image not found: {args.image_path}")
+
+	with open(args.image_path, "rb") as f:
+		img_b64 = base64.b64encode(f.read()).decode("utf-8")
+
+	model = (os.getenv("GEMINI_MODEL", "gemini-2.5-flash") or "gemini-2.5-flash").strip()
+	endpoint_tpl = (os.getenv(
 		"GEMINI_ENDPOINT",
-		"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent",
-	).strip()
+		"{{https://generativelanguage.googleapis.com/v1beta/models/{MODEL}}}:generateContent",
+	) or "").strip()
 	endpoint = endpoint_tpl.replace("{MODEL}", model)
 
 	key = get_next_key(args.out)
@@ -96,16 +100,16 @@ def main():
 
 	prompt = (
 		"حلّل الصورة التالية (صورة طعام لمطعم أكل خفيف). نحتاج إعدادات تصميم إعلان عربي RTL. "
-		"أعد JSON فقط بدون أي شرح. \n"
-		"المطلوب: \n"
+		"أعد JSON فقط بدون أي شرح.\n"
+		"المطلوب:\n"
 		"- اختر أفضل منطقة فارغة للكتابة chosen_region_px على شكل x,y,w,h بالبيكسل داخل مساحة {W}x{H}.\n"
 		"- أعد empty_regions_px: قائمة 4 مناطق مرشحة مع score (الأفضل أصغر score).\n"
 		"- dominant_colors: 3 ألوان مهيمنة HEX.\n"
-		"- brightness رقم 0..1 و recommended_text_theme: 'light' أو 'dark'.\n"
-		"- text_style: font_family='Cairo', font_weight (700-900), font_size_px مناسب للمقاس، color HEX متباين، shadow (enabled, blur, opacity, x, y).\n"
+		"- brightness رقم 0..1 و recommended_text_theme: light أو dark.\n"
+		"- text_style: font_family=Cairo, font_weight (700-900), font_size_px مناسب للمقاس، color HEX متباين، shadow.\n"
 		"- copy: title و cta بالعربية (قصيرين وواضحين).\n"
-		"ملاحظات: تجنب وضع النص فوق الطبق/الموضوع الرئيسي.\n"
-		"صيغة JSON المطلوبة:\n"
+		"ملاحظات: تجنب وضع النص فوق الطبق أو الموضوع الرئيسي.\n"
+		"أعد JSON بهذا الشكل تماماً:\n"
 		"{\n"
 		"  'version': 1,\n"
 		"  'source_image': {'filename': '...', 'width': W, 'height': H},\n"
@@ -123,27 +127,14 @@ def main():
 				"role": "user",
 				"parts": [
 					{"text": prompt},
-					{
-						"inline_data": {
-							"mime_type": args.mime,
-							"data": args.image_b64,
-						}
-					},
+					{"inline_data": {"mime_type": args.mime, "data": img_b64}},
 				],
 			}
 		],
-		"generationConfig": {
-			"temperature": 0.4,
-			"maxOutputTokens": 1200,
-		},
+		"generationConfig": {"temperature": 0.4, "maxOutputTokens": 1200},
 	}
 
-	r = requests.post(
-		endpoint,
-		params={"key": key},
-		json=payload,
-		timeout=timeout,
-	)
+	r = requests.post(endpoint, params={"key": key}, json=payload, timeout=timeout)
 	if r.status_code != 200:
 		raise SystemExit(f"Gemini API error {r.status_code}: {r.text[:2000]}")
 
@@ -154,7 +145,6 @@ def main():
 		text = json.dumps(data, ensure_ascii=False)
 
 	meta = extract_json(text)
-	# enforce required fields
 	meta["version"] = 1
 	meta["generated_at"] = utc_now()
 	meta["source_image"] = {"filename": args.filename, "width": int(args.width), "height": int(args.height)}
