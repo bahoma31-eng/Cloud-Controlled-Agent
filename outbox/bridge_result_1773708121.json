@@ -1,0 +1,11 @@
+{
+  "task_id": "verify-packages-003b",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "التحقق من الحزم المثبّتة وإصداراتها",
+  "command_preview": "pip list | Select-String -Pattern 'requests|pillow|opencv|numpy|dotenv'",
+  "output": "numpy                        2.4.3\r\nopencv-python                4.13.0.92\r\npillow                       12.1.1\r\npython-dotenv                1.2.2\r\nrequests                     2.32.5",
+  "timestamp": "2026-03-17T00:42:01.221199+00:00",
+  "executed_on": "local_machine"
+}
