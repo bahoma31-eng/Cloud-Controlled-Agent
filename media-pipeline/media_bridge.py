@@ -32,6 +32,8 @@ META_DIR = "media-pipeline/meta/"
 
 WAIT_FONTS_MS = int(os.getenv("PLAYWRIGHT_WAIT_FONTS_MS", "3000"))
 USE_GEMINI_WATCHER = (os.getenv("USE_GEMINI_WATCHER", "0").strip() in ("1", "true", "yes"))
+PRINT_META_TO_TERMINAL = (os.getenv("PRINT_META_TO_TERMINAL", "1").strip() in ("1", "true", "yes"))
+PRINT_GEMINI_RAW_TO_TERMINAL = (os.getenv("PRINT_GEMINI_RAW_TO_TERMINAL", "1").strip() in ("1", "true", "yes"))
 
 BRAND = os.getenv("BRAND_NAME", "boncoin restaurant")
 FACEBOOK = os.getenv("FACEBOOK_NAME", "Boncoin restaurant")
@@ -83,7 +85,7 @@ def gh_headers():
 	return {
 		"Authorization": f"token {GITHUB_TOKEN}",
 		"Accept": "application/vnd.github+json",
-		"User-Agent": "media-bridge/2.2",
+		"User-Agent": "media-bridge/2.3",
 	}
 
 
@@ -180,7 +182,7 @@ def run_watcher_gemini(final_canvas_path: str, mime: str, w: int, h: int, filena
 	]
 	p = subprocess.run(cmd, capture_output=True, text=True)
 	if p.returncode != 0:
-		raise RuntimeError(f"gemini watcher failed: {p.stdout}\n{p.stderr}")
+		raise RuntimeError(f"gemini watcher failed:\n{p.stdout}\n{p.stderr}")
 
 
 def build_html(bg_data_url: str, target_w: int, target_h: int, meta: dict):
@@ -216,12 +218,12 @@ def build_html(bg_data_url: str, target_w: int, target_h: int, meta: dict):
 	footer_h = int(target_h * 0.18)
 
 	return f"""<!doctype html>
-<html lang="ar" dir="rtl">
+<html lang=ar dir=rtl>
 <head>
-	<meta charset="utf-8" />
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="{{https://fonts.googleapis.com/css2?family={font_family}}}:wght@400;700;800;900&display=swap" rel="stylesheet">
+	<meta charset=utf-8 />
+	<link rel=preconnect href=https://fonts.googleapis.com>
+	<link rel=preconnect href=https://fonts.gstatic.com crossorigin>
+	<link href={{https://fonts.googleapis.com/css2?family={font_family}}}:wght@400;700;800;900&display=swap rel=stylesheet>
 	<style>
 		html, body {{ margin: 0; padding: 0; width: {target_w}px; height: {target_h}px; overflow: hidden; background: #000; }}
 		.canvas {{ position: relative; width: {target_w}px; height: {target_h}px; font-family: '{font_family}', system-ui; }}
@@ -235,15 +237,15 @@ def build_html(bg_data_url: str, target_w: int, target_h: int, meta: dict):
 	</style>
 </head>
 <body>
-	<div class="canvas">
-		<div class="bg"></div>
-		<div class="textbox">
-			<div class="h1">{title}</div>
-			<div class="cta">{cta}</div>
+	<div class=canvas>
+		<div class=bg></div>
+		<div class=textbox>
+			<div class=h1>{title}</div>
+			<div class=cta>{cta}</div>
 		</div>
-		<div class="footer">
-			<div class="brand">{BRAND}</div>
-			<div class="handles">facebook: {FACEBOOK}    instagram: {INSTAGRAM}    tiktok: {TIKTOK}    whatsapp: {WHATSAPP}</div>
+		<div class=footer>
+			<div class=brand>{BRAND}</div>
+			<div class=handles>facebook: {FACEBOOK} instagram: {INSTAGRAM} tiktok: {TIKTOK} whatsapp: {WHATSAPP}</div>
 		</div>
 	</div>
 </body>
@@ -278,15 +280,26 @@ def export_variants(image_bytes: bytes, image_name: str):
 			f.write(bg_html)
 		render_with_playwright(bg_html_path, bg_png_path, w, h)
 
-		local_meta = os.path.join(LOCAL_META, f"{image_name}.json")
+		meta_name = f"{image_name}.{w}x{h}.json"
+		local_meta = os.path.join(LOCAL_META, meta_name)
 		if USE_GEMINI_WATCHER:
 			run_watcher_gemini(bg_png_path, "image/png", w, h, image_name, local_meta)
+			# Print raw output if present
+			raw_path = local_meta + ".raw.txt"
+			if PRINT_GEMINI_RAW_TO_TERMINAL and os.path.isfile(raw_path):
+				log(f"Gemini raw output ({w}x{h}):")
+				try:
+					print(open(raw_path, "r", encoding="utf-8").read()[:4000])
+				except Exception:
+					pass
 		else:
 			local_img = os.path.join(LOCAL_WORKDIR, image_name)
 			run_watcher_opencv(local_img, local_meta)
 
-		with open(local_meta, "r", encoding="utf-8") as f:
-			meta = json.load(f)
+		meta = json.load(open(local_meta, "r", encoding="utf-8"))
+		if PRINT_META_TO_TERMINAL:
+			log(f"Meta JSON ({w}x{h}):")
+			print(json.dumps(meta, ensure_ascii=False, indent=2)[:4000])
 
 		html = build_html(bg_url, w, h, meta)
 		html_path = os.path.join(LOCAL_HTML, f"{base}_{w}x{h}.html")
@@ -344,6 +357,8 @@ def main():
 					f.write(raw)
 
 				out_files = export_variants(raw, name)
+
+				# Upload outputs
 				last_meta_path = None
 				for local_path, out_name, meta_path in out_files:
 					remote = OUTPUT_DIR.rstrip("/") + "/" + out_name
@@ -351,6 +366,7 @@ def main():
 					log(f"Uploaded: {remote}" if ok else f"Upload failed: {remote} -> {resp[:200]}")
 					last_meta_path = meta_path
 
+				# Upload meta (upload last one only; local meta is now per-size)
 				if last_meta_path and os.path.isfile(last_meta_path):
 					remote_meta = META_DIR.rstrip("/") + "/" + os.path.basename(last_meta_path)
 					okm, resp_m = gh_put_file(remote_meta, open(last_meta_path, "rb").read(), f"media-bridge: meta {os.path.basename(last_meta_path)}")
