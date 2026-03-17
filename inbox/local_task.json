@@ -1,7 +1,1 @@
-{
-  "task_id": "TM-002b",
-  "engine": "POWERSHELL",
-  "command": "Set-Location 'C:\\TaskManager'; & '.venv\\Scripts\\python.exe' -c \"import sys; import struct; print(f'Python {sys.version}'); print(f'Architecture: {struct.calcsize(\"P\")*8}-bit'); print(f'Platform: {sys.platform}')\"",
-  "description": "فحص إصدار Python والهندسة المعمارية لتشخيص مشكلة PySide6",
-  "timeout": 30
-}
+waiting
