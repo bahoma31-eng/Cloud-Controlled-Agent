@@ -1,7 +1,1 @@
-{
-  "task_id": "TM-002",
-  "engine": "POWERSHELL",
-  "command": "Set-Location 'C:\\TaskManager'; & '.venv\\Scripts\\python.exe' -m pip install --upgrade pip; & '.venv\\Scripts\\pip.exe' install PySide6 SQLAlchemy pydantic pyinstaller; & '.venv\\Scripts\\pip.exe' freeze | Out-File -FilePath 'requirements.txt' -Encoding utf8; Write-Output 'SUCCESS: Libraries installed and requirements.txt created'",
-  "description": "تثبيت المكتبات الأساسية: PySide6, SQLAlchemy, pydantic, pyinstaller",
-  "timeout": 120
-}
+waiting
