@@ -1,0 +1,11 @@
+{
+  "task_id": "img_v2_003",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "PYTHON",
+  "description": "إنشاء صورة البانر المُحسّنة لمطعم الركن الجميل باستخدام arabic_reshaper و bidi",
+  "command_preview": "import os\nfrom PIL import Image, ImageDraw, ImageFont\nimport arabic_reshaper\nfrom bidi.algorithm import get_display\nimport math\nimport random\n\n# Settings\nW, H = 1920, 1080\ndesktop = os.path.join(os.path.expanduser('~'), 'Desktop')\nout_path = os.path.join(desktop, 'restaurant_banner_v2.png')\n\n# Create image with gradient\nimg = Image.new('RGB', (W, H))\ndraw = ImageDraw.Draw(img)\nfor y in range(H):\n    r = int(139 * (1 - y/H))\n    g = 0\n    b = 0\n    draw.line([(0, y), (W, y)], fill=(r, g, b))\n\n# L",
+  "output": "Image saved to: C:\\Users\\Revexn\\Desktop\\restaurant_banner_v2.png\r\nDimensions: (1920, 1080)\r\nFile size: 45390 bytes",
+  "timestamp": "2026-03-17T14:31:07.775781+00:00",
+  "executed_on": "local_machine"
+}
