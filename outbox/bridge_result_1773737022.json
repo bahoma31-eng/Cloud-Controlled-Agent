@@ -1,0 +1,11 @@
+{
+  "task_id": "net-001",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "الحصول على إعدادات الشبكة الأساسية - IP, Subnet, Gateway, DNS",
+  "command_preview": "Get-NetIPConfiguration | Select-Object InterfaceAlias, InterfaceDescription, @{N='IPv4';E={($_.IPv4Address).IPAddress}}, @{N='Subnet';E={($_.IPv4Address).PrefixLength}}, @{N='Gateway';E={($_.IPv4DefaultGateway).NextHop}}, @{N='DNS';E={($_.DNSServer | Where-Object {$_.AddressFamily -eq 2}).ServerAddresses -join ', '}} | Format-List",
+  "output": "InterfaceAlias       : Wi-Fi\r\nInterfaceDescription : 802.11n USB Wireless LAN Card\r\nIPv4                 : 192.168.1.22\r\nSubnet               : 24\r\nGateway              : 192.168.1.1\r\nDNS                  : 192.168.1.1\r\n\r\nInterfaceAlias       : Connexion r�seau Bluetooth 2\r\nInterfaceDescription : Bluetooth Device (Personal Area Network) #2\r\nIPv4                 : 169.254.181.106\r\nSubnet               : 16\r\nGateway              : \r\nDNS                  : \r\n\r\nInterfaceAlias       : Ethernet 2\r\nInterfaceDescription : TAP-Windows Adapter V9\r\nIPv4                 : {169.254.210.71, 10.3.0.1}\r\nSubnet               : {16, 30}\r\nGateway              : \r\nDNS                  : \r\n\r\nInterfaceAlias       : Ethernet\r\nInterfaceDescription : Realtek PCIe GbE Family Controller\r\nIPv4                 : 169.254.14.98\r\nSubnet               : 16\r\nGateway              : \r\nDNS                  :",
+  "timestamp": "2026-03-17T08:43:42.109840+00:00",
+  "executed_on": "local_machine"
+}
