@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "generated_at": "2026-03-17T19:43:32.222392+00:00",
+  "source_image": {
+    "filename": "San.jpg",
+    "width": 400,
+    "height": 400
+  },
+  "analysis": {
+    "dominant_colors": [
+      "#111111",
+      "#ffffff",
+      "#e67328"
+    ],
+    "brightness": 0.5,
+    "recommended_text_theme": "light"
+  },
+  "layout": {
+    "empty_regions_px": [
+      {
+        "x": 50,
+        "y": 50,
+        "w": 400,
+        "h": 200,
+        "score": 0.85
+      },
+      {
+        "x": 550,
+        "y": 50,
+        "w": 400,
+        "h": 200,
+        "score": 0.8
+      },
+      {
+        "x": 100,
+        "y": 700,
+        "w": 300,
+        "h": 150,
+        "score": 0.9
+      },
+      {
+        "x": 600,
+        "y": 700,
+        "w": 300,
+        "h": 150,
+        "score": 0.88
+      }
+    ],
+    "chosen_region_px": {
+      "x": 100,
+      "y": 700,
+      "w": 300,
+      "h": 150
+    }
+  },
+  "text_style": {
+    "font_family": "Cairo",
+    "font_weight": 800,
+    "font_size_px": 28,
+    "color": "#333333",
+    "shadow": {
+      "enabled": true,
+      "blur": 14,
+      "opacity": 0.28,
+      "x": 0,
+      "y": 8
+    }
+  },
+  "filters": {
+    "brightness": 1.03,
+    "contrast": 1.06,
+    "saturation": 1.05,
+    "sharpness": 1.1,
+    "background_blur_px": 0
+  },
+  "copy": {
+    "title": "عرض اليوم",
+    "cta": "اطلب الآن"
+  }
+}
