@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "img_v2_004",
+  "engine": "PYTHON",
+  "command": "from PIL import Image\nimport os\n\npath = os.path.join(os.path.expanduser('~'), 'Desktop', 'restaurant_banner_v2.png')\nif not os.path.exists(path):\n    print('ERROR: File not found!')\nelse:\n    img = Image.open(path)\n    size_bytes = os.path.getsize(path)\n    print(f'Path: {path}')\n    print(f'Dimensions: {img.size[0]}x{img.size[1]}')\n    print(f'File size: {size_bytes} bytes ({size_bytes/1024:.1f} KB)')\n    print(f'Format: {img.format}')\n    print(f'Mode: {img.mode}')\n    # Check center area for text (non-black pixels)\n    center_y = img.size[1] // 2\n    center_x = img.size[0] // 2\n    pixels = []\n    for dx in range(-200, 201, 50):\n        px = img.getpixel((center_x + dx, center_y))\n        pixels.append(px)\n    has_text = any(p[0] > 100 or p[1] > 100 or p[2] > 100 for p in pixels)\n    print(f'Text detected in center: {has_text}')\n    print(f'Center pixels sample: {pixels[:5]}')\n    # Check borders\n    border_px = img.getpixel((15, 15))\n    print(f'Border area pixel (15,15): {border_px}')\n    border_px2 = img.getpixel((25, 25))\n    print(f'Border area pixel (25,25): {border_px2}')\n    print('Verification PASSED' if img.size == (1920, 1080) and has_text else 'Verification FAILED')",
+  "description": "التحقق من جودة الصورة: الأبعاد، وجود النص، الحدود",
+  "timeout": 60
+}
