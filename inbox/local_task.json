@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "verify-packages-003b",
+  "engine": "POWERSHELL",
+  "command": "pip list | Select-String -Pattern 'requests|pillow|opencv|numpy|dotenv'",
+  "description": "التحقق من الحزم المثبّتة وإصداراتها",
+  "timeout": 60
+}
