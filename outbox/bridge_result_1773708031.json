@@ -1,0 +1,11 @@
+{
+  "task_id": "verify-packages-003",
+  "status": "FAILED",
+  "return_code": 1,
+  "engine": "CMD",
+  "description": "التحقق من الحزم المثبّتة وإصداراتها",
+  "command_preview": "pip list | findstr /i \"requests pillow opencv numpy dotenv\"",
+  "output": "[STDERR]\nFINDSTR�: Impossible d'ouvrir pillow\r\nFINDSTR�: Impossible d'ouvrir opencv\r\nFINDSTR�: Impossible d'ouvrir numpy\r\nFINDSTR�: Impossible d'ouvrir dotenv\"\r\nERROR: Pipe to stdout was broken\r\nException ignored in: <_io.TextIOWrapper name='<stdout>' mode='w' encoding='cp1252'>\r\nOSError: [Errno 22] Invalid argument",
+  "timestamp": "2026-03-17T00:40:31.100278+00:00",
+  "executed_on": "local_machine"
+}
