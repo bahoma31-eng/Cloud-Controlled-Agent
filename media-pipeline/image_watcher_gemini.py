@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 # media-pipeline/image_watcher_gemini.py
-# Gemini 2.5 Flash (Vision) watcher: analyzes the final-canvas image and outputs meta JSON.
-# - Rotates across multiple API keys (round-robin)
 
 import os
 import re
@@ -63,13 +61,11 @@ def extract_json(text: str):
 
 	candidate = _strip_code_fences(text)
 
-	# 1) direct parse
 	try:
 		return json.loads(candidate)
 	except Exception:
 		pass
 
-	# 2) extract first balanced JSON object robustly
 	start = candidate.find("{")
 	if start == -1:
 		raise ValueError("Model did not return JSON object")
@@ -101,31 +97,11 @@ def extract_json(text: str):
 	if end == -1:
 		raise ValueError("Incomplete JSON from model (truncated output)")
 
-	return json.loads(candidate[start : end + 1])
+	return json.loads(candidate[start:end + 1])
 
 
-def _normalize_region(item, w: int, h: int):
-	# Accept dict {"x","y","w","h","score"} OR list [x1,y1,x2,y2]
-	if isinstance(item, dict):
-		x = int(item.get("x", int(w * 0.55)))
-		y = int(item.get("y", int(h * 0.08)))
-		rw = int(item.get("w", int(w * 0.40)))
-		rh = int(item.get("h", int(h * 0.16)))
-		score = float(item.get("score", 0.0)) if isinstance(item.get("score", 0.0), (int, float)) else 0.0
-		return {"x": x, "y": y, "w": rw, "h": rh, "score": score}
-
-	if isinstance(item, (list, tuple)) and len(item) >= 4:
-		x1, y1, x2, y2 = item[:4]
-		try:
-			x1 = int(x1)
-			y1 = int(y1)
-			x2 = int(x2)
-			y2 = int(y2)
-			return {"x": x1, "y": y1, "w": max(1, x2 - x1), "h": max(1, y2 - y1), "score": 0.0}
-		except Exception:
-			return None
-
-	return None
+def _clamp(v, lo, hi):
+	return max(lo, min(hi, v))
 
 
 def coerce_schema(meta: dict, filename: str, w: int, h: int) -> dict:
@@ -145,21 +121,23 @@ def coerce_schema(meta: dict, filename: str, w: int, h: int) -> dict:
 	layout = meta.get("layout") if isinstance(meta.get("layout"), dict) else {}
 	chosen = layout.get("chosen_region_px") if isinstance(layout.get("chosen_region_px"), dict) else {}
 	if not chosen:
-		chosen = {"x": int(w * 0.55), "y": int(h * 0.08), "w": int(w * 0.40), "h": int(h * 0.16)}
+		chosen = {"x": int(w * 0.08), "y": int(h * 0.62), "w": int(w * 0.84), "h": int(h * 0.22)}
 
-	raw_empty = layout.get("empty_regions_px") if isinstance(layout.get("empty_regions_px"), list) else []
-	normalized_empty = []
-	for r in raw_empty:
-		n = _normalize_region(r, w, h)
-		if n:
-			normalized_empty.append(n)
+	cx = int(chosen.get("x", int(w * 0.08)))
+	cy = int(chosen.get("y", int(h * 0.62)))
+	cw = int(chosen.get("w", int(w * 0.84)))
+	ch = int(chosen.get("h", int(h * 0.22)))
 
-	if not normalized_empty:
-		normalized_empty = [{"x": chosen["x"], "y": chosen["y"], "w": chosen["w"], "h": chosen["h"], "score": 0.0}]
+	cx = _clamp(cx, 0, max(0, w - 1))
+	cy = _clamp(cy, 0, max(0, h - 1))
+	cw = _clamp(cw, 120, max(120, w - cx))
+	ch = _clamp(ch, 80, max(80, h - cy))
 
 	out["layout"] = {
-		"empty_regions_px": normalized_empty,
-		"chosen_region_px": {"x": int(chosen["x"]), "y": int(chosen["y"]), "w": int(chosen["w"]), "h": int(chosen["h"])},
+		"empty_regions_px": layout.get("empty_regions_px") if isinstance(layout.get("empty_regions_px"), list) else [
+			{"x": cx, "y": cy, "w": cw, "h": ch, "score": 0.0}
+		],
+		"chosen_region_px": {"x": cx, "y": cy, "w": cw, "h": ch},
 	}
 
 	style = meta.get("text_style") if isinstance(meta.get("text_style"), dict) else {}
@@ -171,8 +149,8 @@ def coerce_schema(meta: dict, filename: str, w: int, h: int) -> dict:
 		"color": style.get("color", "#ffffff"),
 		"shadow": {
 			"enabled": bool(shadow.get("enabled", True)),
-			"blur": int(shadow.get("blur", 14)) if str(shadow.get("blur", "")).isdigit() else 14,
-			"opacity": float(shadow.get("opacity", 0.28)) if isinstance(shadow.get("opacity"), (int, float)) else 0.28,
+			"blur": int(shadow.get("blur", 18)) if str(shadow.get("blur", "")).isdigit() else 18,
+			"opacity": float(shadow.get("opacity", 0.35)) if isinstance(shadow.get("opacity"), (int, float)) else 0.35,
 			"x": int(shadow.get("x", 0)) if str(shadow.get("x", "")).lstrip("-").isdigit() else 0,
 			"y": int(shadow.get("y", 8)) if str(shadow.get("y", "")).lstrip("-").isdigit() else 8,
 		},
@@ -180,10 +158,10 @@ def coerce_schema(meta: dict, filename: str, w: int, h: int) -> dict:
 
 	filters = meta.get("filters") if isinstance(meta.get("filters"), dict) else {}
 	out["filters"] = {
-		"brightness": float(filters.get("brightness", 1.03)) if isinstance(filters.get("brightness"), (int, float)) else 1.03,
-		"contrast": float(filters.get("contrast", 1.06)) if isinstance(filters.get("contrast"), (int, float)) else 1.06,
-		"saturation": float(filters.get("saturation", 1.05)) if isinstance(filters.get("saturation"), (int, float)) else 1.05,
-		"sharpness": float(filters.get("sharpness", 1.1)) if isinstance(filters.get("sharpness"), (int, float)) else 1.1,
+		"brightness": float(filters.get("brightness", 1.04)) if isinstance(filters.get("brightness"), (int, float)) else 1.04,
+		"contrast": float(filters.get("contrast", 1.08)) if isinstance(filters.get("contrast"), (int, float)) else 1.08,
+		"saturation": float(filters.get("saturation", 1.08)) if isinstance(filters.get("saturation"), (int, float)) else 1.08,
+		"sharpness": float(filters.get("sharpness", 1.08)) if isinstance(filters.get("sharpness"), (int, float)) else 1.08,
 		"background_blur_px": int(filters.get("background_blur_px", 0)) if str(filters.get("background_blur_px", "")).isdigit() else 0,
 	}
 
@@ -202,20 +180,14 @@ def call_gemini(endpoint: str, key: str, payload: dict, timeout: int) -> str:
 	if not candidates:
 		raise RuntimeError(f"Gemini returned no candidates: {json.dumps(data)[:2000]}")
 
-	content = (candidates[0].get("content") or {})
-	parts_src = content.get("parts") or []
 	parts = []
-	for p in parts_src:
+	for p in (candidates[0].get("content") or {}).get("parts", []):
 		t = p.get("text")
 		if t:
 			parts.append(t)
-
 	text = "\n".join(parts).strip()
 	if not text:
-		finish_reason = candidates[0].get("finishReason", "")
-		raise RuntimeError(
-			f"Gemini returned empty text. finishReason={finish_reason}. raw={json.dumps(data)[:2000]}"
-		)
+		raise RuntimeError(f"Gemini returned empty text: {json.dumps(data)[:2000]}")
 	return text
 
 
@@ -240,27 +212,16 @@ def main():
 	timeout = int(os.getenv("GEMINI_TIMEOUT_SECONDS", "60"))
 
 	prompt = (
-		"أعد JSON فقط بدون أي نص إضافي.\n"
+		"أعد JSON فقط.\n"
 		"المفاتيح المطلوبة فقط: analysis, layout(empty_regions_px, chosen_region_px), text_style, filters, copy.\n"
-		"لا تضف أي مفاتيح إضافية مثل objects أو mood أو lighting.\n"
-		"empty_regions_px يجب أن تكون قائمة من كائنات بالشكل: {x,y,w,h,score}\n"
+		"اختر مكان نص احترافي لا يغطي العنصر الرئيسي.\n"
+		"حدد لون نص واضح عالي التباين مع الخلفية.\n"
+		"اختر title قصير جذاب (3 إلى 5 كلمات) و CTA قصير.\n"
 	)
 
 	payload = {
-		"contents": [
-			{
-				"role": "user",
-				"parts": [
-					{"text": prompt},
-					{"inline_data": {"mime_type": args.mime, "data": img_b64}},
-				],
-			}
-		],
-		"generationConfig": {
-			"temperature": 0.2,
-			"maxOutputTokens": 2400,
-			"response_mime_type": "application/json",
-		},
+		"contents": [{"role": "user", "parts": [{"text": prompt}, {"inline_data": {"mime_type": args.mime, "data": img_b64}}]}],
+		"generationConfig": {"temperature": 0.2, "maxOutputTokens": 2400, "response_mime_type": "application/json"},
 	}
 
 	text = call_gemini(endpoint, key, payload, timeout)
