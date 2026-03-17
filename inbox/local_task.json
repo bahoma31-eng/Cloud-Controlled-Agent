@@ -1,7 +1,1 @@
-{
-  "task_id": "img_v2_001",
-  "engine": "CMD",
-  "command": "pip install arabic-reshaper python-bidi Pillow",
-  "description": "تثبيت مكتبات arabic-reshaper و python-bidi و Pillow لمعالجة النص العربي وإنشاء الصورة",
-  "timeout": 120
-}
+waiting
