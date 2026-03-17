@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "generated_at": "2026-03-17T23:49:22.684654+00:00",
+  "source_image": {
+    "filename": "Sans titre355.jpg",
+    "width": 1024,
+    "height": 768
+  },
+  "analysis": {
+    "dominant_colors": [
+      "#4a3e36",
+      "#8b5e3e",
+      "#d4a77c"
+    ],
+    "brightness": 0.5,
+    "recommended_text_theme": "light"
+  },
+  "layout": {
+    "empty_regions_px": [
+      [
+        0,
+        0,
+        800,
+        500
+      ],
+      [
+        1100,
+        0,
+        1920,
+        500
+      ]
+    ],
+    "chosen_region_px": {
+      "x": 81,
+      "y": 476,
+      "w": 860,
+      "h": 168
+    }
+  },
+  "text_style": {
+    "font_family": "Cairo",
+    "font_weight": 800,
+    "font_size_px": 42,
+    "color": "#FFFFFF",
+    "shadow": {
+      "enabled": true,
+      "blur": 18,
+      "opacity": 0.35,
+      "x": 0,
+      "y": 8
+    }
+  },
+  "filters": {
+    "brightness": 1.04,
+    "contrast": 1.08,
+    "saturation": 1.08,
+    "sharpness": 1.08,
+    "background_blur_px": 0
+  },
+  "copy": {
+    "title": "طعم الشارع الأصيل",
+    "cta": "اطلب الآن"
+  }
+}
