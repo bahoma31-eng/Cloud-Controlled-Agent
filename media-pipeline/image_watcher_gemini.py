@@ -53,9 +53,9 @@ def get_next_key(out_path: str):
 
 
 def _strip_code_fences(s: str) -> str:
-	# remove ```json ... ``` or ``` ... ```
-	s = re.sub(r"^```(?:json)?\s*", "", s.strip(), flags=re.I)
-	s = re.sub(r"\s*```$", "", s.strip())
+	s = s.strip()
+	s = re.sub(r"^```(?:json)?\s*", "", s, flags=re.I)
+	s = re.sub(r"\s*```$", "", s)
 	return s.strip()
 
 
@@ -69,12 +69,17 @@ def extract_json(text: str):
 	if m:
 		return json.loads(m.group(1))
 
-	# If whole response looks like JSON (possibly fenced)
 	candidate = _strip_code_fences(text)
 	if candidate.startswith("{") and candidate.endswith("}"):
 		return json.loads(candidate)
 
-	# Otherwise find first {...} block
+	# bracket first '{' to last '}'
+	start = candidate.find("{")
+	end = candidate.rfind("}")
+	if start != -1 and end != -1 and end > start:
+		return json.loads(candidate[start : end + 1])
+
+	# fallback regex
 	m2 = re.search(r"(\{.*\})", text, flags=re.S)
 	if m2:
 		return json.loads(m2.group(1))
@@ -101,56 +106,20 @@ def main():
 	model = (os.getenv("GEMINI_MODEL", "gemini-2.5-flash") or "gemini-2.5-flash").strip()
 	endpoint_tpl = (os.getenv(
 		"GEMINI_ENDPOINT",
-		"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent",
+		"{{https://generativelanguage.googleapis.com/v1beta/models/{MODEL}}}:generateContent",
 	) or "").strip()
 	endpoint = endpoint_tpl.replace("{MODEL}", model)
 
 	key = get_next_key(args.out)
 	timeout = int(os.getenv("GEMINI_TIMEOUT_SECONDS", "60"))
 
-	# Strongly constrain output format
 	prompt = (
 		"أنت نظام يقوم بإرجاع JSON فقط. ممنوع أي نص خارج JSON.\n"
 		"حلّل الصورة التالية (صورة طعام). نحتاج إعدادات تصميم إعلان عربي RTL.\n"
-		"أعد كائن JSON واحد فقط مطابقاً تماماً للمفاتيح التالية.\n"
-		"لا تستخدم Markdown ولا ``` ولا أي شرح.\n"
-		"\n"
-		"JSON schema (keys required):\n"
-		"{\n"
-		"  \"version\": 1,\n"
-		"  \"source_image\": {\"filename\": \"...\", \"width\": W, \"height\": H},\n"
-		"  \"analysis\": {\n"
-		"    \"dominant_colors\": [\"#RRGGBB\", \"#RRGGBB\", \"#RRGGBB\"],\n"
-		"    \"brightness\": 0.0,\n"
-		"    \"recommended_text_theme\": \"light\"\n"
-		"  },\n"
-		"  \"layout\": {\n"
-		"    \"empty_regions_px\": [\n"
-		"      {\"x\":0,\"y\":0,\"w\":0,\"h\":0,\"score\":0.0},\n"
-		"      {\"x\":0,\"y\":0,\"w\":0,\"h\":0,\"score\":0.0},\n"
-		"      {\"x\":0,\"y\":0,\"w\":0,\"h\":0,\"score\":0.0},\n"
-		"      {\"x\":0,\"y\":0,\"w\":0,\"h\":0,\"score\":0.0}\n"
-		"    ],\n"
-		"    \"chosen_region_px\": {\"x\":0,\"y\":0,\"w\":0,\"h\":0}\n"
-		"  },\n"
-		"  \"text_style\": {\n"
-		"    \"font_family\": \"Cairo\",\n"
-		"    \"font_weight\": 800,\n"
-		"    \"font_size_px\": 48,\n"
-		"    \"color\": \"#ffffff\",\n"
-		"    \"shadow\": {\"enabled\": true, \"blur\": 14, \"opacity\": 0.28, \"x\": 0, \"y\": 8}\n"
-		"  },\n"
-		"  \"filters\": {\n"
-		"    \"brightness\": 1.03, \"contrast\": 1.06, \"saturation\": 1.05, \"sharpness\": 1.1, \"background_blur_px\": 0\n"
-		"  },\n"
-		"  \"copy\": {\n"
-		"    \"title\": \"عرض اليوم\",\n"
-		"    \"cta\": \"اطلب الآن\"\n"
-		"  }\n"
-		"}\n"
-		"\n"
+		"أعد كائن JSON واحد فقط. لا تستخدم Markdown.\n"
+		"المفاتيح المطلوبة: version, source_image, analysis, layout, text_style, filters, copy.\n"
 		"قواعد: تجنب وضع النص فوق الطبق أو الموضوع الرئيسي. اختر مناطق منخفضة التفاصيل.\n"
-	).replace("W", str(args.width)).replace("H", str(args.height))
+	)
 
 	payload = {
 		"contents": [
@@ -179,12 +148,20 @@ def main():
 		pass
 	text = "\n".join(parts).strip() if parts else json.dumps(data, ensure_ascii=False)
 
+	# Always save raw output for debugging
+	raw_path = args.out + ".raw.txt"
+	try:
+		os.makedirs(os.path.dirname(args.out), exist_ok=True)
+		with open(raw_path, "w", encoding="utf-8") as f:
+			f.write(text)
+	except Exception:
+		pass
+
 	meta = extract_json(text)
 	meta["version"] = 1
 	meta["generated_at"] = utc_now()
 	meta["source_image"] = {"filename": args.filename, "width": int(args.width), "height": int(args.height)}
 
-	os.makedirs(os.path.dirname(args.out), exist_ok=True)
 	with open(args.out, "w", encoding="utf-8") as f:
 		json.dump(meta, f, ensure_ascii=False, indent=2)
 
