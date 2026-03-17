@@ -1,7 +1,1 @@
-{
-  "task_id": "TM-002c",
-  "engine": "POWERSHELL",
-  "command": "Set-Location 'C:\\TaskManager'; $pyVer = & '.venv\\Scripts\\python.exe' --version 2>&1; Write-Output \"Python Version: $pyVer\"; $arch = & '.venv\\Scripts\\python.exe' -c \"import struct; print(struct.calcsize('P')*8)\" 2>&1; Write-Output \"Architecture: ${arch}-bit\"; Write-Output '--- Trying PySide6 install with --pre ---'; & '.venv\\Scripts\\pip.exe' install PySide6 --pre 2>&1 | Select-Object -Last 5; if ($LASTEXITCODE -ne 0) { Write-Output '--- PySide6 --pre failed, trying PyQt6 ---'; & '.venv\\Scripts\\pip.exe' install PyQt6 2>&1 | Select-Object -Last 5 }; Write-Output '--- Installed packages ---'; & '.venv\\Scripts\\pip.exe' list 2>&1 | Select-String -Pattern 'PySide6|PyQt6|SQLAlchemy|pydantic|pyinstaller' ",
-  "description": "تشخيص Python + محاولة تثبيت PySide6 --pre أو PyQt6 كبديل",
-  "timeout": 120
-}
+waiting
