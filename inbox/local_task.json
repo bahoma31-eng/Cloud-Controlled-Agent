@@ -1,7 +1,1 @@
-{
-  "task_id": "001",
-  "engine": "PYTHON",
-  "command": "from PIL import Image; print('Pillow installed:', Image.__version__)",
-  "description": "فحص وجود مكتبة Pillow على الجهاز",
-  "timeout": 30
-}
+waiting
