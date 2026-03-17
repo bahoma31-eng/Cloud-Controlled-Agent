@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "generated_at": "2026-03-17T23:21:33.918692+00:00",
+  "source_image": {
+    "filename": "Sans titre1235.jpg",
+    "width": 400,
+    "height": 400
+  },
+  "analysis": {
+    "dominant_colors": [
+      "#5C4B3D",
+      "#A07F5B",
+      "#D4A06A"
+    ],
+    "brightness": 0.5,
+    "recommended_text_theme": "light"
+  },
+  "layout": {
+    "empty_regions_px": [
+      [
+        0,
+        0,
+        1000,
+        250
+      ],
+      [
+        0,
+        800,
+        300,
+        200
+      ]
+    ],
+    "chosen_region_px": {
+      "x": 32,
+      "y": 248,
+      "w": 336,
+      "h": 88
+    }
+  },
+  "text_style": {
+    "font_family": "Cairo",
+    "font_weight": 800,
+    "font_size_px": 28,
+    "color": "#ffffff",
+    "shadow": {
+      "enabled": true,
+      "blur": 18,
+      "opacity": 0.35,
+      "x": 0,
+      "y": 8
+    }
+  },
+  "filters": {
+    "brightness": 1.04,
+    "contrast": 1.08,
+    "saturation": 1.08,
+    "sharpness": 1.08,
+    "background_blur_px": 0
+  },
+  "copy": {
+    "title": "لذة الشارع الأصيلة",
+    "cta": "اطلب الآن"
+  }
+}
