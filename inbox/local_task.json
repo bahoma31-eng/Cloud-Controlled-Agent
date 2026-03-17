@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "disk_check_002",
+  "engine": "POWERSHELL",
+  "command": "$cutoff = (Get-Date).AddHours(-6); Get-ChildItem -Path C:\\ -Recurse -File -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTime -gt $cutoff -and $_.Length -gt 10MB } | Sort-Object Length -Descending | Select-Object -First 30 @{N='SizeMB';E={[math]::Round($_.Length/1MB,2)}}, FullName, LastWriteTime | Format-Table -AutoSize -Wrap",
+  "description": "البحث عن الملفات الكبيرة التي تم تعديلها أو إنشاؤها في آخر 6 ساعات (أكبر من 10MB)",
+  "timeout": 120
+}
