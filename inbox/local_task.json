@@ -1,7 +1,1 @@
-{
-  "task_id": "task_20260317_001",
-  "engine": "POWERSHELL",
-  "command": "$computerName = $env:COMPUTERNAME; $os = (Get-CimInstance Win32_OperatingSystem); \"Computer Name: $computerName`nOS: $($os.Caption) $($os.Version)`nArchitecture: $($os.OSArchitecture)\"",
-  "description": "عرض اسم الجهاز ونظام التشغيل",
-  "timeout": 60
-}
+waiting
