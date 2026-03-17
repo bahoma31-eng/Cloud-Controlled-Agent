@@ -1,0 +1,11 @@
+{
+  "task_id": "005",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "PYTHON",
+  "description": "التحقق من الصورة المُنشأة - حجمها وأبعادها ومسارها",
+  "command_preview": "import os\nfrom PIL import Image\npath = os.path.join(os.path.expanduser('~'), 'Desktop', 'restaurant_banner.png')\nif os.path.exists(path):\n    img = Image.open(path)\n    size_bytes = os.path.getsize(path)\n    size_kb = size_bytes / 1024\n    print(f'File exists: YES')\n    print(f'Path: {path}')\n    print(f'Dimensions: {img.size[0]}x{img.size[1]}')\n    print(f'Mode: {img.mode}')\n    print(f'Format: {img.format}')\n    print(f'Size: {size_bytes} bytes ({size_kb:.1f} KB)')\n    print(f'DPI: {img.info.g",
+  "output": "File exists: YES\r\nPath: C:\\Users\\Revexn\\Desktop\\restaurant_banner.png\r\nDimensions: 1920x1080\r\nMode: RGB\r\nFormat: PNG\r\nSize: 68791 bytes (67.2 KB)\r\nDPI: Not set",
+  "timestamp": "2026-03-17T14:14:02.505644+00:00",
+  "executed_on": "local_machine"
+}
