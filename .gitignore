@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+
+# Media pipeline output (keep local only)
+media-pipeline/output/*.jpg
+media-pipeline/output/*.png
+media-pipeline/output-local/
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Temp files
+.media_bridge_tmp/
+*.tmp
+
+# OS
+.DS_Store
+Thumbs.db
