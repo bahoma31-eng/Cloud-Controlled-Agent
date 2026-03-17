@@ -1,0 +1,11 @@
+{
+  "task_id": "html_banner_004",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "PYTHON",
+  "description": "التحقق من الصورة المُنشأة - الحجم والأبعاد والصيغة",
+  "command_preview": "import os\nfrom PIL import Image\n\ndesktop = os.path.join(os.path.expanduser('~'), 'Desktop')\nimg_path = os.path.join(desktop, 'restaurant_banner_v3.png')\n\nif os.path.exists(img_path):\n    size_bytes = os.path.getsize(img_path)\n    size_kb = size_bytes / 1024\n    size_mb = size_kb / 1024\n    print(f'File exists: YES')\n    print(f'Path: {img_path}')\n    print(f'Size: {size_bytes} bytes ({size_kb:.1f} KB / {size_mb:.2f} MB)')\n    try:\n        img = Image.open(img_path)\n        print(f'Dimensions: {i",
+  "output": "File exists: YES\r\nPath: C:\\Users\\Revexn\\Desktop\\restaurant_banner_v3.png\r\nSize: 662491 bytes (647.0 KB / 0.63 MB)\r\nDimensions: 1920x1080 pixels\r\nFormat: PNG\r\nMode: RGB",
+  "timestamp": "2026-03-17T14:55:00.195172+00:00",
+  "executed_on": "local_machine"
+}
