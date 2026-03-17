@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "html_banner_004",
+  "engine": "PYTHON",
+  "command": "import os\nfrom PIL import Image\n\ndesktop = os.path.join(os.path.expanduser('~'), 'Desktop')\nimg_path = os.path.join(desktop, 'restaurant_banner_v3.png')\n\nif os.path.exists(img_path):\n    size_bytes = os.path.getsize(img_path)\n    size_kb = size_bytes / 1024\n    size_mb = size_kb / 1024\n    print(f'File exists: YES')\n    print(f'Path: {img_path}')\n    print(f'Size: {size_bytes} bytes ({size_kb:.1f} KB / {size_mb:.2f} MB)')\n    try:\n        img = Image.open(img_path)\n        print(f'Dimensions: {img.width}x{img.height} pixels')\n        print(f'Format: {img.format}')\n        print(f'Mode: {img.mode}')\n        img.close()\n    except Exception as e:\n        print(f'PIL check failed: {e}')\n        print('Using alternative check...')\n        import struct\n        with open(img_path, 'rb') as f:\n            header = f.read(24)\n            if header[:8] == b'\\x89PNG\\r\\n\\x1a\\n':\n                w, h = struct.unpack('>II', header[16:24])\n                print(f'Dimensions (from header): {w}x{h} pixels')\n                print(f'Format: PNG (confirmed)')\nelse:\n    print(f'ERROR: File not found at {img_path}')",
+  "description": "التحقق من الصورة المُنشأة - الحجم والأبعاد والصيغة",
+  "timeout": 60
+}
