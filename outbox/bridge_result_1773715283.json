@@ -1,0 +1,11 @@
+{
+  "task_id": "font_download_001",
+  "status": "FAILED",
+  "return_code": 1,
+  "engine": "PYTHON",
+  "description": "Download Cairo Arabic font from Google Fonts and upload to feature branch",
+  "command_preview": "import requests, base64, os\ntry:\n    from dotenv import load_dotenv\n    load_dotenv()\nexcept: pass\ntoken = os.getenv('GITHUB_TOKEN', '')\nif not token:\n    print('ERROR: GITHUB_TOKEN not found')\n    exit(1)\n# Download Cairo-Regular.ttf from Google Fonts (static)\nfonts_urls = [\n    'https://github.com/google/fonts/raw/main/ofl/cairo/static/Cairo-Regular.ttf',\n    'https://raw.githubusercontent.com/google/fonts/main/ofl/cairo/static/Cairo-Regular.ttf'\n]\nfont_data = None\nfor url in fonts_urls:\n    t",
+  "output": "ERROR: Could not download Cairo font from any source",
+  "timestamp": "2026-03-17T02:41:23.569039+00:00",
+  "executed_on": "local_machine"
+}
