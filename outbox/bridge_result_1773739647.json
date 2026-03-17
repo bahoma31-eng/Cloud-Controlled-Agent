@@ -1,0 +1,11 @@
+{
+  "task_id": "TM-001",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "إنشاء مجلد المشروع TaskManager والبيئة الافتراضية venv",
+  "command_preview": "if (!(Test-Path 'C:\\TaskManager')) { New-Item -ItemType Directory -Force -Path 'C:\\TaskManager' }; Set-Location 'C:\\TaskManager'; py -3 -m venv .venv; Write-Output 'SUCCESS: Project folder C:\\TaskManager created with .venv'",
+  "output": "R�pertoire�: C:\\\r\n\r\n\r\nMode                LastWriteTime         Length Name                                             \r\n----                -------------         ------ ----                                             \r\nd-----       17/03/2026     10:26                TaskManager                                      \r\nSUCCESS: Project folder C:\\TaskManager created with .venv",
+  "timestamp": "2026-03-17T09:27:27.068304+00:00",
+  "executed_on": "local_machine"
+}
