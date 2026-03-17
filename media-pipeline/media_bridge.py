@@ -228,12 +228,12 @@ def build_html(bg_data_url: str, target_w: int, target_h: int, meta: dict):
 	footer_h = int(target_h * 0.18)
 
 	return f"""<!doctype html>
-<html lang=ar dir=rtl>
+<html lang="ar" dir="rtl">
 <head>
-	<meta charset=utf-8 />
-	<link rel=preconnect href=https://fonts.googleapis.com>
-	<link rel=preconnect href=https://fonts.gstatic.com crossorigin>
-	<link href={{https://fonts.googleapis.com/css2?family={font_family}}}:wght@400;700;800;900&display=swap rel=stylesheet>
+	<meta charset="utf-8" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family={font_family}:wght@400;700;800;900&display=swap" rel="stylesheet">
 	<style>
 		html, body {{ margin: 0; padding: 0; width: {target_w}px; height: {target_h}px; overflow: hidden; background: #000; }}
 		.canvas {{ position: relative; width: {target_w}px; height: {target_h}px; font-family: '{font_family}', system-ui; }}
@@ -241,21 +241,21 @@ def build_html(bg_data_url: str, target_w: int, target_h: int, meta: dict):
 		.textbox {{ position: absolute; left: {x}px; top: {y}px; width: {bw}px; height: {bh}px; padding: 18px 22px; box-sizing: border-box; border-radius: 18px; background: rgba(0,0,0,0.22); }}
 		.h1 {{ margin: 0; font-size: {font_size}px; font-weight: {font_weight}; color: {color}; text-shadow: {shadow_css}; line-height: 1.1; unicode-bidi: plaintext; }}
 		.cta {{ margin-top: 10px; font-size: max(22px, {int(font_size*0.58)}px); font-weight: 700; color: #fff; opacity: 0.95; text-shadow: {shadow_css}; unicode-bidi: plaintext; }}
-		.footer {{ position: absolute; left: 0; right: 0; bottom: 0; height: {footer_h}px; background: linear-gradient(180deg, #e67328 0%, #ffa03c 100%); display:flex; flex-direction:column; justify-content:center; align-items:center; gap: 10px; }}
+		.footer {{ position: absolute; left: 0; right: 0; bottom: 0; height: {footer_h}px; background: linear-gradient(180deg, #e67328 0%, #ffa03c 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; }}
 		.brand {{ font-size: {int(target_h*0.06)}px; font-weight: 800; color: #fff; }}
-		.handles {{ font-size: {int(target_h*0.032)}px; font-weight: 600; color: rgba(255,255,255,0.92); direction:ltr; unicode-bidi: plaintext; }}
+		.handles {{ font-size: {int(target_h*0.032)}px; font-weight: 600; color: rgba(255,255,255,0.92); direction: ltr; unicode-bidi: plaintext; }}
 	</style>
 </head>
 <body>
-	<div class=canvas>
-		<div class=bg></div>
-		<div class=textbox>
-			<div class=h1>{title}</div>
-			<div class=cta>{cta}</div>
+	<div class="canvas">
+		<div class="bg"></div>
+		<div class="textbox">
+			<div class="h1">{title}</div>
+			<div class="cta">{cta}</div>
 		</div>
-		<div class=footer>
-			<div class=brand>{BRAND}</div>
-			<div class=handles>facebook: {FACEBOOK} instagram: {INSTAGRAM} tiktok: {TIKTOK} whatsapp: {WHATSAPP}</div>
+		<div class="footer">
+			<div class="brand">{BRAND}</div>
+			<div class="handles">facebook: {FACEBOOK} instagram: {INSTAGRAM} tiktok: {TIKTOK} whatsapp: {WHATSAPP}</div>
 		</div>
 	</div>
 </body>
@@ -263,7 +263,15 @@ def build_html(bg_data_url: str, target_w: int, target_h: int, meta: dict):
 
 
 def render_with_playwright(html_path: str, out_png_path: str, w: int, h: int):
-	cmd = [sys.executable, os.path.join(os.path.dirname(__file__), "renderer_playwright.py"), "--html", html_path, "--out", out_png_path, "--width", str(w), "--height", str(h), "--wait_ms", str(WAIT_FONTS_MS)]
+	cmd = [
+		sys.executable,
+		os.path.join(os.path.dirname(__file__), "renderer_playwright.py"),
+		"--html", html_path,
+		"--out", out_png_path,
+		"--width", str(w),
+		"--height", str(h),
+		"--wait_ms", str(WAIT_FONTS_MS),
+	]
 	p = subprocess.run(cmd, capture_output=True, text=True)
 	if p.returncode != 0:
 		raise RuntimeError(f"playwright render failed: {p.stdout}\n{p.stderr}")
@@ -279,7 +287,6 @@ def export_variants(image_bytes: bytes, image_name: str):
 		w = s["w"]
 		h = s["h"]
 
-		# background-only canvas
 		bg_html = f"""<!doctype html><html><head><meta charset='utf-8'/><style>
 			html,body{{margin:0;padding:0;width:{w}px;height:{h}px;overflow:hidden;}}
 			.bg{{position:absolute;inset:0;background-image:url('{bg_url}');background-size:cover;background-position:center;}}
@@ -293,7 +300,6 @@ def export_variants(image_bytes: bytes, image_name: str):
 		meta_name = f"{image_name}.{w}x{h}.json"
 		local_meta = os.path.join(LOCAL_META, meta_name)
 
-		# Run watcher
 		if USE_GEMINI_WATCHER:
 			try:
 				run_watcher_gemini(bg_png_path, "image/png", w, h, image_name, local_meta)
