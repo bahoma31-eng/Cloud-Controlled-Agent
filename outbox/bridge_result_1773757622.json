@@ -1,0 +1,11 @@
+{
+  "task_id": "img_v2_001",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "CMD",
+  "description": "تثبيت مكتبات arabic-reshaper و python-bidi و Pillow لمعالجة النص العربي وإنشاء الصورة",
+  "command_preview": "pip install arabic-reshaper python-bidi Pillow",
+  "output": "Collecting arabic-reshaper\r\n  Using cached arabic_reshaper-3.0.0-py3-none-any.whl.metadata (12 kB)\r\nCollecting python-bidi\r\n  Using cached python_bidi-0.6.7-cp312-cp312-win_amd64.whl.metadata (5.0 kB)\r\nRequirement already satisfied: Pillow in C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages (12.1.1)\r\nUsing cached arabic_reshaper-3.0.0-py3-none-any.whl (20 kB)\r\nUsing cached python_bidi-0.6.7-cp312-cp312-win_amd64.whl (159 kB)\r\nInstalling collected packages: python-bidi, arabic-reshaper\r\n\r\nSuccessfully installed arabic-reshaper-3.0.0 python-bidi-0.6.7",
+  "timestamp": "2026-03-17T14:27:02.907506+00:00",
+  "executed_on": "local_machine"
+}
