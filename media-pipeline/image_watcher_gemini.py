@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # media-pipeline/image_watcher_gemini.py
 # Gemini 2.5 Flash (Vision) watcher: analyzes the final-canvas image and outputs meta JSON.
-# - Chooses empty region for text (px) + dominant colors + brightness theme + font size + suggested copy
-# - Rotates across multiple API keys (round-robin) each call.
+# - Rotates across multiple API keys (round-robin)
 
 import os
 import re
@@ -48,7 +47,6 @@ def get_next_key(out_path: str):
 			f.write(str(next_idx))
 	except Exception:
 		pass
-
 	return key
 
 
@@ -59,74 +57,46 @@ def _strip_code_fences(s: str) -> str:
 	return s.strip()
 
 
-def _normalize_text(s: str) -> str:
-	# Remove HTML breaks and weird control chars that sometimes appear in terminal capture
-	s = s.replace("<br>", "\n").replace("<br/>", "\n").replace("<br />", "\n")
-	return s.strip()
-
-
 def extract_json(text: str):
-	"""Best-effort extraction of a JSON object from model output."""
 	if not text:
 		raise ValueError("Empty model response")
-
-	text = _normalize_text(text)
 
 	m = re.search(r"```json\s*(\{.*?\})\s*```", text, flags=re.S | re.I)
 	if m:
 		return json.loads(m.group(1))
 
 	candidate = _strip_code_fences(text)
-	if candidate.startswith("{") and candidate.endswith("}"):
-		return json.loads(candidate)
-
 	start = candidate.find("{")
 	end = candidate.rfind("}")
 	if start != -1 and end != -1 and end > start:
 		return json.loads(candidate[start : end + 1])
 
-	m2 = re.search(r"(\{.*\})", text, flags=re.S)
-	if m2:
-		return json.loads(m2.group(1))
-
 	raise ValueError("Model did not return valid JSON")
 
 
 def coerce_schema(meta: dict, filename: str, w: int, h: int) -> dict:
-	"""Force meta into the required schema. If model returns wrong shapes, fill defaults."""
-	out = {}
-	out["version"] = 1
-	out["generated_at"] = utc_now()
-	out["source_image"] = {"filename": filename, "width": int(w), "height": int(h)}
+	out = {
+		"version": 1,
+		"generated_at": utc_now(),
+		"source_image": {"filename": filename, "width": int(w), "height": int(h)},
+	}
 
 	analysis = meta.get("analysis") if isinstance(meta.get("analysis"), dict) else {}
-	dom = analysis.get("dominant_colors") if isinstance(analysis.get("dominant_colors"), list) else []
-	brightness = analysis.get("brightness")
-	theme = analysis.get("recommended_text_theme")
-
-	# fallbacks
 	out["analysis"] = {
-		"dominant_colors": dom[:3] if dom else ["#111111", "#ffffff", "#e67328"],
-		"brightness": float(brightness) if isinstance(brightness, (int, float)) else 0.5,
-		"recommended_text_theme": theme if theme in ("light", "dark") else "light",
+		"dominant_colors": (analysis.get("dominant_colors") or ["#111111", "#ffffff", "#e67328"])[:3],
+		"brightness": float(analysis.get("brightness")) if isinstance(analysis.get("brightness"), (int, float)) else 0.5,
+		"recommended_text_theme": analysis.get("recommended_text_theme") if analysis.get("recommended_text_theme") in ("light", "dark") else "light",
 	}
 
 	layout = meta.get("layout") if isinstance(meta.get("layout"), dict) else {}
-	empty_regions = layout.get("empty_regions_px") if isinstance(layout.get("empty_regions_px"), list) else []
 	chosen = layout.get("chosen_region_px") if isinstance(layout.get("chosen_region_px"), dict) else {}
 	if not chosen:
 		chosen = {"x": int(w * 0.55), "y": int(h * 0.08), "w": int(w * 0.40), "h": int(h * 0.16)}
-
 	out["layout"] = {
-		"empty_regions_px": empty_regions[:4] if empty_regions else [
-			{"x": chosen.get("x", 0), "y": chosen.get("y", 0), "w": chosen.get("w", 0), "h": chosen.get("h", 0), "score": 0.0}
+		"empty_regions_px": layout.get("empty_regions_px") if isinstance(layout.get("empty_regions_px"), list) else [
+			{"x": chosen["x"], "y": chosen["y"], "w": chosen["w"], "h": chosen["h"], "score": 0.0}
 		],
-		"chosen_region_px": {
-			"x": int(chosen.get("x", 0)),
-			"y": int(chosen.get("y", 0)),
-			"w": int(chosen.get("w", 0)),
-			"h": int(chosen.get("h", 0)),
-		},
+		"chosen_region_px": {"x": int(chosen["x"]), "y": int(chosen["y"]), "w": int(chosen["w"]), "h": int(chosen["h"])},
 	}
 
 	style = meta.get("text_style") if isinstance(meta.get("text_style"), dict) else {}
@@ -155,11 +125,7 @@ def coerce_schema(meta: dict, filename: str, w: int, h: int) -> dict:
 	}
 
 	copy = meta.get("copy") if isinstance(meta.get("copy"), dict) else {}
-	out["copy"] = {
-		"title": copy.get("title", "عرض اليوم"),
-		"cta": copy.get("cta", "اطلب الآن"),
-	}
-
+	out["copy"] = {"title": copy.get("title", "عرض اليوم"), "cta": copy.get("cta", "اطلب الآن")}
 	return out
 
 
@@ -189,10 +155,7 @@ def main():
 		img_b64 = base64.b64encode(f.read()).decode("utf-8")
 
 	model = (os.getenv("GEMINI_MODEL", "gemini-2.5-flash") or "gemini-2.5-flash").strip()
-	endpoint_tpl = (os.getenv(
-		"GEMINI_ENDPOINT",
-		"{{https://generativelanguage.googleapis.com/v1beta/models/{MODEL}}}:generateContent",
-	) or "").strip()
+	endpoint_tpl = (os.getenv("GEMINI_ENDPOINT", "https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent") or "").strip()
 	endpoint = endpoint_tpl.replace("{MODEL}", model)
 
 	key = get_next_key(args.out)
@@ -200,16 +163,18 @@ def main():
 
 	prompt = (
 		"أعد JSON فقط بدون أي نص إضافي.\n"
-		"المطلوب: analysis(layout/colors/brightness/theme) + layout(empty_regions_px + chosen_region_px px) + text_style + copy.\n"
-		"اكتب مفاتيح JSON المطلوبة فقط.\n"
+		"المفاتيح المطلوبة: analysis, layout(empty_regions_px, chosen_region_px), text_style, filters, copy.\n"
 	)
 
 	payload = {
 		"contents": [
-			{"role": "user", "parts": [
-				{"text": prompt},
-				{"inline_data": {"mime_type": args.mime, "data": img_b64}},
-			]}},
+			{
+				"role": "user",
+				"parts": [
+					{"text": prompt},
+					{"inline_data": {"mime_type": args.mime, "data": img_b64}},
+				],
+			}
 		],
 		"generationConfig": {
 			"temperature": 0.2,
@@ -218,32 +183,13 @@ def main():
 		},
 	}
 
-	text = ""
-	meta = None
-	last_err = None
-	for attempt in range(2):
-		try:
-			text = call_gemini(endpoint, key, payload, timeout)
-			# save raw
-			os.makedirs(os.path.dirname(args.out), exist_ok=True)
-			with open(args.out + ".raw.txt", "w", encoding="utf-8") as f:
-				f.write(text)
-			parsed = extract_json(text)
-			meta = coerce_schema(parsed, args.filename, args.width, args.height)
-			break
-		except Exception as e:
-			last_err = e
-			# make second attempt stricter
-			payload["contents"][0]["parts"][0]["text"] = (
-				"أعد JSON صالح 100% بدون أي نص خارج JSON.\n"
-				"لا تستخدم شرح ولا اقتباسات غريبة.\n"
-				"أرجع كائن واحد فقط يبدأ بـ { وينتهي بـ }.\n"
-			)
-			continue
+	text = call_gemini(endpoint, key, payload, timeout)
+	os.makedirs(os.path.dirname(args.out), exist_ok=True)
+	with open(args.out + ".raw.txt", "w", encoding="utf-8") as f:
+		f.write(text)
 
-	if meta is None:
-		raise SystemExit(f"Failed to parse Gemini JSON: {last_err}")
-
+	parsed = extract_json(text)
+	meta = coerce_schema(parsed, args.filename, args.width, args.height)
 	with open(args.out, "w", encoding="utf-8") as f:
 		json.dump(meta, f, ensure_ascii=False, indent=2)
 
