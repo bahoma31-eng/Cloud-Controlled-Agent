@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "TM-001",
+  "engine": "POWERSHELL",
+  "command": "if (!(Test-Path 'C:\\TaskManager')) { New-Item -ItemType Directory -Force -Path 'C:\\TaskManager' }; Set-Location 'C:\\TaskManager'; py -3 -m venv .venv; Write-Output 'SUCCESS: Project folder C:\\TaskManager created with .venv'",
+  "description": "إنشاء مجلد المشروع TaskManager والبيئة الافتراضية venv",
+  "timeout": 120
+}
