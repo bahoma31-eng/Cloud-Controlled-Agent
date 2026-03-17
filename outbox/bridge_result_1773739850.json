@@ -1,0 +1,11 @@
+{
+  "task_id": "TM-002",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "تثبيت المكتبات الأساسية: PySide6, SQLAlchemy, pydantic, pyinstaller",
+  "command_preview": "Set-Location 'C:\\TaskManager'; & '.venv\\Scripts\\python.exe' -m pip install --upgrade pip; & '.venv\\Scripts\\pip.exe' install PySide6 SQLAlchemy pydantic pyinstaller; & '.venv\\Scripts\\pip.exe' freeze | Out-File -FilePath 'requirements.txt' -Encoding utf8; Write-Output 'SUCCESS: Libraries installed and requirements.txt created'",
+  "output": "Requirement already satisfied: pip in .\\.venv\\Lib\\site-packages (26.0.1)\r\nSUCCESS: Libraries installed and requirements.txt created\r\n\n[STDERR]\nERROR: Ignored the following versions that require a different python version: 6.10.0 Requires-Python >=3.9,<3.14; 6.10.1 Requires-Python >=3.9,<3.15; 6.10.2 Requires-Python >=3.9,<3.15; 6.3.0 Requires-Python >=3.6,<3.11; 6.3.1 Requires-Python >=3.6,<3.11; 6.3.2 Requires-Python >=3.6,<3.11; 6.4.0.1 Requires-Python >=3.7,<3.12; 6.4.1 Requires-Python >=3.7,<3.12; 6.4.2 Requires-Python >=3.7,<3.12; 6.4.3 Requires-Python >=3.7,<3.12; 6.5.0 Requires-Python >=3.7,<3.12; 6.5.1 Requires-Python >=3.7,<3.12; 6.5.1.1 Requires-Python >=3.7,<3.12; 6.5.2 Requires-Python >=3.7,<3.12; 6.5.3 Requires-Python >=3.7,<3.12; 6.6.0 Requires-Python >=3.8,<3.13; 6.6.1 Requires-Python >=3.8,<3.13; 6.6.2 Requires-Python >=3.8,<3.13; 6.6.3 Requires-Python >=3.8,<3.13; 6.6.3.1 Requires-Python >=3.8,<3.13; 6.7.0 Requires-Python >=3.9,<3.13; 6.7.1 Requires-Python >=3.9,<3.13; 6.7.2 Requires-Python >=3.9,<3.13; 6.7.3 Requires-Python >=3.9,<3.13; 6.8.0 Requires-Python >=3.9,<3.13; 6.8.0.1 Requires-Python >=3.9,<3.13; 6.8.0.2 Requires-Python >=3.9,<3.14; 6.8.1 Requires-Python >=3.9,<3.14; 6.8.1.1 Requires-Python >=3.9,<3.14; 6.8.2 Requires-Python >=3.9,<3.14; 6.8.2.1 Requires-Python >=3.9,<3.14; 6.8.3 Requires-Python >=3.9,<3.14; 6.9.0 Requires-Python >=3.9,<3.14; 6.9.1 Requires-Python >=3.9,<3.14; 6.9.2 Requires-Python >=3.9,<3.14; 6.9.3 Requires-Python >=3.9,<3.14\r\nERROR: Could not find a version that satisfies the requirement PySide6 (from versions: none)\r\nERROR: No matching distribution found for PySide6",
+  "timestamp": "2026-03-17T09:30:50.865614+00:00",
+  "executed_on": "local_machine"
+}
