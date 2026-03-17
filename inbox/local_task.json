@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "003",
+  "engine": "POWERSHELL",
+  "command": "[System.Reflection.Assembly]::LoadWithPartialName('System.Drawing') | Out-Null; $fonts = (New-Object System.Drawing.Text.InstalledFontCollection).Families | Where-Object { $_.Name -match 'Arab|Tahoma|Arial|Amiri|Noto|Segoe' } | Select-Object -First 15 Name; $fonts | Format-Table -AutoSize",
+  "description": "فحص الخطوط العربية المتوفرة على النظام",
+  "timeout": 30
+}
