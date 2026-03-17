@@ -1,0 +1,11 @@
+{
+  "task_id": "disk_check_001",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "فحص المساحة الحالية لجميع الأقراص",
+  "command_preview": "Get-PSDrive -PSProvider FileSystem | Select-Object Name, @{N='Used(GB)';E={[math]::Round($_.Used/1GB,2)}}, @{N='Free(GB)';E={[math]::Round($_.Free/1GB,2)}}, @{N='Total(GB)';E={[math]::Round(($_.Used+$_.Free)/1GB,2)}} | Format-Table -AutoSize",
+  "output": "Name Used(GB) Free(GB) Total(GB)\r\n---- -------- -------- ---------\r\nC       49,46     9,53        59\r\nD           0        0         0",
+  "timestamp": "2026-03-17T03:18:09.760501+00:00",
+  "executed_on": "local_machine"
+}
