@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "005",
+  "engine": "PYTHON",
+  "command": "import os\nfrom PIL import Image\npath = os.path.join(os.path.expanduser('~'), 'Desktop', 'restaurant_banner.png')\nif os.path.exists(path):\n    img = Image.open(path)\n    size_bytes = os.path.getsize(path)\n    size_kb = size_bytes / 1024\n    print(f'File exists: YES')\n    print(f'Path: {path}')\n    print(f'Dimensions: {img.size[0]}x{img.size[1]}')\n    print(f'Mode: {img.mode}')\n    print(f'Format: {img.format}')\n    print(f'Size: {size_bytes} bytes ({size_kb:.1f} KB)')\n    print(f'DPI: {img.info.get(\"dpi\", \"Not set\")}')\nelse:\n    print(f'ERROR: File not found at {path}')",
+  "description": "التحقق من الصورة المُنشأة - حجمها وأبعادها ومسارها",
+  "timeout": 60
+}
