@@ -1,0 +1,11 @@
+{
+  "task_id": "001",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "PYTHON",
+  "description": "فحص وجود مكتبة Pillow على الجهاز",
+  "command_preview": "from PIL import Image; print('Pillow installed:', Image.__version__)",
+  "output": "Pillow installed: 12.1.1",
+  "timestamp": "2026-03-17T14:05:28.909167+00:00",
+  "executed_on": "local_machine"
+}
