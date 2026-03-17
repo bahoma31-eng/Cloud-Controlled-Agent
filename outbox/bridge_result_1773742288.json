@@ -1,0 +1,11 @@
+{
+  "task_id": "task_20260317_001",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "عرض اسم الجهاز ونظام التشغيل",
+  "command_preview": "$computerName = $env:COMPUTERNAME; $os = (Get-CimInstance Win32_OperatingSystem); \"Computer Name: $computerName`nOS: $($os.Caption) $($os.Version)`nArchitecture: $($os.OSArchitecture)\"",
+  "output": "Computer Name: DESKTOP-556TJ6M\nOS: Microsoft Windows 10 Professionnel 10.0.18362\nArchitecture: 64 bits",
+  "timestamp": "2026-03-17T10:11:28.833930+00:00",
+  "executed_on": "local_machine"
+}
