@@ -1,0 +1,11 @@
+{
+  "task_id": "003",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "فحص الخطوط العربية المتوفرة على النظام",
+  "command_preview": "[System.Reflection.Assembly]::LoadWithPartialName('System.Drawing') | Out-Null; $fonts = (New-Object System.Drawing.Text.InstalledFontCollection).Families | Where-Object { $_.Name -match 'Arab|Tahoma|Arial|Amiri|Noto|Segoe' } | Select-Object -First 15 Name; $fonts | Format-Table -AutoSize",
+  "output": "Name                 \r\n----                 \r\nArabic Typesetting   \r\nArial                \r\nArial Black          \r\nArial Narrow         \r\nArial Rounded MT Bold\r\nArial Unicode MS     \r\nSegoe MDL2 Assets    \r\nSegoe Print          \r\nSegoe Script         \r\nSegoe UI             \r\nSegoe UI Black       \r\nSegoe UI Emoji       \r\nSegoe UI Historic    \r\nSegoe UI Light       \r\nSegoe UI Semibold",
+  "timestamp": "2026-03-17T14:09:03.866176+00:00",
+  "executed_on": "local_machine"
+}
