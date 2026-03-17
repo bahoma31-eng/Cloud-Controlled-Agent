@@ -1,0 +1,11 @@
+{
+  "task_id": "104",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "إنشاء مجلد media-pipeline/fonts ونسخ خط Amiri-Bold.ttf إليه",
+  "command_preview": "$dest = \"$env:USERPROFILE\\Cloud-Controlled-Agent\\media-pipeline\\fonts\" ; if (-not (Test-Path $dest)) { New-Item -ItemType Directory -Path $dest -Force | Out-Null ; Write-Host \"Created directory: $dest\" } else { Write-Host \"Directory already exists: $dest\" } ; $src = \"$env:USERPROFILE\\Desktop\\projects\\my-restaurant-app\\boncoin\\Amiri-Bold.ttf\" ; Copy-Item -Path $src -Destination $dest -Force ; Write-Host 'Copied Amiri-Bold.ttf' ; Write-Host '=== VERIFY ===' ; Get-ChildItem -Path $dest | Select-Obj",
+  "output": "Created directory: C:\\Users\\Revexn\\Cloud-Controlled-Agent\\media-pipeline\\fonts\nCopied Amiri-Bold.ttf\n=== VERIFY ===\n\r\nName           Length\r\n----           ------\r\nAmiri-Bold.ttf 403996",
+  "timestamp": "2026-03-17T03:04:33.347842+00:00",
+  "executed_on": "local_machine"
+}
