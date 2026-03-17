@@ -1,7 +1,1 @@
-{
-  "task_id": "100",
-  "engine": "POWERSHELL",
-  "command": "Get-ChildItem -Path \"$env:USERPROFILE\\Desktop\\projects\" -Recurse -File | Select-Object Name, FullName, Length, Extension | Format-Table -AutoSize",
-  "description": "استكشاف محتوى مجلد projects على سطح المكتب للبحث عن ملفات اللغة العربية (خطوط)",
-  "timeout": 60
-}
+waiting
