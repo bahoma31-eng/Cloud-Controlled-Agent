@@ -1,0 +1,11 @@
+{
+  "task_id": "img_v2_004",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "PYTHON",
+  "description": "التحقق من جودة الصورة: الأبعاد، وجود النص، الحدود",
+  "command_preview": "from PIL import Image\nimport os\n\npath = os.path.join(os.path.expanduser('~'), 'Desktop', 'restaurant_banner_v2.png')\nif not os.path.exists(path):\n    print('ERROR: File not found!')\nelse:\n    img = Image.open(path)\n    size_bytes = os.path.getsize(path)\n    print(f'Path: {path}')\n    print(f'Dimensions: {img.size[0]}x{img.size[1]}')\n    print(f'File size: {size_bytes} bytes ({size_bytes/1024:.1f} KB)')\n    print(f'Format: {img.format}')\n    print(f'Mode: {img.mode}')\n    # Check center area for ",
+  "output": "Path: C:\\Users\\Revexn\\Desktop\\restaurant_banner_v2.png\r\nDimensions: 1920x1080\r\nFile size: 45390 bytes (44.3 KB)\r\nFormat: PNG\r\nMode: RGB\r\nText detected in center: False\r\nCenter pixels sample: [(69, 0, 0), (69, 0, 0), (69, 0, 0), (69, 0, 0), (69, 0, 0)]\r\nBorder area pixel (15,15): (255, 215, 0)\r\nBorder area pixel (25,25): (255, 215, 0)\r\nVerification FAILED",
+  "timestamp": "2026-03-17T14:33:35.030213+00:00",
+  "executed_on": "local_machine"
+}
