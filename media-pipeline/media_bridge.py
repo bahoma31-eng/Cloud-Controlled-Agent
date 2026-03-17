@@ -85,7 +85,7 @@ def gh_headers():
 	return {
 		"Authorization": f"token {GITHUB_TOKEN}",
 		"Accept": "application/vnd.github+json",
-		"User-Agent": "media-bridge/2.3",
+		"User-Agent": "media-bridge/2.4",
 	}
 
 
@@ -163,6 +163,16 @@ def run_watcher_opencv(local_img_path: str, out_meta_path: str):
 		raise RuntimeError(f"watcher failed: {p.stdout}\n{p.stderr}")
 
 
+def _print_raw_if_exists(out_meta_path: str, w: int, h: int):
+	raw_path = out_meta_path + ".raw.txt"
+	if PRINT_GEMINI_RAW_TO_TERMINAL and os.path.isfile(raw_path):
+		log(f"Gemini raw output ({w}x{h}):")
+		try:
+			print(open(raw_path, "r", encoding="utf-8").read()[:8000])
+		except Exception:
+			pass
+
+
 def run_watcher_gemini(final_canvas_path: str, mime: str, w: int, h: int, filename: str, out_meta_path: str):
 	cmd = [
 		sys.executable,
@@ -182,6 +192,8 @@ def run_watcher_gemini(final_canvas_path: str, mime: str, w: int, h: int, filena
 	]
 	p = subprocess.run(cmd, capture_output=True, text=True)
 	if p.returncode != 0:
+		# even on failure, watcher should have written .raw.txt (best effort)
+		_print_raw_if_exists(out_meta_path, w, h)
 		raise RuntimeError(f"gemini watcher failed:\n{p.stdout}\n{p.stderr}")
 
 
@@ -284,14 +296,6 @@ def export_variants(image_bytes: bytes, image_name: str):
 		local_meta = os.path.join(LOCAL_META, meta_name)
 		if USE_GEMINI_WATCHER:
 			run_watcher_gemini(bg_png_path, "image/png", w, h, image_name, local_meta)
-			# Print raw output if present
-			raw_path = local_meta + ".raw.txt"
-			if PRINT_GEMINI_RAW_TO_TERMINAL and os.path.isfile(raw_path):
-				log(f"Gemini raw output ({w}x{h}):")
-				try:
-					print(open(raw_path, "r", encoding="utf-8").read()[:4000])
-				except Exception:
-					pass
 		else:
 			local_img = os.path.join(LOCAL_WORKDIR, image_name)
 			run_watcher_opencv(local_img, local_meta)
@@ -358,7 +362,6 @@ def main():
 
 				out_files = export_variants(raw, name)
 
-				# Upload outputs
 				last_meta_path = None
 				for local_path, out_name, meta_path in out_files:
 					remote = OUTPUT_DIR.rstrip("/") + "/" + out_name
@@ -366,13 +369,11 @@ def main():
 					log(f"Uploaded: {remote}" if ok else f"Upload failed: {remote} -> {resp[:200]}")
 					last_meta_path = meta_path
 
-				# Upload meta (upload last one only; local meta is now per-size)
 				if last_meta_path and os.path.isfile(last_meta_path):
 					remote_meta = META_DIR.rstrip("/") + "/" + os.path.basename(last_meta_path)
 					okm, resp_m = gh_put_file(remote_meta, open(last_meta_path, "rb").read(), f"media-bridge: meta {os.path.basename(last_meta_path)}")
 					log(f"Uploaded meta: {remote_meta}" if okm else f"Meta upload failed: {resp_m[:200]}")
 
-				# archive
 				archive_path = ARCHIVE_DIR.rstrip("/") + "/" + name
 				ok_a, resp_a = gh_put_file(archive_path, raw, f"media-bridge: archive {name}")
 				if ok_a:
