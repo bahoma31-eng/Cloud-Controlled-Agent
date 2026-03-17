@@ -1,0 +1,11 @@
+{
+  "task_id": "html_banner_001",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "CMD",
+  "description": "تثبيت مكتبة playwright ومتصفح Chromium لتحويل HTML إلى صورة",
+  "command_preview": "pip install playwright && playwright install chromium",
+  "output": "Collecting playwright\r\n  Downloading playwright-1.58.0-py3-none-win_amd64.whl.metadata (3.5 kB)\r\nCollecting pyee<14,>=13 (from playwright)\r\n  Using cached pyee-13.0.1-py3-none-any.whl.metadata (3.0 kB)\r\nCollecting greenlet<4.0.0,>=3.1.1 (from playwright)\r\n  Downloading greenlet-3.3.2-cp312-cp312-win_amd64.whl.metadata (3.8 kB)\r\nRequirement already satisfied: typing-extensions in C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages (from pyee<14,>=13->playwright) (4.15.0)\r\nDownloading playwright-1.58.0-py3-none-win_amd64.whl (36.8 MB)\r\n   ---------------------------------------- 36.8/36.8 MB 882.7 kB/s  0:00:41\r\nDownloading greenlet-3.3.2-cp312-cp312-win_amd64.whl (231 kB)\r\nUsing cached pyee-13.0.1-py3-none-any.whl (15 kB)\r\nInstalling collected packages: pyee, greenlet, playwright\r\n\r\nSuccessfully installed greenlet-3.3.2 playwright-1.58.0 pyee-13.0.1",
+  "timestamp": "2026-03-17T14:48:25.723353+00:00",
+  "executed_on": "local_machine"
+}
