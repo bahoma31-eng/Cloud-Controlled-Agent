@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "generated_at": "2026-03-18T10:22:28.918870+00:00",
+  "source_image": {
+    "filename": "Sans tsd;lksitsre.jpg",
+    "width": 1024,
+    "height": 768
+  },
+  "analysis": {
+    "dominant_colors": [
+      "#201E1E",
+      "#8B5E3C",
+      "#F5E8D7"
+    ],
+    "brightness": 0.55,
+    "recommended_text_theme": "light"
+  },
+  "layout": {
+    "empty_regions_px": [
+      {
+        "x": 50,
+        "y": 40,
+        "w": 400,
+        "h": 80,
+        "score": 0.95
+      },
+      {
+        "x": 550,
+        "y": 40,
+        "w": 400,
+        "h": 80,
+        "score": 0.9
+      },
+      {
+        "x": 50,
+        "y": 150,
+        "w": 250,
+        "h": 100,
+        "score": 0.7
+      }
+    ],
+    "chosen_region_px": {
+      "x": 50,
+      "y": 40,
+      "w": 400,
+      "h": 80
+    }
+  },
+  "text_style": {
+    "font_family": "Cairo",
+    "font_weight": 800,
+    "font_size_px": 36,
+    "color": "#ffffff",
+    "shadow": {
+      "enabled": true,
+      "blur": 8,
+      "opacity": 0.3,
+      "x": 0,
+      "y": 4
+    }
+  },
+  "filters": {
+    "brightness": 1.0,
+    "contrast": 1.05,
+    "saturation": 1.05,
+    "sharpness": 1.0,
+    "background_blur_px": 0
+  },
+  "copy": {
+    "title": "المذاق الأصيل",
+    "cta": "اطلب الآن"
+  }
+}
