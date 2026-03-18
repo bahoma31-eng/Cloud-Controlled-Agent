@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "AGENT-001-RETRY",
+  "engine": "POWERSHELL",
+  "command": "try { $content = Get-Content 'C:\\Users\\Revexn\\Cloud-Controlled-Agent\\.env' -Raw -ErrorAction Stop; Write-Output $content } catch { Write-Output \"ERROR: $_\" }",
+  "description": "Read .env file - retry attempt",
+  "timeout": 60
+}
