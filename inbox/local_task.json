@@ -1,7 +1,1 @@
-{
-  "task_id": "CA-EXPLORE-003",
-  "engine": "CMD",
-  "command": "dir C:\\Users\\Revexn\\CodeAnalyzer /a /s",
-  "description": "استكشاف بسيط لمجلد CodeAnalyzer باستخدام CMD",
-  "timeout": 30
-}
+waiting
