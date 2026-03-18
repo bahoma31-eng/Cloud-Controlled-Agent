@@ -1,0 +1,13 @@
+{
+  "task_id": "FIX-SYNTAX-006",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "قراءة سطور 111-125 من code_analyzer.py لفهم خطأ SyntaxError في السطر 115",
+  "command_preview": "$file = 'C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py'; $lines = [System.IO.File]::ReadAllLines($file, [System.Text.Encoding]::UTF8); for($i=110; $i -lt [Math]::Min(125, $lines.Count); $i++) { Write-Output \"L$($i+1): $($lines[$i])\" }",
+  "output": "L111:         except Exception as e:\nL112:             self._add_finding(\"ERROR\", rel_path, 0, f\"??? ????? ?????: {e}\", \"???? ?? ????? ????? ??????????\")\nL113:             return\nL114:         \nL115:         lines = content.split(\"\nL116: \")\nL117:         \nL118:         # ?????? ???? ????? ???????\nL119:         self._check_encoding_issues(rel_path, content, lines)\nL120:         self._check_large_file(rel_path, lines)\nL121:         self._check_trailing_whitespace(rel_path, lines)\nL122:         self._check_mixed_line_endings(rel_path, content)\nL123:         self._check_todo_fixme(rel_path, lines)\nL124:         \nL125:         # ?????? ???? ?????????",
+  "timestamp": "2026-03-18T17:39:17.530961+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
