@@ -1,0 +1,11 @@
+{
+  "task_id": "task_20260318_001",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "فحص الخوادم (المنافذ المفتوحة) والنوافذ الطرفية العاملة حالياً",
+  "command_preview": "Write-Output '=== Listening Ports (Servers) ===' ; Get-NetTCPConnection -State Listen | Select-Object LocalAddress, LocalPort, OwningProcess, @{Name='ProcessName';Expression={(Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue).ProcessName}} | Sort-Object LocalPort | Format-Table -AutoSize | Out-String -Width 200 ; Write-Output '=== Terminal/Console Windows ===' ; Get-Process | Where-Object { $_.MainWindowTitle -ne '' -and ($_.ProcessName -match 'cmd|powershell|pwsh|WindowsTerminal|C",
+  "output": "=== Listening Ports (Servers) ===\r\n\r\nLocalAddress LocalPort OwningProcess ProcessName\r\n------------ --------- ------------- -----------\r\n0.0.0.0            135           588 svchost    \r\n::                 135           588 svchost    \r\n192.168.1.22       139             4 System     \r\n::                 445             4 System     \r\n0.0.0.0           5040          6068 svchost    \r\n::                5357             4 System     \r\n::                7680          2020 svchost    \r\n0.0.0.0          49664           792 lsass      \r\n::               49664           792 lsass      \r\n0.0.0.0          49665           704 wininit    \r\n::               49665           704 wininit    \r\n0.0.0.0          49666          1360 svchost    \r\n::               49666          1360 svchost    \r\n::               49667          1372 svchost    \r\n0.0.0.0          49667          1372 svchost    \r\n::               49668          2804 spoolsv    \r\n0.0.0.0          49668          2804 spoolsv    \r\n::               49669           776 services   \r\n0.0.0.0          49669           776 services   \r\n\r\n\r\n\r\n=== Terminal/Console Windows ===\r\n\r\n   Id ProcessName MainWindowTitle    StartTime          \r\n   -- ----------- ---------------    ---------          \r\n 3280 powershell  Windows PowerShell 18/03/2026 12:38:38\r\n10012 powershell  Windows PowerShell 18/03/2026 12:39:53",
+  "timestamp": "2026-03-18T12:00:06.617048+00:00",
+  "executed_on": "local_machine"
+}
