@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "generated_at": "2026-03-18T00:51:59.934153+00:00",
+  "source_image": {
+    "filename": "Shgjghj titre.jpg",
+    "width": 1024,
+    "height": 768
+  },
+  "analysis": {
+    "dominant_colors": [
+      "#3a3a3a",
+      "#b08a5e",
+      "#e0b76e"
+    ],
+    "brightness": 0.5,
+    "recommended_text_theme": "light"
+  },
+  "layout": {
+    "empty_regions_px": [
+      {
+        "x": 50,
+        "y": 50,
+        "w": 350,
+        "h": 120,
+        "score": 0.95
+      },
+      {
+        "x": 880,
+        "y": 50,
+        "w": 150,
+        "h": 120,
+        "score": 0.8
+      },
+      {
+        "x": 50,
+        "y": 767,
+        "w": 350,
+        "h": 80,
+        "score": 0.7
+      }
+    ],
+    "chosen_region_px": {
+      "x": 50,
+      "y": 50,
+      "w": 350,
+      "h": 120
+    }
+  },
+  "text_style": {
+    "font_family": "Cairo",
+    "font_weight": 800,
+    "font_size_px": 36,
+    "color": "#ffffff",
+    "shadow": {
+      "enabled": true,
+      "blur": 8,
+      "opacity": 0.3,
+      "x": 0,
+      "y": 4
+    }
+  },
+  "filters": {
+    "brightness": 1.0,
+    "contrast": 1.05,
+    "saturation": 1.05,
+    "sharpness": 1.0,
+    "background_blur_px": 0
+  },
+  "copy": {
+    "title": "عنوان جذاب قصير",
+    "cta": "اطلب الآن"
+  }
+}
