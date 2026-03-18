@@ -10,6 +10,10 @@ from pathlib import Path
 from typing import Optional, Tuple, Any, List, Dict
 
 import requests
+from dotenv import load_dotenv
+
+# تحميل المتغيرات من ملف .env المحلي (إن وُجد) قبل قراءة أي متغير بيئة
+load_dotenv()
 
 # =========================
 # GitHub repo configuration (can be overridden by env vars)
