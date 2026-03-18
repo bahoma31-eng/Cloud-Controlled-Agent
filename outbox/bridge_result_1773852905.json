@@ -1,0 +1,13 @@
+{
+  "task_id": "CA-READ-006",
+  "status": "FAILED",
+  "return_code": 1,
+  "engine": "PYTHON",
+  "description": "قراءة أول 80 سطر من code_analyzer.py عبر Python",
+  "command_preview": "with open(r'C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py', 'r', encoding='utf-8') as f:\n    lines = f.readlines()\nprint(f'Total lines: {len(lines)}')\nfor i, line in enumerate(lines[:80]):\n    print(f'{i+1}: {line}', end='')",
+  "output": "Total lines: 316\n1: import os\n2: import sys\n3: import ast\n4: import re\n5: import json\n6: import hashlib\n7: import traceback\n8: from datetime import datetime\n9: from pathlib import Path\n10: from collections import defaultdict\n11: \n12: class CodeAnalyzer:\n\n[STDERR]\nTraceback (most recent call last):\n  File \"<string>\", line 5, in <module>\n  File \"C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\encodings\\cp1252.py\", line 19, in encode\n    return codecs.charmap_encode(input,self.errors,encoding_table)[0]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nUnicodeEncodeError: 'charmap' codec can't encode characters in position 11-14: character maps to <undefined>",
+  "timestamp": "2026-03-18T16:55:05.443733+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.1"
+}
