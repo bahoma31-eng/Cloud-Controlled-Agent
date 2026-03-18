@@ -1,7 +1,1 @@
-{
-  "task_id": "err_check_001",
-  "engine": "POWERSHELL",
-  "command": "# Check if media_bridge.py is still running and capture any error info\n$proc = Get-Process -Name python -ErrorAction SilentlyContinue | Where-Object { $_.MainWindowTitle -like '*media*' -or $_.CommandLine -like '*media_bridge*' }; if (-not $proc) { $proc = Get-WmiObject Win32_Process | Where-Object { $_.CommandLine -like '*media_bridge*' } | Select-Object ProcessId, CommandLine, CreationDate; Write-Output '=== media_bridge processes ==='; $proc | Format-List }; Write-Output '=== Checking for .env file ==='; if (Test-Path 'C:\\Users\\Revexn\\Cloud-Controlled-Agent\\media-pipeline\\.env') { Get-Content 'C:\\Users\\Revexn\\Cloud-Controlled-Agent\\media-pipeline\\.env' } else { Write-Output '.env file not found in media-pipeline' }; Write-Output '=== Checking media_bridge.py stderr redirect ==='; Get-WmiObject Win32_Process | Where-Object { $_.CommandLine -like '*media_bridge*' } | Select-Object ProcessId, CommandLine | Format-List",
-  "description": "Check media_bridge.py process status and .env configuration for errors",
-  "timeout": 60
-}
+waiting
