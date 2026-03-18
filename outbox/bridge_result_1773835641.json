@@ -1,0 +1,11 @@
+{
+  "task_id": "010",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "الحصول على تفاصيل العمليات (PowerShell و Python) لتحديد أيها يشغّل media_bridge.py",
+  "command_preview": "Get-WmiObject Win32_Process | Where-Object { $_.Name -like '*python*' -or $_.Name -like '*powershell*' } | Select-Object ProcessId, Name, CommandLine, @{N='StartTime';E={$_.ConvertToDateTime($_.CreationDate)}} | Format-List",
+  "output": "ProcessId   : 3280\r\nName        : powershell.exe\r\nCommandLine : \"PowerShell.exe\" -noexit -command \r\n              Set-Location -literalPath 'C:\\User\r\n              s\\Revexn\\Cloud-Controlled-Agent'\r\nStartTime   : 18/03/2026 12:38:38\r\n\r\nProcessId   : 10012\r\nName        : powershell.exe\r\nCommandLine : \"PowerShell.exe\" -noexit -command \r\n              Set-Location -literalPath 'C:\\User\r\n              s\\Revexn\\Cloud-Controlled-Agent'\r\nStartTime   : 18/03/2026 12:39:53\r\n\r\nProcessId   : 4516\r\nName        : python.exe\r\nCommandLine : \"C:\\Users\\Revexn\\AppData\\Local\\Pro\r\n              grams\\Python\\Python312\\python.exe\"\r\n               bridge/local_bridge.py\r\nStartTime   : 18/03/2026 12:42:33\r\n\r\nProcessId   : 6320\r\nName        : python.exe\r\nCommandLine : \"C:\\Users\\Revexn\\AppData\\Local\\Pro\r\n              grams\\Python\\Python312\\python.exe\"\r\n               media-pipeline/media_bridge.py\r\nStartTime   : 18/03/2026 12:43:09\r\n\r\nProcessId   : 8796\r\nName        : powershell.exe\r\nCommandLine : powershell -NoProfile \r\n              -ExecutionPolicy Bypass -Command \r\n              \"Get-WmiObject Win32_Process | \r\n              Where-Object { $_.Name -like \r\n              '*python*' -or $_.Name -like \r\n              '*powershell*' } | Select-Object \r\n              ProcessId, Name, CommandLine, @{N=\r\n              'StartTime';E={$_.ConvertToDateTim\r\n              e($_.CreationDate)}} | \r\n              Format-List\"\r\nStartTime   : 18/03/2026 13:07:19",
+  "timestamp": "2026-03-18T12:07:21.826062+00:00",
+  "executed_on": "local_machine"
+}
