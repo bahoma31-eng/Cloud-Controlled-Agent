@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "FIX-SYNTAX-015",
+  "engine": "PYTHON",
+  "command": "import py_compile; py_compile.compile(r'C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py', doraise=True); print('SUCCESS: No SyntaxError found! File compiles cleanly.')",
+  "description": "التحقق النهائي من صحة بناء الجملة بعد إصلاح regex",
+  "timeout": 60
+}
