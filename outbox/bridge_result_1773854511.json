@@ -1,0 +1,13 @@
+{
+  "task_id": "ANALYZER-TEST-002",
+  "status": "FAILED",
+  "return_code": 1,
+  "engine": "ANALYZER",
+  "description": "إعادة اختبار محرك ANALYZER بعد تحديث الجسر إلى V2.2",
+  "command_preview": "C:\\Users\\Revexn\\CodeAnalyzer",
+  "output": "[STDERR]\nTraceback (most recent call last):\n  File \"<string>\", line 4, in <module>\n  File \"C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py\", line 82\n    print(f\"\n          ^\nSyntaxError: unterminated f-string literal (detected at line 82)",
+  "timestamp": "2026-03-18T17:21:51.824806+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
