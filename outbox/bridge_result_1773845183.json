@@ -1,0 +1,13 @@
+{
+  "task_id": "DIAG-001",
+  "status": "FAILED",
+  "return_code": 1,
+  "engine": "POWERSHELL",
+  "description": "فحص خارجي: هل media_bridge.py يعمل حالياً + أخطاء Windows الأخيرة",
+  "command_preview": "Get-Process python* -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -like '*media_bridge*' } | Select-Object Id, ProcessName, StartTime, CPU, WorkingSet64, @{N='CommandLine';E={$_.CommandLine}} | Format-List; Write-Host '--- CHECKING FOR RECENT CRASHES ---'; Get-WinEvent -FilterHashtable @{LogName='Application'; Level=2; StartTime=(Get-Date).AddHours(-6)} -MaxEvents 20 -ErrorAction SilentlyContinue | Where-Object { $_.Message -like '*python*' -or $_.Message -like '*media*' } | Select-Object TimeCreated, Message | Format-List",
+  "output": "--- CHECKING FOR RECENT CRASHES ---",
+  "timestamp": "2026-03-18T14:46:23.281055+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.1"
+}
