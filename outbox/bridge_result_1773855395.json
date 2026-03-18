@@ -1,0 +1,13 @@
+{
+  "task_id": "FIX-SYNTAX-004",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "إصلاح خطأ SyntaxError في السطر 82 باستخدام PowerShell - دمج السطرين 82 و 83",
+  "command_preview": "$file = 'C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py'; $lines = [System.IO.File]::ReadAllLines($file, [System.Text.Encoding]::UTF8); Write-Output \"Total lines: $($lines.Count)\"; Write-Output \"Line 82 before: $($lines[81])\"; Write-Output \"Line 83 before: $($lines[82])\"; $lines[81] = $lines[81].TrimEnd() + $lines[82].TrimStart(); $newLines = [System.Collections.ArrayList]::new($lines); $newLines.RemoveAt(82); [System.IO.File]::WriteAllLines($file, $newLines.ToArray(), [System.Text.Encoding]::UTF8); $verify = [System.IO.File]::ReadAllLines($file, [System.Text.Encoding]::UTF8); Write-Output \"Line 82 after: $($verify[81])\"; Write-Output 'Fix applied successfully!'",
+  "output": "Total lines: 316\nLine 82 before:         print(f\"\nLine 83 before: ????? ????? ?? {duration:.2f} ?????\")\nLine 82 after:         print(f\"????? ????? ?? {duration:.2f} ?????\")\nFix applied successfully!",
+  "timestamp": "2026-03-18T17:36:35.900009+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
