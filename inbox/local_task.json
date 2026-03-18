@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "TEST-002",
+  "engine": "POWERSHELL",
+  "command": "python -c \"import sys; sys.path.insert(0, r'C:\\Users\\Revexn\\CodeAnalyzer'); import code_analyzer; print('SUCCESS: import passed'); print('Module:', code_analyzer.__name__); classes = [c for c in dir(code_analyzer) if not c.startswith('_')]; print('Public members:', len(classes)); print('Members:', ', '.join(classes[:20]))\"",
+  "description": "اختبار 2: استيراد الوحدة وفحص الأعضاء العامة",
+  "timeout": 60
+}
