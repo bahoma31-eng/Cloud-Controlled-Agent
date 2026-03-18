@@ -1,0 +1,13 @@
+{
+  "task_id": "FIX-SYNTAX-002",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "قراءة معلومات الملف وسطور 76-95 من code_analyzer.py",
+  "command_preview": "$f = Get-Content 'C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py' -Raw -Encoding UTF8; Write-Output \"Total chars: $($f.Length)\"; Write-Output \"Total lines: $(($f -split \"`n\").Count)\"; $lines = $f -split \"`n\"; for($i=75; $i -lt [Math]::Min(95, $lines.Count); $i++) { Write-Output \"L$($i+1): $($lines[$i])\" }",
+  "output": "Total chars: 14690\nTotal lines: 314\nL76:             \"total_findings\": len(self.findings),\n\nL77:             \"errors\": self.errors_found,\n\nL78:             \"warnings\": self.warnings_found,\n\nL79:             \"info\": self.info_found\n\nL80:         }\n\nL81:         \n\nL82:         print(f\"\n\nL83: ????? ????? ?? {duration:.2f} ?????\")\n\nL84:         print(f\"???????: {sum(self.file_stats.values())} | ???????: {self.errors_found} | ?????????: {self.warnings_found} | ???????: {self.info_found}\")\n\nL85:         return self.scan_summary\n\nL86:     \n\nL87:     def _scan_directory(self, dir_path):\n\nL88:         \"\"\"??? ???? ??????? ?? ??????? ???????? ??? ???????\"\"\"\n\nL89:         try:\n\nL90:             for entry in sorted(dir_path.iterdir()):\n\nL91:                 if entry.is_dir():\n\nL92:                     if entry.name in self.SKIP_DIRS:\n\nL93:                         continue\n\nL94:                     self._scan_directory(entry)\n\nL95:                 elif entry.is_file():",
+  "timestamp": "2026-03-18T17:33:13.893640+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
