@@ -1,0 +1,13 @@
+{
+  "task_id": "AGENT-001",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "اكتشاف مسار المستودع الحالي والمجلد الأب لإنشاء وكيل التحليل خارجه",
+  "command_preview": "Write-Output \"CWD: $(Get-Location)\"; Write-Output \"REPO_PATH: $((Get-Item .).FullName)\"; Write-Output \"PARENT: $((Get-Item ..).FullName)\"",
+  "output": "CWD: C:\\Users\\Revexn\\Cloud-Controlled-Agent\nREPO_PATH: C:\\Users\\Revexn\\Cloud-Controlled-Agent\nPARENT: C:\\Users\\Revexn",
+  "timestamp": "2026-03-18T16:11:35.125961+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.1"
+}
