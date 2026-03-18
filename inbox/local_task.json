@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "FIX-SYNTAX-002",
+  "engine": "POWERSHELL",
+  "command": "$f = Get-Content 'C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py' -Raw -Encoding UTF8; Write-Output \"Total chars: $($f.Length)\"; Write-Output \"Total lines: $(($f -split \"`n\").Count)\"; $lines = $f -split \"`n\"; for($i=75; $i -lt [Math]::Min(95, $lines.Count); $i++) { Write-Output \"L$($i+1): $($lines[$i])\" }",
+  "description": "قراءة معلومات الملف وسطور 76-95 من code_analyzer.py",
+  "timeout": 60
+}
