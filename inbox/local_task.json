@@ -1,7 +1,1 @@
-{
-  "task_id": "FIX-SYNTAX-010",
-  "engine": "POWERSHELL",
-  "command": "$lines = [System.IO.File]::ReadAllLines('C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py', [System.Text.Encoding]::UTF8); Write-Output \"Total lines: $($lines.Count)\"; for($i=186; $i -lt [Math]::Min(198, $lines.Count); $i++) { Write-Output \"Line $($i+1): $($lines[$i])\" }",
-  "description": "قراءة الأسطر 187-198 لفهم حالة السطر 189 الحالية",
-  "timeout": 30
-}
+waiting
