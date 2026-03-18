@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "AGENT-001",
+  "engine": "POWERSHELL",
+  "command": "Get-Content 'C:\\Users\\Revexn\\Cloud-Controlled-Agent\\.env' -ErrorAction Stop",
+  "description": "قراءة محتوى ملف .env من مجلد Cloud-Controlled-Agent",
+  "timeout": 60
+}
