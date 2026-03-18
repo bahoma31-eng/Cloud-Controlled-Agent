@@ -1,0 +1,13 @@
+{
+  "task_id": "DIAG-001",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "فحص حالة عمليات Python الحالية - هل media_bridge.py يعمل؟",
+  "command_preview": "Get-Process python* -ErrorAction SilentlyContinue | Select-Object Id, ProcessName, CPU, WorkingSet64, StartTime, @{N='CmdLine';E={(Get-CimInstance Win32_Process -Filter \"ProcessId=$($_.Id)\").CommandLine}} | Format-List",
+  "output": "Id           : 10512\nProcessName  : python\nCPU          : 47,796875\nWorkingSet64 : 30568448\nStartTime    : 18/03/2026 15:46:16\nCmdLine      : \"C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\python.exe\" \n               bridge/local_bridge.py",
+  "timestamp": "2026-03-18T14:50:54.010074+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.1"
+}
