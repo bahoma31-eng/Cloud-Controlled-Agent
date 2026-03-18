@@ -1,0 +1,13 @@
+{
+  "task_id": "003",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "Check if antigravity folder exists and list Desktop directories",
+  "command_preview": "Write-Output \"=== Check Desktop path ===\"; Write-Output $env:USERPROFILE\\Desktop; Test-Path \"$env:USERPROFILE\\Desktop\\antigravity\"; Write-Output \"=== List Desktop folders ===\"; Get-ChildItem -Path \"$env:USERPROFILE\\Desktop\" -Directory | Select-Object Name; Write-Output \"=== Search for antigravity ===\"; Get-ChildItem -Path \"$env:USERPROFILE\\Desktop\" -Directory -Filter '*anti*' -ErrorAction SilentlyContinue | Select-Object FullName; Get-ChildItem -Path \"$env:USERPROFILE\" -Directory -Filter '*antigravity*' -ErrorAction SilentlyContinue | Select-Object FullName",
+  "output": "=== Check Desktop path ===\nC:\\Users\\Revexn\\Desktop\nTrue\n=== List Desktop folders ===\n\nName       \n----       \nantigravity\nDocuments  \nia agent   \nImages     \nProjects   \nShortcuts  \nTools      \nvs code    \n=== Search for antigravity ===",
+  "timestamp": "2026-03-18T19:10:15.189333+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
