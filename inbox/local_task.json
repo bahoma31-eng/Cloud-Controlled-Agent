@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "DIAG-001",
+  "engine": "POWERSHELL",
+  "command": "Get-Process python* -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -like '*media_bridge*' } | Select-Object Id, ProcessName, StartTime, CPU, WorkingSet64, @{N='CommandLine';E={$_.CommandLine}} | Format-List; Write-Host '--- CHECKING FOR RECENT CRASHES ---'; Get-WinEvent -FilterHashtable @{LogName='Application'; Level=2; StartTime=(Get-Date).AddHours(-6)} -MaxEvents 20 -ErrorAction SilentlyContinue | Where-Object { $_.Message -like '*python*' -or $_.Message -like '*media*' } | Select-Object TimeCreated, Message | Format-List",
+  "description": "فحص خارجي: هل media_bridge.py يعمل حالياً + أخطاء Windows الأخيرة",
+  "timeout": 60
+}
