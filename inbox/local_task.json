@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "005",
+  "engine": "POWERSHELL",
+  "command": "Write-Output '=== Subdirectories ==='; Get-ChildItem -Path \"$env:USERPROFILE\\Desktop\\antigravity\" -Directory | Select-Object Name; Write-Output '=== Files at root ==='; Get-ChildItem -Path \"$env:USERPROFILE\\Desktop\\antigravity\" -File | Select-Object Name, Length; Write-Output '=== Search token/key files ==='; Get-ChildItem -Path \"$env:USERPROFILE\\Desktop\\antigravity\" -Recurse -File -Include '*.env','*.json','*.txt','*.cfg','*.ini','*.yaml','*.yml','*.toml','*.key','*.token' -ErrorAction SilentlyContinue -Depth 2 | Select-Object FullName, Length | Format-Table -AutoSize",
+  "description": "List antigravity structure and search for token/config files (depth 2 only)",
+  "timeout": 45
+}
