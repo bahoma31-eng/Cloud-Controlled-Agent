@@ -84,7 +84,7 @@ def gh_headers():
     return {
         "Authorization": f"token {GITHUB_TOKEN}",
         "Accept": "application/vnd.github+json",
-        "User-Agent": "media-bridge/3.3",
+        "User-Agent": "media-bridge/3.4",
     }
 
 
@@ -99,6 +99,7 @@ def gh_get_json(url, timeout=60):
         return r.json()
     if r.status_code == 404:
         return None
+    log(f"GitHub GET error {r.status_code} on {url}")
     raise RuntimeError(f"GitHub GET failed {r.status_code}: {r.text[:2000]}")
 
 
@@ -108,13 +109,60 @@ def gh_list_dir(path):
 
 
 def gh_download_file(path):
+    """
+    تنزيل ملف من GitHub Contents API مع fallback لروابط download_url.
+    هذا يحل مشكلة Skip: cannot download للصور التي لا تُرجع content/base64 مباشرة.
+    """
     url = gh_contents_url(path)
     data = gh_get_json(url)
     if not data or data.get("type") != "file":
         log(f"Download miss: path={path}, branch={BRANCH}, url={url}")
         return None, None, None
-    raw = base64.b64decode(data.get("content", ""))
-    return raw, data.get("sha"), data.get("name")
+
+    name = data.get("name")
+    sha = data.get("sha")
+
+    # 1) المسار المعتاد: content + base64
+    b64_content = data.get("content")
+    if isinstance(b64_content, str) and b64_content.strip():
+        try:
+            raw = base64.b64decode(b64_content, validate=False)
+            if raw:
+                return raw, sha, name
+        except Exception as e:
+            log(f"Base64 decode failed for {path}: {e}")
+
+    # 2) fallback: download_url
+    dl = data.get("download_url")
+    if dl:
+        try:
+            r = requests.get(dl, headers=gh_headers(), timeout=120)
+            if r.status_code == 200 and r.content:
+                return r.content, sha, name
+            log(f"download_url fetch failed {r.status_code} for {path}")
+        except Exception as e:
+            log(f"download_url exception for {path}: {e}")
+
+    # 3) fallback أقوى: git_url (raw blob from Git API)
+    git_url = data.get("git_url")
+    if git_url:
+        try:
+            rb = requests.get(git_url, headers=gh_headers(), timeout=120)
+            if rb.status_code == 200:
+                blob = rb.json()
+                enc = (blob.get("encoding") or "").lower()
+                cont = blob.get("content") or ""
+                if enc == "base64" and cont:
+                    raw = base64.b64decode(cont, validate=False)
+                    if raw:
+                        return raw, sha, name
+            else:
+                log(f"git_url fetch failed {rb.status_code} for {path}")
+        except Exception as e:
+            log(f"git_url exception for {path}: {e}")
+
+    log(f"Download miss: no usable content for path={path}, branch={BRANCH}, url={url}")
+    return None, sha, name
 
 
 def gh_put_file(path, content_bytes, message):
@@ -128,13 +176,25 @@ def gh_put_file(path, content_bytes, message):
     return r.status_code in (200, 201), r.text
 
 
-def gh_delete_file(path, message):
+def gh_delete_file(path, message, expected_sha=None):
     url = gh_contents_url(path)
-    old = requests.get(url, headers=gh_headers(), params={"ref": BRANCH}, timeout=60)
-    if old.status_code != 200:
-        return False, f"Not found: {path}"
-    sha = old.json().get("sha")
-    r = requests.delete(url, headers=gh_headers(), json={"message": message, "sha": sha, "branch": BRANCH}, timeout=120)
+
+    sha = expected_sha
+    if not sha:
+        old = requests.get(url, headers=gh_headers(), params={"ref": BRANCH}, timeout=60)
+        if old.status_code != 200:
+            return False, f"Not found: {path}"
+        sha = old.json().get("sha")
+
+    if not sha:
+        return False, f"Missing sha for delete: {path}"
+
+    r = requests.delete(
+        url,
+        headers=gh_headers(),
+        json={"message": message, "sha": sha, "branch": BRANCH},
+        timeout=120
+    )
     return r.status_code in (200, 204), r.text
 
 
@@ -687,10 +747,11 @@ def main():
             for it in files:
                 path = it["path"]
                 name = it["name"]
+                listed_sha = it.get("sha")
 
-                raw, _, _ = gh_download_file(path)
+                raw, downloaded_sha, _ = gh_download_file(path)
                 if not raw:
-                    log(f"Skip: cannot download {path}")
+                    log(f"Skip: cannot download {path} (listed_sha={listed_sha}, downloaded_sha={downloaded_sha})")
                     continue
 
                 local_img = os.path.join(LOCAL_WORKDIR, name)
@@ -721,8 +782,11 @@ def main():
                 archive_path = ARCHIVE_DIR.rstrip("/") + "/" + name
                 ok_a, resp_a = gh_put_file(archive_path, raw, f"media-bridge: archive {name}")
                 if ok_a:
-                    gh_delete_file(path, f"media-bridge: remove {name} from input")
-                    log(f"Archived original: {name}")
+                    ok_d, resp_d = gh_delete_file(path, f"media-bridge: remove {name} from input", expected_sha=listed_sha or downloaded_sha)
+                    if ok_d:
+                        log(f"Archived original: {name}")
+                    else:
+                        log(f"Archived but delete failed for {name}: {resp_d[:200]}")
                 else:
                     log(f"Archive failed for {name}: {resp_a[:200]}")
 
