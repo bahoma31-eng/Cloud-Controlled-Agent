@@ -1,39 +1,55 @@
-
-import os
-import time
-import shutil
+import json
 import logging
+import shutil
+import time
 from pathlib import Path
+
 import requests
 
-# =========================
-# Configuration
-# =========================
 PAGE_ID = "104244552728514"
-PAGE_ACCESS_TOKEN = os.getenv("FB_PAGE_ACCESS_TOKEN", "").strip()
+TOKENS_FILE = Path(r"C:\Users\Revexn\Cloud-Controlled-Agent\social_media\social_tokens.json")
 
 WATCH_DIR = Path("media-pipeline/output")
 PROCESSED_DIR = Path("media-pipeline/processed")
 
 POLL_INTERVAL_SECONDS = 20
 SUPPORTED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
-
 GRAPH_API_VERSION = "v20.0"
 GRAPH_API_BASE = f"https://graph.facebook.com/{GRAPH_API_VERSION}"
 
-# =========================
-# Logging
-# =========================
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(message)s"
+    format="%(asctime)s | %(levelname)s | %(message)s",
 )
 logger = logging.getLogger("facebook-auto-poster")
 
 
-def ensure_directories():
+def ensure_directories() -> None:
     WATCH_DIR.mkdir(parents=True, exist_ok=True)
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def load_facebook_access_token() -> str:
+    """
+    Loads the Facebook access token from social_tokens.json.
+    Expected JSON format:
+    {
+      "facebook_access_token": "EAAkTS3..."
+    }
+    """
+    if not TOKENS_FILE.exists():
+        raise FileNotFoundError(f"Token file not found: {TOKENS_FILE}")
+
+    with TOKENS_FILE.open("r", encoding="utf-8") as f:
+        tokens = json.load(f)
+
+    token = tokens.get("facebook_access_token", "").strip()
+    if not token:
+        raise ValueError(
+            'Missing "facebook_access_token" in social_tokens.json'
+        )
+
+    return token
 
 
 def is_supported_image(file_path: Path) -> bool:
@@ -57,10 +73,11 @@ def wait_until_file_is_stable(file_path: Path, checks: int = 3, delay: float = 1
         return False
 
 
-def post_image_to_facebook(image_path: Path) -> tuple[bool, str]:
+def post_image_to_facebook(image_path: Path, access_token: str) -> tuple[bool, str]:
     """
-    Publishes an image to the Facebook Page feed.
-    Returns: (success, result_message)
+    Publishes an image to the Facebook Page.
+    Returns:
+        (success, result_message)
     """
     url = f"{GRAPH_API_BASE}/{PAGE_ID}/photos"
 
@@ -69,8 +86,8 @@ def post_image_to_facebook(image_path: Path) -> tuple[bool, str]:
             "source": (image_path.name, image_file, "application/octet-stream")
         }
         data = {
-            "access_token": PAGE_ACCESS_TOKEN,
-            "published": "true"
+            "access_token": access_token,
+            "published": "true",
         }
 
         response = requests.post(url, files=files, data=data, timeout=120)
@@ -86,7 +103,7 @@ def post_image_to_facebook(image_path: Path) -> tuple[bool, str]:
     return False, f"HTTP {response.status_code}: {payload}"
 
 
-def move_to_processed(image_path: Path):
+def move_to_processed(image_path: Path) -> Path:
     destination = PROCESSED_DIR / image_path.name
 
     if destination.exists():
@@ -99,10 +116,10 @@ def move_to_processed(image_path: Path):
     return destination
 
 
-def scan_and_publish_once():
+def scan_and_publish_once(access_token: str) -> None:
     images = sorted(
         [p for p in WATCH_DIR.iterdir() if is_supported_image(p)],
-        key=lambda p: p.stat().st_mtime
+        key=lambda p: p.stat().st_mtime,
     )
 
     if not images:
@@ -117,30 +134,33 @@ def scan_and_publish_once():
             continue
 
         logger.info("Publishing image to Facebook page...")
-        success, result = post_image_to_facebook(image_path)
+        success, result = post_image_to_facebook(image_path, access_token)
 
         if success:
-            logger.info("Published successfully. Facebook post/photo id: %s", result)
+            logger.info("Published successfully. Facebook photo id: %s", result)
             moved_path = move_to_processed(image_path)
             logger.info("Moved to processed: %s", moved_path)
         else:
             logger.error("Failed to publish %s | %s", image_path.name, result)
 
 
-def main():
-    if not PAGE_ACCESS_TOKEN:
-        raise RuntimeError(
-            "Missing FB_PAGE_ACCESS_TOKEN environment variable."
-        )
-
+def main() -> None:
     ensure_directories()
+
+    try:
+        access_token = load_facebook_access_token()
+    except Exception as exc:
+        logger.error("Could not load access token: %s", exc)
+        raise
+
     logger.info("Watching folder: %s", WATCH_DIR)
     logger.info("Processed folder: %s", PROCESSED_DIR)
+    logger.info("Token file: %s", TOKENS_FILE)
     logger.info("Polling every %s seconds", POLL_INTERVAL_SECONDS)
 
     while True:
         try:
-            scan_and_publish_once()
+            scan_and_publish_once(access_token)
         except Exception as exc:
             logger.exception("Unexpected error: %s", exc)
 
