@@ -1,0 +1,13 @@
+{
+  "task_id": "FIX-SYNTAX-007",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "إصلاح شامل لجميع أسطر الـ string المقسمة في code_analyzer.py",
+  "command_preview": "$file = 'C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py'; $lines = [System.IO.File]::ReadAllLines($file, [System.Text.Encoding]::UTF8); $fixed = 0; $i = 0; while($i -lt $lines.Count - 1) { $line = $lines[$i]; $quotes = ($line.ToCharArray() | Where-Object {$_ -eq '\"'}).Count; $singleQ = ($line.ToCharArray() | Where-Object {$_ -eq \"'\"}).Count; if(($quotes % 2 -ne 0) -or ($line.TrimEnd() -match '\"$' -and $lines[$i+1].Trim() -match '^\"?\\)')) { $lines[$i] = $lines[$i].TrimEnd() + $lines[$i+1].TrimStart(); $newLines = [System.Collections.Generic.List[string]]::new($lines); $newLines.RemoveAt($i+1); $lines = $newLines.ToArray(); Write-Output \"Fixed line $($i+1): $($lines[$i].Trim())\"; $fixed++; } else { $i++ } }; [System.IO.File]::WriteAllLines($file, $lines, [System.Text.Encoding]::UTF8); Write-O",
+  "output": "Fixed line 115: lines = content.split(\"\")\nFixed line 189: if re.search(r\"password\\s*=\\s*['\"][^'\"]+['\"]\" , stripped, re.IGNORECASE):self._add_finding(\"ERROR\", filepath, i, \"???? ???? ?????? ?????? ?? ?????\", \"?????? ??????? ????? ?? ??? .env\")\nFixed line 189: if re.search(r\"password\\s*=\\s*['\"][^'\"]+['\"]\" , stripped, re.IGNORECASE):self._add_finding(\"ERROR\", filepath, i, \"???? ???? ?????? ?????? ?? ?????\", \"?????? ??????? ????? ?? ??? .env\")if re.search(r\"(api_key|secret|token)\\s*=\\s*['\"][^'\"]{8,}['\"]\" , stripped, re.IGNORECASE):\nFixed line 254: has_crlf = \"\nFixed line 254: has_crlf = \"\" in content\nFixed line 255: has_lf = \"\" in content.replace(\"\nFixed line 255: has_lf = \"\" in content.replace(\"\nFixed line 255: has_lf = \"\" in content.replace(\"\", \"\")\nTotal fixed: 8 lines",
+  "timestamp": "2026-03-18T17:40:54.342950+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
