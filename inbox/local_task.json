@@ -1,7 +1,1 @@
-{
-  "task_id": "CA-READ-006",
-  "engine": "PYTHON",
-  "command": "with open(r'C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py', 'r', encoding='utf-8') as f:\n    lines = f.readlines()\nprint(f'Total lines: {len(lines)}')\nfor i, line in enumerate(lines[:80]):\n    print(f'{i+1}: {line}', end='')",
-  "description": "قراءة أول 80 سطر من code_analyzer.py عبر Python",
-  "timeout": 30
-}
+waiting
