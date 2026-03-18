@@ -1,7 +1,1 @@
-{
-  "task_id": "FIX-SYNTAX-001",
-  "engine": "POWERSHELL",
-  "command": "Get-Content 'C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py' | Select-Object -Skip 70 -First 25",
-  "description": "قراءة سطور 71-95 من code_analyzer.py لفهم خطأ SyntaxError في السطر 82",
-  "timeout": 60
-}
+waiting
