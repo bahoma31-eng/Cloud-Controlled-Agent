@@ -1,0 +1,13 @@
+{
+  "task_id": "AGENT-007",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "تثبيت المكتبات المطلوبة لـ CodeAnalyzer",
+  "command_preview": "cd C:\\Users\\Revexn\\CodeAnalyzer; pip install python-dotenv mss Pillow astroid jinja2 colorama rich 2>&1 | Select-Object -Last 15",
+  "output": "Collecting pygments<3.0.0,>=2.13.0 (from rich)\n  Using cached pygments-2.19.2-py3-none-any.whl.metadata (2.5 kB)\nCollecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich)\n  Using cached mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)\nDownloading mss-10.1.0-py3-none-any.whl (24 kB)\nDownloading astroid-4.1.1-py3-none-any.whl (279 kB)\nUsing cached jinja2-3.1.6-py3-none-any.whl (134 kB)\nUsing cached rich-14.3.3-py3-none-any.whl (310 kB)\nUsing cached pygments-2.19.2-py3-none-any.whl (1.2 MB)\nUsing cached markdown_it_py-4.0.0-py3-none-any.whl (87 kB)\nUsing cached mdurl-0.1.2-py3-none-any.whl (10.0 kB)\nUsing cached markupsafe-3.0.3-cp312-cp312-win_amd64.whl (15 kB)\nInstalling collected packages: pygments, mss, mdurl, MarkupSafe, astroid, markdown-it-py, jinja2, rich\n\nSuccessfully installed MarkupSafe-3.0.3 astroid-4.1.1 jinja2-3.1.6 markdown-it-py-4.0.0 mdurl-0.1.2 mss-10.1.0 pygments-2.19.2 rich-14.3.3",
+  "timestamp": "2026-03-18T16:30:02.313137+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.1"
+}
