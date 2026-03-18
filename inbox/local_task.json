@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "stop_server_001",
+  "engine": "POWERSHELL",
+  "command": "Stop-Process -Id 6320 -Force -ErrorAction SilentlyContinue; Start-Sleep -Seconds 2; $p = Get-Process -Id 6320 -ErrorAction SilentlyContinue; if ($p) { Write-Output 'FAILED: Process 6320 still running' } else { Write-Output 'SUCCESS: Process 6320 (media_bridge.py) has been stopped' }",
+  "description": "Stop media_bridge.py server (PID 6320)",
+  "timeout": 30
+}
