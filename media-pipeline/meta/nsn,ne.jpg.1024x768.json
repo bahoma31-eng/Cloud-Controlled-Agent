@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-03-18T16:52:24.741354+00:00",
+  "generated_at": "2026-03-18T20:23:55.285747+00:00",
   "source_image": {
     "filename": "nsn,ne.jpg",
     "width": 1024,
@@ -8,28 +8,28 @@
   },
   "analysis": {
     "dominant_colors": [
-      "#2C2C2C",
-      "#8B4513",
-      "#D2B48C"
+      "#222222",
+      "#8B5E3C",
+      "#4CAF50"
     ],
-    "brightness": 0.5,
+    "brightness": 0.55,
     "recommended_text_theme": "light"
   },
   "layout": {
     "empty_regions_px": [
       {
-        "x": 50,
-        "y": 50,
-        "w": 924,
+        "x": 0,
+        "y": 0,
+        "w": 1024,
         "h": 100,
         "score": 0.95
       }
     ],
     "chosen_region_px": {
       "x": 50,
-      "y": 50,
-      "w": 924,
-      "h": 100
+      "y": 10,
+      "w": 500,
+      "h": 80
     }
   },
   "text_style": {
@@ -53,7 +53,7 @@
     "background_blur_px": 0
   },
   "copy": {
-    "title": "نكهة لا تقاوم",
+    "title": "مذاق عربي أصيل",
     "cta": "اطلب الآن"
   }
 }
