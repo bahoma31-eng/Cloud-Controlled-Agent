@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "DIAG-001",
+  "engine": "POWERSHELL",
+  "command": "$proc = Get-Process python* -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -like '*media_bridge*' }; if ($proc) { $proc | Select-Object Id, ProcessName, CPU, WorkingSet64, StartTime | Format-List } else { Write-Output 'media_bridge.py is NOT running' }; Write-Output '---'; $footer = 'C:\\Users\\Revexn\\Cloud-Controlled-Agent\\media-pipeline\\image_watcher_footer_gemini.py'; if (Test-Path $footer) { Write-Output \"FOOTER FILE EXISTS: $footer\"; Get-Item $footer | Select-Object Length, LastWriteTime } else { Write-Output 'FOOTER FILE MISSING: image_watcher_footer_gemini.py NOT FOUND locally' }; Write-Output '---'; Get-ChildItem 'C:\\Users\\Revexn\\Cloud-Controlled-Agent\\media-pipeline\\' -File | Select-Object Name, Length, LastWriteTime | Format-Table -AutoSize",
+  "description": "Check media_bridge.py process status + verify if image_watcher_footer_gemini.py exists locally",
+  "timeout": 60
+}
