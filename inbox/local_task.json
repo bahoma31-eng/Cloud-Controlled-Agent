@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "AGENT-002",
+  "engine": "POWERSHELL",
+  "command": "$p = 'C:\\Users\\Revexn\\Cloud-Controlled-Agent\\.env'; if (Test-Path $p) { Get-Content $p -Raw } else { Write-Output 'FILE_NOT_FOUND'; Get-ChildItem 'C:\\Users\\Revexn\\Cloud-Controlled-Agent' -Filter '*.env*' -Force | Select-Object Name,Length,LastWriteTime | Format-Table -AutoSize }",
+  "description": "Check if .env exists and read it, or list .env* files",
+  "timeout": 60
+}
