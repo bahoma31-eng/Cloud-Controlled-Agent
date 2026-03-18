@@ -1,7 +1,1 @@
-{
-  "task_id": "FIX-SYNTAX-008",
-  "engine": "POWERSHELL",
-  "command": "$file = 'C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py'; $content = [System.IO.File]::ReadAllText($file, [System.Text.Encoding]::UTF8); $fixes = @(); $content = $content.Replace('content.split(\"\")', 'content.split(\"\\n\")'); $fixes += 'Fixed: content.split(\"\") -> content.split(\"\\n\")'; $content = $content.Replace('has_crlf = \"\" in content', 'has_crlf = \"\\r\\n\" in content'); $fixes += 'Fixed: has_crlf check'; $content = $content.Replace('has_lf = \"\" in content.replace(\"\", \"\")', 'has_lf = \"\\n\" in content.replace(\"\\r\\n\", \"\")'); $fixes += 'Fixed: has_lf check'; [System.IO.File]::WriteAllText($file, $content, [System.Text.Encoding]::UTF8); $fixes | ForEach-Object { Write-Output $_ }; Write-Output 'Content fixes applied!'",
-  "description": "إصلاح المحتوى المفقود (\\n و \\r\\n) بعد عملية الدمج",
-  "timeout": 60
-}
+waiting
