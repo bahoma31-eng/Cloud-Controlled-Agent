@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "010",
+  "engine": "POWERSHELL",
+  "command": "Get-WmiObject Win32_Process | Where-Object { $_.Name -like '*python*' -or $_.Name -like '*powershell*' } | Select-Object ProcessId, Name, CommandLine, @{N='StartTime';E={$_.ConvertToDateTime($_.CreationDate)}} | Format-List",
+  "description": "الحصول على تفاصيل العمليات (PowerShell و Python) لتحديد أيها يشغّل media_bridge.py",
+  "timeout": 60
+}
