@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "FIX-SYNTAX-007",
+  "engine": "POWERSHELL",
+  "command": "$file = 'C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py'; $lines = [System.IO.File]::ReadAllLines($file, [System.Text.Encoding]::UTF8); $fixed = 0; $i = 0; while($i -lt $lines.Count - 1) { $line = $lines[$i]; $quotes = ($line.ToCharArray() | Where-Object {$_ -eq '\"'}).Count; $singleQ = ($line.ToCharArray() | Where-Object {$_ -eq \"'\"}).Count; if(($quotes % 2 -ne 0) -or ($line.TrimEnd() -match '\"$' -and $lines[$i+1].Trim() -match '^\"?\\)')) { $lines[$i] = $lines[$i].TrimEnd() + $lines[$i+1].TrimStart(); $newLines = [System.Collections.Generic.List[string]]::new($lines); $newLines.RemoveAt($i+1); $lines = $newLines.ToArray(); Write-Output \"Fixed line $($i+1): $($lines[$i].Trim())\"; $fixed++; } else { $i++ } }; [System.IO.File]::WriteAllLines($file, $lines, [System.Text.Encoding]::UTF8); Write-Output \"Total fixed: $fixed lines\"",
+  "description": "إصلاح شامل لجميع أسطر الـ string المقسمة في code_analyzer.py",
+  "timeout": 60
+}
