@@ -1,0 +1,13 @@
+{
+  "task_id": "SRV-001",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "List all TCP listening ports with their process names and paths",
+  "command_preview": "Get-NetTCPConnection -State Listen | Select-Object LocalAddress, LocalPort, OwningProcess, @{Name='ProcessName';Expression={(Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue).ProcessName}}, @{Name='Path';Expression={(Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue).Path}} | Sort-Object LocalPort | Format-Table -AutoSize | Out-String -Width 200",
+  "output": "LocalAddress LocalPort OwningProcess ProcessName Path\n------------ --------- ------------- ----------- ----\n0.0.0.0            135           588 svchost         \n::                 135           588 svchost         \n192.168.1.22       139             4 System          \n::                 445             4 System          \n0.0.0.0           5040          6068 svchost         \n::                5357             4 System          \n::                7680          2020 svchost         \n0.0.0.0          49664           792 lsass           \n::               49664           792 lsass           \n0.0.0.0          49665           704 wininit         \n::               49665           704 wininit         \n0.0.0.0          49666          1360 svchost         \n::               49666          1360 svchost         \n::               49667          1372 svchost         \n0.0.0.0          49667          1372 svchost         \n::               49668          2804 spoolsv         \n0.0.0.0          49668          2804 spoolsv         \n::               49669           776 services        \n0.0.0.0          49669           776 services",
+  "timestamp": "2026-03-18T14:22:04.672135+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.1"
+}
