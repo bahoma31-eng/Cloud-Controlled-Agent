@@ -1,7 +1,1 @@
-{
-  "task_id": "AGENT-003-PY",
-  "engine": "PYTHON",
-  "command": "import os; p = r'C:\\Users\\Revexn\\Cloud-Controlled-Agent\\.env'; f = open(p, 'r', encoding='utf-8') if os.path.exists(p) else None; print(f.read() if f else 'FILE_NOT_FOUND: ' + str([x for x in os.listdir(r'C:\\Users\\Revexn\\Cloud-Controlled-Agent') if '.env' in x.lower()])); f and f.close()",
-  "description": "Read .env file using Python engine (PowerShell engine broken)",
-  "timeout": 60
-}
+waiting
