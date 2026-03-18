@@ -1,55 +1,35 @@
-import json
-import logging
-import shutil
+import os
 import time
+import shutil
+import logging
+import subprocess
 from pathlib import Path
 
-import requests
-
-PAGE_ID = "104244552728514"
-TOKENS_FILE = Path(r"C:\Users\Revexn\Cloud-Controlled-Agent\social_media\social_tokens.json")
-
+# =========================
+# Configuration
+# =========================
 WATCH_DIR = Path("media-pipeline/output")
 PROCESSED_DIR = Path("media-pipeline/processed")
 
-POLL_INTERVAL_SECONDS = 20
+POLL_INTERVAL_SECONDS = 5
 SUPPORTED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
-GRAPH_API_VERSION = "v20.0"
-GRAPH_API_BASE = f"https://graph.facebook.com/{GRAPH_API_VERSION}"
 
+# Path to the Facebook publisher script
+FACEBOOK_PUBLISHER_SCRIPT = Path("social_media/facebook/publisher_fb.py")
+
+# =========================
+# Logging
+# =========================
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(message)s",
+    format="%(asctime)s | %(levelname)s | %(message)s"
 )
-logger = logging.getLogger("facebook-auto-poster")
+logger = logging.getLogger("media-bridge")
 
 
-def ensure_directories() -> None:
+def ensure_directories():
     WATCH_DIR.mkdir(parents=True, exist_ok=True)
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
-
-
-def load_facebook_access_token() -> str:
-    """
-    Loads the Facebook access token from social_tokens.json.
-    Expected JSON format:
-    {
-      "facebook_access_token": "EAAkTS3..."
-    }
-    """
-    if not TOKENS_FILE.exists():
-        raise FileNotFoundError(f"Token file not found: {TOKENS_FILE}")
-
-    with TOKENS_FILE.open("r", encoding="utf-8") as f:
-        tokens = json.load(f)
-
-    token = tokens.get("facebook_access_token", "").strip()
-    if not token:
-        raise ValueError(
-            'Missing "facebook_access_token" in social_tokens.json'
-        )
-
-    return token
 
 
 def is_supported_image(file_path: Path) -> bool:
@@ -58,7 +38,7 @@ def is_supported_image(file_path: Path) -> bool:
 
 def wait_until_file_is_stable(file_path: Path, checks: int = 3, delay: float = 1.0) -> bool:
     """
-    Prevents uploading partially written files.
+    Prevents handling partially written files.
     """
     try:
         previous_size = -1
@@ -73,53 +53,50 @@ def wait_until_file_is_stable(file_path: Path, checks: int = 3, delay: float = 1
         return False
 
 
-def post_image_to_facebook(image_path: Path, access_token: str) -> tuple[bool, str]:
-    """
-    Publishes an image to the Facebook Page.
-    Returns:
-        (success, result_message)
-    """
-    url = f"{GRAPH_API_BASE}/{PAGE_ID}/photos"
-
-    with image_path.open("rb") as image_file:
-        files = {
-            "source": (image_path.name, image_file, "application/octet-stream")
-        }
-        data = {
-            "access_token": access_token,
-            "published": "true",
-        }
-
-        response = requests.post(url, files=files, data=data, timeout=120)
-
-    try:
-        payload = response.json()
-    except ValueError:
-        payload = {"raw": response.text}
-
-    if response.status_code == 200 and "id" in payload:
-        return True, payload["id"]
-
-    return False, f"HTTP {response.status_code}: {payload}"
-
-
-def move_to_processed(image_path: Path) -> Path:
-    destination = PROCESSED_DIR / image_path.name
+def move_to_processed(file_path: Path) -> Path:
+    destination = PROCESSED_DIR / file_path.name
 
     if destination.exists():
-        stem = image_path.stem
-        suffix = image_path.suffix
+        stem = file_path.stem
+        suffix = file_path.suffix
         timestamp = int(time.time())
         destination = PROCESSED_DIR / f"{stem}_{timestamp}{suffix}"
 
-    shutil.move(str(image_path), str(destination))
+    shutil.move(str(file_path), str(destination))
     return destination
 
 
-def scan_and_publish_once(access_token: str) -> None:
+def invoke_facebook_publisher() -> tuple[bool, str]:
+    """
+    Calls social_media/facebook/publisher_fb.py as a separate process.
+    """
+    if not FACEBOOK_PUBLISHER_SCRIPT.exists():
+        return False, f"Publisher script not found: {FACEBOOK_PUBLISHER_SCRIPT}"
+
+    try:
+        result = subprocess.run(
+            ["python", str(FACEBOOK_PUBLISHER_SCRIPT)],
+            capture_output=True,
+            text=True,
+            timeout=300
+        )
+
+        if result.returncode == 0:
+            return True, result.stdout.strip() or "Facebook publisher completed successfully"
+
+        error_output = (result.stderr or result.stdout).strip()
+        return False, f"Publisher failed with exit code {result.returncode}: {error_output}"
+
+    except subprocess.TimeoutExpired:
+        return False, "Publisher script timed out"
+    except Exception as exc:
+        return False, f"Failed to invoke publisher script: {exc}"
+
+
+def scan_and_publish_once():
     images = sorted(
         [p for p in WATCH_DIR.iterdir() if is_supported_image(p)],
-        key=lambda p: p.stat().st_mtime,
+        key=lambda p: p.stat().st_mtime
     )
 
     if not images:
@@ -133,34 +110,26 @@ def scan_and_publish_once(access_token: str) -> None:
             logger.warning("Skipping unstable file: %s", image_path.name)
             continue
 
-        logger.info("Publishing image to Facebook page...")
-        success, result = post_image_to_facebook(image_path, access_token)
+        logger.info("New image detected in output. Invoking Facebook publisher...")
+        success, message = invoke_facebook_publisher()
 
         if success:
-            logger.info("Published successfully. Facebook photo id: %s", result)
+            logger.info("Publisher completed successfully: %s", message)
             moved_path = move_to_processed(image_path)
             logger.info("Moved to processed: %s", moved_path)
         else:
-            logger.error("Failed to publish %s | %s", image_path.name, result)
+            logger.error("Failed to invoke publisher for %s | %s", image_path.name, message)
 
 
-def main() -> None:
+def main():
     ensure_directories()
-
-    try:
-        access_token = load_facebook_access_token()
-    except Exception as exc:
-        logger.error("Could not load access token: %s", exc)
-        raise
-
     logger.info("Watching folder: %s", WATCH_DIR)
     logger.info("Processed folder: %s", PROCESSED_DIR)
-    logger.info("Token file: %s", TOKENS_FILE)
     logger.info("Polling every %s seconds", POLL_INTERVAL_SECONDS)
 
     while True:
         try:
-            scan_and_publish_once(access_token)
+            scan_and_publish_once()
         except Exception as exc:
             logger.exception("Unexpected error: %s", exc)
 
