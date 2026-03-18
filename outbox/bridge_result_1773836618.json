@@ -1,0 +1,11 @@
+{
+  "task_id": "err_check_002",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "Search for .env files and capture media_bridge.py error output",
+  "command_preview": "Write-Output '=== Searching for .env files ==='; Get-ChildItem -Path 'C:\\Users\\Revexn\\Cloud-Controlled-Agent' -Filter '.env' -Recurse -ErrorAction SilentlyContinue | Select-Object FullName, Length, LastWriteTime | Format-List; Write-Output '=== Working directory of media_bridge.py ==='; $cwd = (Get-WmiObject Win32_Process | Where-Object { $_.ProcessId -eq 6320 }).ExecutablePath; Write-Output $cwd; Write-Output '=== Check media-pipeline directory contents ==='; Get-ChildItem -Path 'C:\\Users\\Revex",
+  "output": "=== Searching for .env files ===\r\n\r\n\r\nFullName      : C:\\Users\\Revexn\\Cloud-Controlled\r\n                -Agent\\.env\r\nLength        : 1390\r\nLastWriteTime : 18/03/2026 02:45:05\r\n\r\n\r\n\r\n=== Working directory of media_bridge.py ===\r\nC:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\python.exe\r\n=== Check media-pipeline directory contents ===\r\n\r\nName         Length LastWriteTime      \r\n----         ------ -------------      \r\n.env.example    381 17/03/2026 02:25:43\r\n\r\n\r\n=== Try to read media_bridge.py recent console output via log ===\r\nNo log files found",
+  "timestamp": "2026-03-18T12:23:38.841905+00:00",
+  "executed_on": "local_machine"
+}
