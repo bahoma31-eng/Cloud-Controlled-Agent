@@ -1,7 +1,1 @@
-{
-  "task_id": "CA-DISCOVER-001",
-  "engine": "POWERSHELL",
-  "command": "Write-Output '=== CodeAnalyzer Discovery ==='; Get-ChildItem -Path 'C:\\Users\\Revexn' -Recurse -Filter '*CodeAnalyzer*' -ErrorAction SilentlyContinue | Select-Object FullName, Length, LastWriteTime | Format-Table -AutoSize; Write-Output '=== Also checking Cloud-Controlled-Agent directory ==='; Get-ChildItem -Path 'C:\\Users\\Revexn\\Cloud-Controlled-Agent' -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.Name -match 'code_analyzer|CodeAnalyzer|analyzer' } | Select-Object FullName, Length, LastWriteTime | Format-Table -AutoSize",
-  "description": "اكتشاف ملفات CodeAnalyzer على الجهاز المحلي",
-  "timeout": 60
-}
+waiting
