@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "SRV-003",
+  "engine": "POWERSHELL",
+  "command": "$inputDir = 'C:\\Users\\Revexn\\Cloud-Controlled-Agent\\media-pipeline\\input'; $outputDir = 'C:\\Users\\Revexn\\Cloud-Controlled-Agent\\media-pipeline\\output'; Write-Output '=== INPUT FOLDER ==='; if (Test-Path $inputDir) { $files = Get-ChildItem $inputDir -File -ErrorAction SilentlyContinue; if ($files) { $files | Select-Object Name, Length, LastWriteTime | Format-Table -AutoSize | Out-String -Width 200 } else { Write-Output 'EMPTY - No pending files' } } else { Write-Output 'FOLDER NOT FOUND' }; Write-Output ''; Write-Output '=== OUTPUT FOLDER (last 5) ==='; if (Test-Path $outputDir) { $ofiles = Get-ChildItem $outputDir -File -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object -First 5; if ($ofiles) { $ofiles | Select-Object Name, Length, LastWriteTime | Format-Table -AutoSize | Out-String -Width 200 } else { Write-Output 'EMPTY' } } else { Write-Output 'FOLDER NOT FOUND' }; Write-Output ''; Write-Output '=== PROCESS CPU CHECK (current snapshot) ==='; Get-Process -Id 3580,4080 -ErrorAction SilentlyContinue | Select-Object Id, ProcessName, CPU, @{Name='RAM_MB';Expression={[math]::Round($_.WorkingSet64/1MB,1)}}, @{Name='Threads';Expression={$_.Threads.Count}}, @{Name='Handles';Expression={$_.HandleCount}} | Format-Table -AutoSize | Out-String -Width 200",
+  "description": "Check media-pipeline input/output folders and process health",
+  "timeout": 60
+}
