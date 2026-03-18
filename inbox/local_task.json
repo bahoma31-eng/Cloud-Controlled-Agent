@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "CA-EXPLORE-002",
+  "engine": "POWERSHELL",
+  "command": "Write-Output '=== CodeAnalyzer Directory Structure ==='; Get-ChildItem -Path 'C:\\Users\\Revexn\\CodeAnalyzer' -Recurse -ErrorAction SilentlyContinue | Select-Object FullName, Length, LastWriteTime, @{N='Type';E={if($_.PSIsContainer){'DIR'}else{'FILE'}}} | Format-Table -AutoSize; Write-Output '=== Python files content preview ==='; Get-ChildItem -Path 'C:\\Users\\Revexn\\CodeAnalyzer' -Filter '*.py' -Recurse -ErrorAction SilentlyContinue | ForEach-Object { Write-Output \"--- FILE: $($_.FullName) ---\"; Get-Content $_.FullName -ErrorAction SilentlyContinue | Select-Object -First 50; Write-Output '' }",
+  "description": "استكشاف بنية مجلد CodeAnalyzer وقراءة أول 50 سطر من ملفات Python",
+  "timeout": 60
+}
