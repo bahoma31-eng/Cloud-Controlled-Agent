@@ -1,0 +1,13 @@
+{
+  "task_id": "AGENT-002",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "إنشاء هيكل مجلدات وكيل تحليل الأكواد CodeAnalyzer خارج المستودع",
+  "command_preview": "New-Item -ItemType Directory -Force -Path 'C:\\Users\\Revexn\\CodeAnalyzer'; New-Item -ItemType Directory -Force -Path 'C:\\Users\\Revexn\\CodeAnalyzer\\reports'; New-Item -ItemType Directory -Force -Path 'C:\\Users\\Revexn\\CodeAnalyzer\\screenshots'; New-Item -ItemType Directory -Force -Path 'C:\\Users\\Revexn\\CodeAnalyzer\\logs'; New-Item -ItemType Directory -Force -Path 'C:\\Users\\Revexn\\CodeAnalyzer\\temp'; Write-Output 'DIRS_CREATED_OK'; Get-ChildItem 'C:\\Users\\Revexn\\CodeAnalyzer' | Select-Object Name, Mode",
+  "output": "R‚pertoireÿ: C:\\Users\\Revexn\n\n\nMode                LastWriteTime         Length Name                                              \n----                -------------         ------ ----                                              \nd-----       18/03/2026     17:13                CodeAnalyzer                                      \n\n\n    R‚pertoireÿ: C:\\Users\\Revexn\\CodeAnalyzer\n\n\nMode                LastWriteTime         Length Name                                              \n----                -------------         ------ ----                                              \nd-----       18/03/2026     17:13                reports                                           \nd-----       18/03/2026     17:13                screenshots                                       \nd-----       18/03/2026     17:13                logs                                              \nd-----       18/03/2026     17:15                temp                                              \nDIRS_CREATED_OK\n\nName : logs\nMode : d-----\n\n\nName : reports\nMode : d-----\n\n\nName : screenshots\nMode : d-----\n\n\nName : temp\nMode : d-----\n\n\nName : tools\nMode : d-----",
+  "timestamp": "2026-03-18T16:15:08.920172+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.1"
+}
