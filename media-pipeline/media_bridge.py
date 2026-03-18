@@ -59,6 +59,22 @@ LOCAL_HTML = os.path.join(LOCAL_WORKDIR, "html")
 GITHUB_API_BASE = "https://api.github.com"
 ALLOWED_EXT = (".png", ".jpg", ".jpeg", ".webp")
 
+# ==========================================================
+# Parallel runner: FB watcher + publisher (image/video)
+# ==========================================================
+FB_WATCHER_PUBLISHER_SCRIPT = os.getenv(
+    "FB_WATCHER_PUBLISHER_SCRIPT",
+    r"C:\Users\Revexn\Cloud-Controlled-Agent\social_media\facebook\fb_watcher_publisher.py"
+)
+SOCIAL_TOKENS_PATH = os.getenv(
+    "SOCIAL_TOKENS_PATH",
+    r"C:\Users\Revexn\Cloud-Controlled-Agent\social_media\social_tokens.json"
+)
+REPO_ROOT_CWD = os.getenv(
+    "REPO_ROOT_CWD",
+    r"C:\Users\Revexn\Cloud-Controlled-Agent"
+)
+
 
 def log(msg):
     print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {msg}")
@@ -723,6 +739,48 @@ def list_input_images():
     return [it for it in items if it.get("type") == "file" and it.get("name", "").lower().endswith(ALLOWED_EXT)]
 
 
+def start_fb_watcher_publisher_parallel():
+    """
+    Start the FB watcher/publisher script in parallel:
+    - Runs once at startup
+    - Does NOT block the main media_bridge loop
+    - Uses repo root as cwd so relative paths inside the FB script work
+    """
+    script = FB_WATCHER_PUBLISHER_SCRIPT
+    repo_cwd = REPO_ROOT_CWD
+
+    if not script:
+        log("FB_WATCHER_PUBLISHER_SCRIPT is empty -> FB watcher/publisher will not start.")
+        return None
+
+    if not os.path.isfile(script):
+        log(f"FB watcher/publisher script not found: {script}")
+        return None
+
+    if repo_cwd and not os.path.isdir(repo_cwd):
+        log(f"REPO_ROOT_CWD not found: {repo_cwd} (FB watcher will start without cwd override)")
+        repo_cwd = None
+
+    if SOCIAL_TOKENS_PATH and not os.path.isfile(SOCIAL_TOKENS_PATH):
+        log(f"Warning: SOCIAL_TOKENS_PATH not found: {SOCIAL_TOKENS_PATH}")
+
+    env = os.environ.copy()
+    env["SOCIAL_TOKENS_PATH"] = SOCIAL_TOKENS_PATH
+
+    try:
+        log("Starting FB watcher/publisher in parallel...")
+        p = subprocess.Popen(
+            [sys.executable, script],
+            cwd=repo_cwd,
+            env=env
+        )
+        log(f"FB watcher/publisher started (pid={p.pid})")
+        return p
+    except Exception as e:
+        log(f"Failed to start FB watcher/publisher: {e}")
+        return None
+
+
 def main():
     if not GITHUB_TOKEN:
         die("GITHUB_TOKEN is missing. Add: GITHUB_TOKEN=... in .env\n")
@@ -732,6 +790,9 @@ def main():
     log("Single output mode: ORIGINAL image size")
     log(f"Gemini watcher (headline): {'ON' if USE_GEMINI_WATCHER else 'OFF'}")
     log(f"Gemini watcher (footer): {'ON' if USE_GEMINI_FOOTER_WATCHER else 'OFF'}")
+
+    # Start FB watcher/publisher in parallel
+    _fb_proc = start_fb_watcher_publisher_parallel()
 
     while True:
         try:
