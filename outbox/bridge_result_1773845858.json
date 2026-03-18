@@ -1,0 +1,13 @@
+{
+  "task_id": "DIAG-002",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "Check .env config, Windows Event Log for Python crashes, crash dumps, and tmp folder",
+  "command_preview": "Write-Output '=== .env FILE ===' ; $envFile = 'C:\\Users\\Revexn\\Cloud-Controlled-Agent\\media-pipeline\\.env'; if (Test-Path $envFile) { Write-Output 'EXISTS:'; Get-Content $envFile | ForEach-Object { if ($_ -match '(TOKEN|KEY|SECRET|PASSWORD)') { $parts = $_ -split '=',2; Write-Output \"$($parts[0])=***REDACTED***\" } else { Write-Output $_ } } } else { Write-Output '.env NOT FOUND - only .env.example exists!' }; Write-Output ''; Write-Output '=== RECENT PYTHON ERRORS IN EVENT LOG ==='; Get-WinEvent -FilterHashtable @{LogName='Application'; Level=2; StartTime=(Get-Date).AddHours(-6)} -MaxEvents 10 -ErrorAction SilentlyContinue | Where-Object { $_.Message -like '*python*' -or $_.Message -like '*media_bridge*' } | Select-Object TimeCreated, Message | Format-List; Write-Output '=== RECENT CRASH D",
+  "output": "=== .env FILE ===\n.env NOT FOUND - only .env.example exists!\n\n=== RECENT PYTHON ERRORS IN EVENT LOG ===\n=== RECENT CRASH DUMPS ===\n=== TMP FOLDER ===\ntmp folder not found",
+  "timestamp": "2026-03-18T14:57:38.107493+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.1"
+}
