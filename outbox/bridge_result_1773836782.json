@@ -1,0 +1,11 @@
+{
+  "task_id": "err_check_003",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "Check .env variables, stuck images, and process health",
+  "command_preview": "Write-Output '=== .env variable names (no values) ==='; $envPath = 'C:\\Users\\Revexn\\Cloud-Controlled-Agent\\.env'; if (Test-Path $envPath) { Get-Content $envPath | ForEach-Object { if ($_ -match '^([^#=]+)=') { $name = $Matches[1].Trim(); $val = ($_ -split '=',2)[1].Trim(); $len = $val.Length; Write-Output \"$name = [${len} chars]\" } } } else { Write-Output '.env NOT FOUND' }; Write-Output ''; Write-Output '=== Check media-pipeline/input/ for stuck images ==='; $inputPath = 'C:\\Users\\Revexn\\Cloud-",
+  "output": "=== .env variable names (no values) ===\r\nGITHUB_TOKEN = [40 chars]\r\nGROQ_API_KEY = [56 chars]\r\nREPO_OWNER = [12 chars]\r\nREPO_NAME = [22 chars]\r\nAI_PROVIDER = [4 chars]\r\nMODEL_ID = [23 chars]\r\nAI_GITHUB_TOKEN = [25 chars]\r\nGITHUB_MODEL = [6 chars]\r\nPOLL_SECONDS = [2 chars]\r\nCOMMAND_TIMEOUT = [3 chars]\r\nMAX_RETRIES_PER_STEP = [1 chars]\r\nVERBOSE = [1 chars]\r\nUSE_GEMINI_WATCHER = [1 chars]\r\nGEMINI_API_KEYS = [159 chars]\r\nGEMINI_MODEL = [16 chars]\r\nGEMINI_TIMEOUT_SECONDS = [2 chars]\r\nGEMINI_ENDPOINT = [79 chars]\r\nFALLBACK_TO_OPENCV_ON_GEMINI_FAIL = [1 chars]\r\nGEMINI_API_KEYS_HEADLINE = [79 chars]\r\nGEMINI_API_KEYS_FOOTER = [79 chars]\r\n\r\n=== Check media-pipeline/input/ for stuck images ===\r\n\r\nName     Length LastWriteTime      \r\n----     ------ -------------      \r\n.gitkeep      0 17/03/2026 02:25:43\r\nSan.jpg  113237 17/03/2026 18:24:49\r\n\r\n\r\n\r\n=== Capture recent stderr from media_bridge.py PID 6320 ===\r\nProcess running: python CPU=113.328125 WS=31.3MB StartTime=03/18/2026 12:43:09",
+  "timestamp": "2026-03-18T12:26:22.782062+00:00",
+  "executed_on": "local_machine"
+}
