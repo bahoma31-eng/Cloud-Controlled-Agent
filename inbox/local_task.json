@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "err_check_003",
+  "engine": "POWERSHELL",
+  "command": "Write-Output '=== .env variable names (no values) ==='; $envPath = 'C:\\Users\\Revexn\\Cloud-Controlled-Agent\\.env'; if (Test-Path $envPath) { Get-Content $envPath | ForEach-Object { if ($_ -match '^([^#=]+)=') { $name = $Matches[1].Trim(); $val = ($_ -split '=',2)[1].Trim(); $len = $val.Length; Write-Output \"$name = [${len} chars]\" } } } else { Write-Output '.env NOT FOUND' }; Write-Output ''; Write-Output '=== Check media-pipeline/input/ for stuck images ==='; $inputPath = 'C:\\Users\\Revexn\\Cloud-Controlled-Agent\\media-pipeline\\input'; if (Test-Path $inputPath) { $files = Get-ChildItem $inputPath -File -ErrorAction SilentlyContinue; if ($files) { $files | Select-Object Name, Length, LastWriteTime | Format-Table } else { Write-Output 'input/ is empty (no images waiting)' } } else { Write-Output 'input/ directory not found locally' }; Write-Output ''; Write-Output '=== Capture recent stderr from media_bridge.py PID 6320 ==='; $proc = Get-Process -Id 6320 -ErrorAction SilentlyContinue; if ($proc) { Write-Output \"Process running: $($proc.ProcessName) CPU=$($proc.CPU) WS=$([math]::Round($proc.WorkingSet64/1MB,1))MB StartTime=$($proc.StartTime)\" } else { Write-Output 'PID 6320 NOT RUNNING!' }",
+  "description": "Check .env variables, stuck images, and process health",
+  "timeout": 60
+}
