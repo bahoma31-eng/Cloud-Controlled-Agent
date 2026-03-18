@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "AGENT-007",
+  "engine": "POWERSHELL",
+  "command": "cd C:\\Users\\Revexn\\CodeAnalyzer; pip install python-dotenv mss Pillow astroid jinja2 colorama rich 2>&1 | Select-Object -Last 15",
+  "description": "تثبيت المكتبات المطلوبة لـ CodeAnalyzer",
+  "timeout": 120
+}
