@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "generated_at": "2026-03-18T10:43:24.609593+00:00",
+  "source_image": {
+    "filename": "Sanssitsre.jpg",
+    "width": 1024,
+    "height": 768
+  },
+  "analysis": {
+    "dominant_colors": [
+      "#A0522D",
+      "#F5DEB3",
+      "#FFC107"
+    ],
+    "brightness": 0.65,
+    "recommended_text_theme": "light"
+  },
+  "layout": {
+    "empty_regions_px": [
+      {
+        "x": 0,
+        "y": 0,
+        "w": 1024,
+        "h": 150,
+        "score": 0.95
+      },
+      {
+        "x": 50,
+        "y": 180,
+        "w": 250,
+        "h": 100,
+        "score": 0.7
+      },
+      {
+        "x": 700,
+        "y": 180,
+        "w": 250,
+        "h": 100,
+        "score": 0.65
+      }
+    ],
+    "chosen_region_px": {
+      "x": 312,
+      "y": 35,
+      "w": 400,
+      "h": 80
+    }
+  },
+  "text_style": {
+    "font_family": "Cairo",
+    "font_weight": 800,
+    "font_size_px": 36,
+    "color": "#ffffff",
+    "shadow": {
+      "enabled": true,
+      "blur": 8,
+      "opacity": 0.3,
+      "x": 0,
+      "y": 4
+    }
+  },
+  "filters": {
+    "brightness": 1.0,
+    "contrast": 1.05,
+    "saturation": 1.05,
+    "sharpness": 1.0,
+    "background_blur_px": 0
+  },
+  "copy": {
+    "title": "المذاق الأصيل",
+    "cta": "اطلب الآن"
+  }
+}
