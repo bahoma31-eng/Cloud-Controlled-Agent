@@ -1,7 +1,1 @@
-{
-  "task_id": "CA-READ-007",
-  "engine": "PYTHON",
-  "command": "import ast, sys\nsys.stdout.reconfigure(encoding='utf-8')\nwith open(r'C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py', 'r', encoding='utf-8') as f:\n    source = f.read()\ntree = ast.parse(source)\nfor node in ast.walk(tree):\n    if isinstance(node, ast.ClassDef):\n        print(f'CLASS: {node.name}')\n        for item in node.body:\n            if isinstance(item, ast.FunctionDef):\n                args = [a.arg for a in item.args.args]\n                print(f'  METHOD: {item.name}({', '.join(args)})')\n    elif isinstance(node, ast.FunctionDef) and not hasattr(node, '_in_class'):\n        if node.col_offset == 0:\n            args = [a.arg for a in node.args.args]\n            print(f'FUNCTION: {node.name}({', '.join(args)})')",
-  "description": "استخراج هيكل الكلاسات والدوال من code_analyzer.py",
-  "timeout": 30
-}
+waiting
