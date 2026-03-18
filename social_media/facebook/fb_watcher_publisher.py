@@ -1,12 +1,20 @@
 #!/usr/bin/env python3
-import os
-import sys
+"""
+fb_watcher_publisher.py
+-----------------------
+يراقب مجلد media-pipeline/output في مستودع GitHub،
+وعند العثور على صورة أو فيديو يقوم بنشره على فيسبوك،
+ثم ينقله إلى media-pipeline/processed داخل نفس المستودع.
+"""
+import base64
+import io
 import json
-import time
-import shutil
 import logging
 import mimetypes
-from pathlib import Path
+import os
+import sys
+import time
+from pathlib import PurePosixPath
 
 import requests
 from dotenv import load_dotenv
@@ -17,35 +25,39 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # =========================
-# Configuration (can be overridden by env vars)
+# GitHub configuration
 # =========================
-WATCH_DIR = Path(os.getenv("FB_WATCH_DIR", "media-pipeline/output"))
-PROCESSED_DIR = Path(os.getenv("FB_PROCESSED_DIR", "media-pipeline/processed"))
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN", "").strip()
+GITHUB_OWNER = os.getenv("GITHUB_OWNER", "bahoma31-eng")
+GITHUB_REPO = os.getenv("GITHUB_REPO", "Cloud-Controlled-Agent")
+GITHUB_BRANCH = os.getenv("GITHUB_BRANCH", "main")
+GITHUB_OUTPUT_PATH = os.getenv("GITHUB_OUTPUT_PATH", "media-pipeline/output")
+GITHUB_PROCESSED_PATH = os.getenv("GITHUB_PROCESSED_PATH", "media-pipeline/processed")
+GITHUB_API_BASE = "https://api.github.com"
 
-POLL_INTERVAL_SECONDS = int(os.getenv("FB_POLL_INTERVAL_SECONDS", "5"))
-STABILITY_CHECKS = int(os.getenv("FB_STABILITY_CHECKS", "3"))
-STABILITY_DELAY_SEC = float(os.getenv("FB_STABILITY_DELAY_SEC", "1.0"))
+# =========================
+# Polling interval
+# =========================
+POLL_INTERVAL_SECONDS = int(os.getenv("FB_POLL_INTERVAL_SECONDS", "20"))
 
-# Accept images + videos
+# =========================
+# Supported media types
+# =========================
 SUPPORTED_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
 SUPPORTED_VIDEO_EXTENSIONS = {".mp4", ".mov", ".m4v", ".webm"}
 
-# Tokens file (passed from media_bridge.py or set directly)
+# =========================
+# Facebook / tokens config
+# =========================
 SOCIAL_TOKENS_PATH = os.getenv(
     "SOCIAL_TOKENS_PATH",
-    r"C:\Users\Revexn\Cloud-Controlled-Agent\social_media\social_tokens.json"
+    "social_media/social_tokens.json"
 )
-
-# Fixed caption text (you can change it)
 FB_CAPTION = os.getenv(
     "FB_CAPTION",
     "عرض اليوم جاهز! اطلب الآن عبر واتساب أو تواصل معنا على صفحاتنا."
 )
-
 GRAPH_API_BASE = os.getenv("FB_GRAPH_API_BASE", "https://graph.facebook.com/v19.0")
-
-# GitHub Token (read from .env)
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN", "").strip()
 
 # =========================
 # Logging
@@ -56,183 +68,327 @@ logging.basicConfig(
 )
 logger = logging.getLogger("fb-watcher-publisher")
 
-
-def ensure_directories():
-    WATCH_DIR.mkdir(parents=True, exist_ok=True)
-    PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
-
-
-def load_tokens() -> dict:
-    p = Path(SOCIAL_TOKENS_PATH)
-    if not p.exists():
-        raise FileNotFoundError(f"social_tokens.json not found: {p}")
-
-    with p.open("r", encoding="utf-8") as f:
-        data = json.load(f)
-
-    # Expected (from your screenshot):
-    # {
-    #   "facebook_access_token": "...",
-    #   "facebook_page_id": "...."
-    # }
-    if "facebook_access_token" not in data or "facebook_page_id" not in data:
-        raise ValueError("social_tokens.json must contain facebook_access_token and facebook_page_id")
-
-    return data
+# ملفات تمت معالجتها (SHA) لتجنب إعادة النشر — يُحمَّل من ملف ويُحفظ فيه
+_PROCESSED_LOG = os.getenv("FB_PROCESSED_LOG", "social_media/facebook/.processed_shas.json")
+_processed_shas: set = set()
 
 
-def is_supported(file_path: Path) -> bool:
-    if not file_path.is_file():
-        return False
-    ext = file_path.suffix.lower()
+def _load_processed_shas():
+    """يحمّل قائمة الـ SHAs المعالجة من الملف إن وُجد."""
+    try:
+        with open(_PROCESSED_LOG, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            if isinstance(data, list):
+                _processed_shas.update(data)
+    except FileNotFoundError:
+        pass
+    except Exception as exc:
+        logger.warning("تعذّر تحميل سجل المعالجة: %s", exc)
+
+
+def _save_processed_shas():
+    """يحفظ قائمة الـ SHAs المعالجة في الملف."""
+    try:
+        os.makedirs(os.path.dirname(_PROCESSED_LOG) or ".", exist_ok=True)
+        with open(_PROCESSED_LOG, "w", encoding="utf-8") as f:
+            json.dump(list(_processed_shas), f)
+    except Exception as exc:
+        logger.warning("تعذّر حفظ سجل المعالجة: %s", exc)
+
+
+# =========================
+# Helpers
+# =========================
+
+def _github_headers() -> dict:
+    headers = {"Accept": "application/vnd.github+json"}
+    if GITHUB_TOKEN:
+        headers["Authorization"] = f"Bearer {GITHUB_TOKEN}"
+    return headers
+
+
+def _is_supported(filename: str) -> bool:
+    ext = PurePosixPath(filename).suffix.lower()
     return ext in SUPPORTED_IMAGE_EXTENSIONS or ext in SUPPORTED_VIDEO_EXTENSIONS
 
 
-def is_video(file_path: Path) -> bool:
-    return file_path.suffix.lower() in SUPPORTED_VIDEO_EXTENSIONS
+def _is_video(filename: str) -> bool:
+    return PurePosixPath(filename).suffix.lower() in SUPPORTED_VIDEO_EXTENSIONS
 
 
-def wait_until_file_is_stable(file_path: Path, checks: int = STABILITY_CHECKS, delay: float = STABILITY_DELAY_SEC) -> bool:
-    """
-    Prevents handling partially written files.
-    """
-    try:
-        previous_size = -1
-        for _ in range(checks):
-            current_size = file_path.stat().st_size
-            if current_size == previous_size and current_size > 0:
-                return True
-            previous_size = current_size
-            time.sleep(delay)
-        return file_path.stat().st_size > 0
-    except FileNotFoundError:
-        return False
-
-
-def move_to_processed(file_path: Path) -> Path:
-    destination = PROCESSED_DIR / file_path.name
-    if destination.exists():
-        stem = file_path.stem
-        suffix = file_path.suffix
-        timestamp = int(time.time())
-        destination = PROCESSED_DIR / f"{stem}_{timestamp}{suffix}"
-
-    shutil.move(str(file_path), str(destination))
-    return destination
-
-
-def guess_mime(file_path: Path) -> str:
-    mt, _ = mimetypes.guess_type(str(file_path))
+def _guess_mime(filename: str) -> str:
+    mt, _ = mimetypes.guess_type(filename)
     if mt:
         return mt
-    # fallback
-    if is_video(file_path):
+    if _is_video(filename):
         return "video/mp4"
     return "image/jpeg"
 
 
-def publish_photo(tokens: dict, file_path: Path, caption: str) -> tuple[bool, str]:
-    page_id = str(tokens["facebook_page_id"])
-    access_token = str(tokens["facebook_access_token"])
+# =========================
+# GitHub API operations
+# =========================
 
-    url = f"{GRAPH_API_BASE}/{page_id}/photos"
-    mime = guess_mime(file_path)
-
-    # Graph API expects multipart form-data:
-    # - source: file
-    # - caption: text
-    # - access_token: token
+def github_list_output() -> list:
+    """
+    يعيد قائمة الملفات الموجودة في GITHUB_OUTPUT_PATH.
+    كل عنصر هو dict يحتوي على: name, sha, download_url, path
+    """
+    url = (
+        f"{GITHUB_API_BASE}/repos/{GITHUB_OWNER}/{GITHUB_REPO}"
+        f"/contents/{GITHUB_OUTPUT_PATH}?ref={GITHUB_BRANCH}"
+    )
     try:
-        with file_path.open("rb") as f:
-            files = {"source": (file_path.name, f, mime)}
-            data = {"caption": caption, "access_token": access_token}
-            r = requests.post(url, data=data, files=files, timeout=300)
-
-        if r.status_code in (200, 201):
-            return True, r.text
-        return False, f"HTTP {r.status_code}: {r.text[:2000]}"
+        r = requests.get(url, headers=_github_headers(), timeout=30)
+        if r.status_code == 404:
+            logger.info("مجلد output غير موجود بعد في المستودع: %s", GITHUB_OUTPUT_PATH)
+            return []
+        r.raise_for_status()
+        items = r.json()
+        if not isinstance(items, list):
+            return []
+        return [i for i in items if i.get("type") == "file" and _is_supported(i.get("name", ""))]
     except Exception as exc:
-        return False, f"Exception: {exc}"
+        logger.error("خطأ عند قراءة قائمة الملفات من GitHub: %s", exc)
+        return []
 
 
-def publish_video(tokens: dict, file_path: Path, caption: str) -> tuple[bool, str]:
-    page_id = str(tokens["facebook_page_id"])
-    access_token = str(tokens["facebook_access_token"])
+def github_download_file(item: dict) -> bytes | None:
+    """
+    يُنزّل محتوى الملف من المستودع.
+    يستخدم download_url أو يفك ترميز المحتوى من content API.
+    """
+    download_url = item.get("download_url")
+    if download_url:
+        try:
+            r = requests.get(download_url, headers=_github_headers(), timeout=120)
+            r.raise_for_status()
+            return r.content
+        except Exception as exc:
+            logger.error("خطأ عند تنزيل %s: %s", item.get("name"), exc)
+            return None
 
-    url = f"{GRAPH_API_BASE}/{page_id}/videos"
-    mime = guess_mime(file_path)
-
-    # For /videos, use:
-    # - source: file
-    # - description: text
-    # - access_token
+    # احتياطي: استخدام contents API
+    url = (
+        f"{GITHUB_API_BASE}/repos/{GITHUB_OWNER}/{GITHUB_REPO}"
+        f"/contents/{item['path']}?ref={GITHUB_BRANCH}"
+    )
     try:
-        with file_path.open("rb") as f:
-            files = {"source": (file_path.name, f, mime)}
-            data = {"description": caption, "access_token": access_token}
-            r = requests.post(url, data=data, files=files, timeout=600)
-
-        if r.status_code in (200, 201):
-            return True, r.text
-        return False, f"HTTP {r.status_code}: {r.text[:2000]}"
+        r = requests.get(url, headers=_github_headers(), timeout=30)
+        r.raise_for_status()
+        data = r.json()
+        # GitHub API يُضيف فواصل أسطر داخل ترميز base64 — نزيلها قبل الفك
+        content_b64 = data.get("content", "").replace("\n", "")
+        return base64.b64decode(content_b64)
     except Exception as exc:
-        return False, f"Exception: {exc}"
+        logger.error("خطأ عند تنزيل %s (fallback): %s", item.get("name"), exc)
+        return None
 
 
-def scan_and_publish_once(tokens: dict):
-    items = sorted(
-        [p for p in WATCH_DIR.iterdir() if is_supported(p)],
-        key=lambda p: p.stat().st_mtime
+def github_move_to_processed(item: dict, file_bytes: bytes) -> bool:
+    """
+    ينقل الملف من output إلى processed في المستودع:
+    1. يرفع الملف إلى processed
+    2. يحذف الملف من output
+    """
+    name = item["name"]
+    dest_path = f"{GITHUB_PROCESSED_PATH}/{name}"
+    src_path = item["path"]
+    src_sha = item["sha"]
+
+    # 1) رفع إلى processed
+    put_url = (
+        f"{GITHUB_API_BASE}/repos/{GITHUB_OWNER}/{GITHUB_REPO}"
+        f"/contents/{dest_path}"
     )
 
+    # تحقق إذا الملف موجود مسبقاً في processed (للحصول على SHA القديم)
+    existing_sha = None
+    try:
+        chk = requests.get(put_url + f"?ref={GITHUB_BRANCH}", headers=_github_headers(), timeout=15)
+        if chk.status_code == 200:
+            existing_sha = chk.json().get("sha")
+            # إضافة timestamp للاسم لتجنب التعارض
+            stem = PurePosixPath(name).stem
+            suffix = PurePosixPath(name).suffix
+            ts = int(time.time())
+            dest_path = f"{GITHUB_PROCESSED_PATH}/{stem}_{ts}{suffix}"
+            put_url = (
+                f"{GITHUB_API_BASE}/repos/{GITHUB_OWNER}/{GITHUB_REPO}"
+                f"/contents/{dest_path}"
+            )
+            existing_sha = None
+    except Exception:
+        pass
+
+    put_body: dict = {
+        "message": f"move {name} to processed",
+        "content": base64.b64encode(file_bytes).decode(),
+        "branch": GITHUB_BRANCH,
+    }
+    if existing_sha:
+        put_body["sha"] = existing_sha
+
+    try:
+        r = requests.put(put_url, headers=_github_headers(), json=put_body, timeout=60)
+        if r.status_code not in (200, 201):
+            logger.error("فشل رفع %s إلى processed: HTTP %s | %s", name, r.status_code, r.text[:2000])
+            return False
+        logger.info("تم رفع %s إلى processed: %s", name, dest_path)
+    except Exception as exc:
+        logger.error("خطأ عند رفع %s إلى processed: %s", name, exc)
+        return False
+
+    # 2) حذف من output
+    del_url = (
+        f"{GITHUB_API_BASE}/repos/{GITHUB_OWNER}/{GITHUB_REPO}"
+        f"/contents/{src_path}"
+    )
+    del_body = {
+        "message": f"remove {name} from output after publishing",
+        "sha": src_sha,
+        "branch": GITHUB_BRANCH,
+    }
+    try:
+        r = requests.delete(del_url, headers=_github_headers(), json=del_body, timeout=30)
+        if r.status_code not in (200, 204):
+            logger.error("فشل حذف %s من output: HTTP %s | %s", name, r.status_code, r.text[:2000])
+            return False
+        logger.info("تم حذف %s من output بنجاح.", name)
+    except Exception as exc:
+        logger.error("خطأ عند حذف %s من output: %s", name, exc)
+        return False
+
+    return True
+
+
+# =========================
+# Token loading
+# =========================
+
+def load_tokens() -> dict:
+    p_path = SOCIAL_TOKENS_PATH
+    try:
+        with open(p_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"social_tokens.json غير موجود: {p_path}")
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"خطأ في تحليل social_tokens.json: {exc}")
+
+    if "facebook_access_token" not in data or "facebook_page_id" not in data:
+        raise ValueError("social_tokens.json يجب أن يحتوي على facebook_access_token و facebook_page_id")
+    return data
+
+
+# =========================
+# Facebook publishing
+# =========================
+
+def publish_photo(tokens: dict, filename: str, file_bytes: bytes, caption: str) -> tuple[bool, str]:
+    page_id = str(tokens["facebook_page_id"])
+    access_token = str(tokens["facebook_access_token"])
+    url = f"{GRAPH_API_BASE}/{page_id}/photos"
+    mime = _guess_mime(filename)
+    try:
+        files = {"source": (filename, io.BytesIO(file_bytes), mime)}
+        data = {"caption": caption, "access_token": access_token}
+        r = requests.post(url, data=data, files=files, timeout=300)
+        if r.status_code in (200, 201):
+            return True, r.text
+        return False, f"HTTP {r.status_code}: {r.text[:2000]}"
+    except Exception as exc:
+        return False, f"Exception: {exc}"
+
+
+def publish_video(tokens: dict, filename: str, file_bytes: bytes, caption: str) -> tuple[bool, str]:
+    page_id = str(tokens["facebook_page_id"])
+    access_token = str(tokens["facebook_access_token"])
+    url = f"{GRAPH_API_BASE}/{page_id}/videos"
+    mime = _guess_mime(filename)
+    try:
+        files = {"source": (filename, io.BytesIO(file_bytes), mime)}
+        data = {"description": caption, "access_token": access_token}
+        r = requests.post(url, data=data, files=files, timeout=600)
+        if r.status_code in (200, 201):
+            return True, r.text
+        return False, f"HTTP {r.status_code}: {r.text[:2000]}"
+    except Exception as exc:
+        return False, f"Exception: {exc}"
+
+
+# =========================
+# Main scan loop
+# =========================
+
+def scan_and_publish_once(tokens: dict):
+    items = github_list_output()
+
     if not items:
-        logger.info("No media found in %s", WATCH_DIR)
+        logger.info("لا توجد ملفات وسائط في %s/%s", GITHUB_REPO, GITHUB_OUTPUT_PATH)
         return
 
-    for p in items:
-        logger.info("Found: %s", p.name)
+    for item in items:
+        sha = item.get("sha", "")
+        name = item.get("name", "")
 
-        if not wait_until_file_is_stable(p):
-            logger.warning("Skipping unstable file: %s", p.name)
+        if sha in _processed_shas:
+            logger.debug("تم تخطي %s (تمت معالجته مسبقاً)", name)
+            continue
+
+        logger.info("تم العثور على: %s (sha=%s)", name, sha[:8])
+
+        file_bytes = github_download_file(item)
+        if file_bytes is None:
+            logger.error("فشل تنزيل %s، سيتم تخطيه.", name)
             continue
 
         caption = FB_CAPTION
 
-        if is_video(p):
-            logger.info("Detected VIDEO. Publishing to Facebook...")
-            ok, msg = publish_video(tokens, p, caption)
+        if _is_video(name):
+            logger.info("فيديو مكتشف: %s — جارٍ النشر على فيسبوك...", name)
+            ok, msg = publish_video(tokens, name, file_bytes, caption)
         else:
-            logger.info("Detected IMAGE. Publishing to Facebook...")
-            ok, msg = publish_photo(tokens, p, caption)
+            logger.info("صورة مكتشفة: %s — جارٍ النشر على فيسبوك...", name)
+            ok, msg = publish_photo(tokens, name, file_bytes, caption)
 
         if ok:
-            logger.info("Published successfully.")
-            moved = move_to_processed(p)
-            logger.info("Moved to processed: %s", moved)
+            logger.info("تم النشر بنجاح: %s", name)
+            moved = github_move_to_processed(item, file_bytes)
+            if moved:
+                _processed_shas.add(sha)
+                _save_processed_shas()
+                logger.info("تم نقل %s إلى processed في المستودع.", name)
+            else:
+                logger.warning("النشر نجح لكن فشل نقل %s إلى processed.", name)
+                # نضيف SHA لتجنب إعادة النشر حتى لو فشل النقل
+                _processed_shas.add(sha)
+                _save_processed_shas()
         else:
-            logger.error("Publish failed for %s | %s", p.name, msg)
+            logger.error("فشل النشر لـ %s | %s", name, msg)
 
 
 def main():
-    ensure_directories()
-    
-    logger.info("GitHub Token loaded: %s", "✓ Yes" if GITHUB_TOKEN else "✗ No")
-    logger.info("Watching: %s", WATCH_DIR)
-    logger.info("Processed: %s", PROCESSED_DIR)
-    logger.info("Polling every %s seconds", POLL_INTERVAL_SECONDS)
-    logger.info("Tokens: %s", SOCIAL_TOKENS_PATH)
+    _load_processed_shas()
+    logger.info("=== fb-watcher-publisher يعمل (GitHub API mode) ===")
+    logger.info("GitHub Token: %s", "✓ موجود" if GITHUB_TOKEN else "✗ غير موجود — قراءة الملفات العامة فقط")
+    logger.info("المستودع: %s/%s@%s", GITHUB_OWNER, GITHUB_REPO, GITHUB_BRANCH)
+    logger.info("مجلد المراقبة: %s", GITHUB_OUTPUT_PATH)
+    logger.info("مجلد المعالجة: %s", GITHUB_PROCESSED_PATH)
+    logger.info("فترة الاستطلاع: %s ثانية", POLL_INTERVAL_SECONDS)
+    logger.info("ملف التوكنز: %s", SOCIAL_TOKENS_PATH)
 
     try:
         tokens = load_tokens()
     except Exception as e:
-        logger.error("Cannot load tokens: %s", e)
+        logger.error("لا يمكن تحميل التوكنز: %s", e)
         sys.exit(2)
 
     while True:
         try:
             scan_and_publish_once(tokens)
         except Exception as exc:
-            logger.exception("Unexpected error: %s", exc)
+            logger.exception("خطأ غير متوقع: %s", exc)
 
         time.sleep(POLL_INTERVAL_SECONDS)
 
