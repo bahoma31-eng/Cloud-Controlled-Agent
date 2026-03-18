@@ -1,0 +1,13 @@
+{
+  "task_id": "TEST-003b",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "اختبار 3b: إنشاء كائن CodeAnalyzer وفحص الطرق المتاحة (تصحيح اسم السمة)",
+  "command_preview": "python -c \"import sys; sys.path.insert(0, r'C:\\Users\\Revexn\\CodeAnalyzer'); from code_analyzer import CodeAnalyzer; analyzer = CodeAnalyzer(r'C:\\Users\\Revexn\\CodeAnalyzer'); print('SUCCESS: CodeAnalyzer instance created'); print('Target path:', analyzer.target_path); methods = [m for m in dir(analyzer) if not m.startswith('_') and callable(getattr(analyzer, m))]; print('Public methods:', len(methods)); print('Methods:', ', '.join(methods[:20]))\"",
+  "output": "SUCCESS: CodeAnalyzer instance created\nTarget path: C:\\Users\\Revexn\\CodeAnalyzer\nPublic methods: 3\nMethods: get_findings_json, save_report, scan",
+  "timestamp": "2026-03-18T18:08:46.570293+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
