@@ -1,7 +1,1 @@
-{
-  "task_id": "restart_001",
-  "engine": "CMD",
-  "command": "cd /d C:\\Users\\Revexn\\Cloud-Controlled-Agent && start \"media_bridge\" C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\python.exe media-pipeline/media_bridge.py 2>media_bridge_error.log && timeout /t 5 /nobreak >nul && tasklist /FI \"IMAGENAME eq python.exe\" /FO CSV | findstr media",
-  "description": "Restart media_bridge.py with error log",
-  "timeout": 30
-}
+waiting
