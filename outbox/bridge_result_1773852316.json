@@ -1,0 +1,13 @@
+{
+  "task_id": "CA-DISCOVER-001",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "اكتشاف ملفات CodeAnalyzer على الجهاز المحلي",
+  "command_preview": "Write-Output '=== CodeAnalyzer Discovery ==='; Get-ChildItem -Path 'C:\\Users\\Revexn' -Recurse -Filter '*CodeAnalyzer*' -ErrorAction SilentlyContinue | Select-Object FullName, Length, LastWriteTime | Format-Table -AutoSize; Write-Output '=== Also checking Cloud-Controlled-Agent directory ==='; Get-ChildItem -Path 'C:\\Users\\Revexn\\Cloud-Controlled-Agent' -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.Name -match 'code_analyzer|CodeAnalyzer|analyzer' } | Select-Object FullName, Length, LastWriteTime | Format-Table -AutoSize",
+  "output": "=== CodeAnalyzer Discovery ===\n\nFullName                     Length LastWriteTime      \n--------                     ------ -------------      \nC:\\Users\\Revexn\\CodeAnalyzer        18/03/2026 17:26:34\n\n\n=== Also checking Cloud-Controlled-Agent directory ===",
+  "timestamp": "2026-03-18T16:45:16.345721+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.1"
+}
