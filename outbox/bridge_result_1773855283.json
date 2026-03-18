@@ -1,0 +1,13 @@
+{
+  "task_id": "FIX-SYNTAX-003",
+  "status": "FAILED",
+  "return_code": 1,
+  "engine": "PYTHON",
+  "description": "إصلاح خطأ SyntaxError في السطر 82 - دمج السطرين 82 و 83",
+  "command_preview": "import pathlib\np = pathlib.Path(r'C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py')\ntext = p.read_text(encoding='utf-8')\nlines = text.split('\\n')\nprint(f'Before fix - Line 82: {repr(lines[81])}')\nprint(f'Before fix - Line 83: {repr(lines[82])}')\n# Merge line 82 and 83: remove trailing newline from line 82 and prepend to line 83\nnew_line = lines[81].rstrip() + lines[82].lstrip()\nlines[81] = new_line\ndel lines[82]\np.write_text('\\n'.join(lines), encoding='utf-8')\nprint(f'After fix - New line 82: {repr(lines[81])}')\nprint('Fix applied successfully!')",
+  "output": "Before fix - Line 82: '        print(f\"'\n\n[STDERR]\nTraceback (most recent call last):\n  File \"<string>\", line 6, in <module>\n  File \"C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\encodings\\cp1252.py\", line 19, in encode\n    return codecs.charmap_encode(input,self.errors,encoding_table)[0]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nUnicodeEncodeError: 'charmap' codec can't encode characters in position 23-27: character maps to <undefined>",
+  "timestamp": "2026-03-18T17:34:43.489797+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
