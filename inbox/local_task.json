@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "ENV-READ-002",
+  "engine": "PYTHON",
+  "command": "import base64, os; f=open('.env','rb'); data=f.read(); f.close(); print('BASE64_START'); print(base64.b64encode(data).decode()); print('BASE64_END'); print('SIZE:', len(data), 'bytes')",
+  "description": "Read .env file with base64 encoding to avoid character issues",
+  "timeout": 30
+}
