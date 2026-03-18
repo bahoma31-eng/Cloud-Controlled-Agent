@@ -1,7 +1,1 @@
-{
-  "task_id": "DIAG-002",
-  "engine": "POWERSHELL",
-  "command": "Write-Output '=== .env FILE ===' ; $envFile = 'C:\\Users\\Revexn\\Cloud-Controlled-Agent\\media-pipeline\\.env'; if (Test-Path $envFile) { Write-Output 'EXISTS:'; Get-Content $envFile | ForEach-Object { if ($_ -match '(TOKEN|KEY|SECRET|PASSWORD)') { $parts = $_ -split '=',2; Write-Output \"$($parts[0])=***REDACTED***\" } else { Write-Output $_ } } } else { Write-Output '.env NOT FOUND - only .env.example exists!' }; Write-Output ''; Write-Output '=== RECENT PYTHON ERRORS IN EVENT LOG ==='; Get-WinEvent -FilterHashtable @{LogName='Application'; Level=2; StartTime=(Get-Date).AddHours(-6)} -MaxEvents 10 -ErrorAction SilentlyContinue | Where-Object { $_.Message -like '*python*' -or $_.Message -like '*media_bridge*' } | Select-Object TimeCreated, Message | Format-List; Write-Output '=== RECENT CRASH DUMPS ==='; Get-ChildItem 'C:\\Users\\Revexn\\AppData\\Local\\CrashDumps\\' -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTime -gt (Get-Date).AddHours(-6) } | Select-Object Name, Length, LastWriteTime | Format-Table -AutoSize; Write-Output '=== TMP FOLDER ==='; $tmp = 'C:\\Users\\Revexn\\Cloud-Controlled-Agent\\media-pipeline\\.media_bridge_tmp'; if (Test-Path $tmp) { Get-ChildItem $tmp -ErrorAction SilentlyContinue | Select-Object Name, Length, LastWriteTime | Format-Table -AutoSize } else { Write-Output 'tmp folder not found' }",
-  "description": "Check .env config, Windows Event Log for Python crashes, crash dumps, and tmp folder",
-  "timeout": 60
-}
+waiting
