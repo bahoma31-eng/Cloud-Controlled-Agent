@@ -1,7 +1,1 @@
-{
-  "task_id": "ANALYZER-TEST-001",
-  "engine": "ANALYZER",
-  "command": "C:\\Users\\Revexn\\CodeAnalyzer",
-  "description": "اختبار محرك ANALYZER — تحليل مجلد CodeAnalyzer نفسه لاكتشاف القدرات",
-  "timeout": 120
-}
+waiting
