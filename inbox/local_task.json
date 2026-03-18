@@ -1,7 +1,1 @@
-{
-  "task_id": "FIX-SYNTAX-009",
-  "engine": "PYTHON",
-  "command": "import py_compile; py_compile.compile(r'C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py', doraise=True); print('SUCCESS: Syntax check PASSED - no SyntaxError found!')",
-  "description": "التحقق النهائي من عدم وجود أخطاء بناء جملة في code_analyzer.py",
-  "timeout": 60
-}
+waiting
