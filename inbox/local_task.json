@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "SRV-002",
+  "engine": "POWERSHELL",
+  "command": "Get-Process python*, node*, ruby*, java*, httpd*, nginx*, apache* -ErrorAction SilentlyContinue | Select-Object Id, ProcessName, CPU, @{Name='RAM_MB';Expression={[math]::Round($_.WorkingSet64/1MB,1)}}, StartTime, @{Name='CommandLine';Expression={(Get-CimInstance Win32_Process -Filter \"ProcessId=$($_.Id)\" -ErrorAction SilentlyContinue).CommandLine}} | Format-Table -AutoSize -Wrap | Out-String -Width 300",
+  "description": "Check for Python, Node.js, and other server processes with their command lines",
+  "timeout": 60
+}
