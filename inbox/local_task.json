@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "FIX-SYNTAX-011",
+  "engine": "POWERSHELL",
+  "command": "$file = 'C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py'; $lines = [System.IO.File]::ReadAllLines($file, [System.Text.Encoding]::UTF8); $newLines = [System.Collections.Generic.List[string]]::new(); for($i=0; $i -lt $lines.Count; $i++){ $ln=$lines[$i]; if($ln.Contains('):self._add_finding(')){ $p1=$ln.IndexOf('):self._add_finding('); $first=$ln.Substring(0,$p1+1); $rest=$ln.Substring($p1+1); $p2=$rest.LastIndexOf(')if re.search('); if($p2 -gt 0){ $second='                '+$rest.Substring(0,$p2+1); $third='            '+$rest.Substring($p2+1); $newLines.Add($first); $newLines.Add($second); $newLines.Add($third); Write-Output \"Split line $($i+1) into 3 lines\"; Write-Output \"L1: $first\"; Write-Output \"L2: $second\"; Write-Output \"L3: $third\" } else { $newLines.Add($ln) } } else { $newLines.Add($ln) } }; [System.IO.File]::WriteAllLines($file, $newLines, [System.Text.Encoding]::UTF8); Write-Output \"New total: $($newLines.Count) lines\"",
+  "description": "إصلاح السطر 189 بتقسيمه إلى 3 أسطر مستقلة",
+  "timeout": 60
+}
