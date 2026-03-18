@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "ANALYZER-TEST-002",
+  "engine": "ANALYZER",
+  "command": "C:\\Users\\Revexn\\CodeAnalyzer",
+  "description": "إعادة اختبار محرك ANALYZER بعد تحديث الجسر إلى V2.2",
+  "timeout": 120
+}
