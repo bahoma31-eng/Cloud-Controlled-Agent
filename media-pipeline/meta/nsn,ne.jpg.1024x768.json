@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-03-18T20:23:55.285747+00:00",
+  "generated_at": "2026-03-18T20:33:29.341310+00:00",
   "source_image": {
     "filename": "nsn,ne.jpg",
     "width": 1024,
@@ -8,27 +8,27 @@
   },
   "analysis": {
     "dominant_colors": [
-      "#222222",
-      "#8B5E3C",
-      "#4CAF50"
+      "#2F2F2F",
+      "#8B5A2B",
+      "#E0B05C"
     ],
-    "brightness": 0.55,
+    "brightness": 0.5,
     "recommended_text_theme": "light"
   },
   "layout": {
     "empty_regions_px": [
       {
-        "x": 0,
-        "y": 0,
-        "w": 1024,
-        "h": 100,
+        "x": 50,
+        "y": 30,
+        "w": 924,
+        "h": 80,
         "score": 0.95
       }
     ],
     "chosen_region_px": {
       "x": 50,
-      "y": 10,
-      "w": 500,
+      "y": 30,
+      "w": 924,
       "h": 80
     }
   },
@@ -53,7 +53,7 @@
     "background_blur_px": 0
   },
   "copy": {
-    "title": "مذاق عربي أصيل",
+    "title": "تجربة لا تُنسى",
     "cta": "اطلب الآن"
   }
 }
