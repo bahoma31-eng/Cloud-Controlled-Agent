@@ -1,0 +1,99 @@
+{
+  "version": 2,
+  "generated_at": "2026-03-18T18:47:52.759128+00:00",
+  "source_image": {
+    "filename": "Screenshot_20260318_194644_Gallery.png",
+    "canvas_width": 720,
+    "canvas_height": 1600
+  },
+  "footer_region_px": {
+    "x": 0,
+    "y": 1280,
+    "w": 720,
+    "h": 320
+  },
+  "gradient": {
+    "direction": "90deg",
+    "stops": [
+      "#e67328",
+      "#ffa03c"
+    ]
+  },
+  "typography": {
+    "font_family": "Cairo",
+    "brand_size_px": 70,
+    "row_size_px": 41,
+    "whatsapp_size_px": 48,
+    "font_weight_brand": 900,
+    "font_weight_row": 700,
+    "font_weight_whatsapp": 800,
+    "line_height": 1.2
+  },
+  "palette": {
+    "brand_color": "#ffffff",
+    "row_text_color": "#ffffff",
+    "icon_color": "#ffffff",
+    "whatsapp_bg": "#1f9d55",
+    "whatsapp_text": "#ffffff",
+    "whatsapp_label": "#d8ffd8",
+    "card_bg": "rgba(0,0,0,0.28)",
+    "card_border": "rgba(255,255,255,0.16)",
+    "divider_color": "rgba(255,255,255,0.55)"
+  },
+  "layout_inside_footer_px": {
+    "brand_box": {
+      "x": 0,
+      "y": 0,
+      "w": 80,
+      "h": 26
+    },
+    "card_box": {
+      "x": 0,
+      "y": 0,
+      "w": 120,
+      "h": 60
+    },
+    "rows": [
+      {
+        "slot": "facebook",
+        "x": 36,
+        "y": 128,
+        "w": 320,
+        "h": 41
+      },
+      {
+        "slot": "instagram",
+        "x": 364,
+        "y": 128,
+        "w": 320,
+        "h": 41
+      },
+      {
+        "slot": "tiktok",
+        "x": 36,
+        "y": 181,
+        "w": 320,
+        "h": 41
+      },
+      {
+        "slot": "whatsapp",
+        "x": 364,
+        "y": 181,
+        "w": 320,
+        "h": 41
+      }
+    ],
+    "card_radius_px": 25,
+    "row_gap_px": 9,
+    "padding_px": 19,
+    "layout_mode": "inline_wrapped",
+    "max_lines": 2,
+    "icons_policy": "auto"
+  },
+  "effects": {
+    "card_shadow_opacity": 0.18,
+    "text_shadow_opacity": 0.25,
+    "text_shadow_blur_px": 8,
+    "glass_blur_px": 0
+  }
+}
