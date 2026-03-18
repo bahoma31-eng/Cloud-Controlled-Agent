@@ -1,7 +1,1 @@
-{
-  "task_id": "011",
-  "engine": "POWERSHELL",
-  "command": "Write-Output '=== محتوى مجلد media-pipeline ==='; Get-ChildItem 'C:\\Users\\Revexn\\Cloud-Controlled-Agent\\media-pipeline' -Recurse | Select-Object FullName, Length, LastWriteTime | Format-Table -AutoSize; Write-Output ''; Write-Output '=== محتوى media_bridge.py (أول 80 سطر) ==='; Get-Content 'C:\\Users\\Revexn\\Cloud-Controlled-Agent\\media-pipeline\\media_bridge.py' -TotalCount 80",
-  "description": "استكشاف مجلد media-pipeline وقراءة كود media_bridge.py لفهم مخرجاته",
-  "timeout": 60
-}
+waiting
