@@ -13,7 +13,7 @@ Local Bridge Script V2 - Auto-Execute Mode
 3. الوكيل يكتب المهمة في inbox/local_task.json
 4. هذا السكريبت يكتشفها وينفذها تلقائيا
 5. النتيجة ترفع الى outbox/
-6. الوكيل يقرأ النتيجة
+6. الو��يل يقرأ النتيجة
 
 الاستخدام:
 python bridge/local_bridge.py
@@ -26,6 +26,7 @@ import time
 import base64
 import subprocess
 import hashlib
+import shutil
 from datetime import datetime, timezone
 
 try:
@@ -48,6 +49,7 @@ TASK_FILE = "inbox/local_task.json"
 RESULT_DIR = "outbox"
 POLL_INTERVAL = int(os.getenv("BRIDGE_POLL_SECONDS", "10"))
 COMMAND_TIMEOUT = int(os.getenv("BRIDGE_TIMEOUT", "120"))
+BRANCH_NAME = os.getenv("BRIDGE_BRANCH", "main")
 
 GITHUB_API_BASE = "https://api.github.com"
 
@@ -76,7 +78,6 @@ def _footer():
 def _log(icon, msg):
     print("[" + _local_time() + "] " + icon + " " + msg)
 
-
 # ---------------------------------------------------------------------------
 # GitHub helpers
 # ---------------------------------------------------------------------------
@@ -88,77 +89,150 @@ def _headers():
     }
 
 def _content_url(path):
-    return GITHUB_API_BASE + "/repos/" + REPO_OWNER + "/" + REPO_NAME + "/contents/" + path
+    return f"{GITHUB_API_BASE}/repos/{REPO_OWNER}/{REPO_NAME}/contents/{path}"
 
 def gh_get_file(path):
     try:
         r = requests.get(_content_url(path), headers=_headers(), timeout=20)
         if r.status_code == 200:
             data = r.json()
-            content = base64.b64decode(data["content"]).decode("utf-8", errors="replace")
-            return content, data.get("sha")
-        elif r.status_code != 404:
-            _log("!", "GitHub GET " + path + " -> " + str(r.status_code))
+            encoded = data.get("content", "")
+            decoded = base64.b64decode(encoded).decode("utf-8", errors="replace")
+            return decoded, data.get("sha")
+        if r.status_code != 404:
+            _log("!", f"GitHub GET {path} -> {r.status_code}: {r.text[:300]}")
     except Exception as e:
-        _log("!", "Error reading " + path + ": " + str(e))
+        _log("!", f"Error reading {path}: {e}")
     return None, None
 
 def gh_put_file(path, content, message):
     try:
         url = _content_url(path)
+
+        # Read current SHA if file exists
         r_old = requests.get(url, headers=_headers(), timeout=20)
-        sha = r_old.json().get("sha") if r_old.status_code == 200 else None
+        sha = None
+        if r_old.status_code == 200:
+            sha = r_old.json().get("sha")
+        elif r_old.status_code not in (200, 404):
+            _log("!", f"GitHub preflight GET {path} -> {r_old.status_code}: {r_old.text[:300]}")
+
         payload = {
             "message": message,
             "content": base64.b64encode(content.encode("utf-8")).decode("utf-8"),
-            "branch": "main",
+            "branch": BRANCH_NAME,
         }
         if sha:
             payload["sha"] = sha
-        r = requests.put(url, headers=_headers(), json=payload, timeout=30)
-        return r.status_code in (200, 201)
-    except Exception as e:
-        _log("!", "Error uploading " + path + ": " + str(e))
-        return False
 
+        r = requests.put(url, headers=_headers(), json=payload, timeout=30)
+        if r.status_code in (200, 201):
+            return True
+
+        _log("!", f"GitHub PUT {path} -> {r.status_code}: {r.text[:400]}")
+        return False
+    except Exception as e:
+        _log("!", f"Error uploading {path}: {e}")
+        return False
 
 # ---------------------------------------------------------------------------
 # Task execution
 # ---------------------------------------------------------------------------
-def execute_command(engine, content, timeout):
-    try:
-        engine_upper = engine.upper()
-        if engine_upper == "PYTHON":
-            cmd = ["python", "-c", content]
-        elif engine_upper == "POWERSHELL":
-            cmd = ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", content]
-        elif engine_upper == "BASH":
-            cmd = ["bash", "-c", content]
-        elif engine_upper == "CMD":
-            cmd = ["cmd", "/c", content]
-        else:
-            return 1, "Unsupported engine: " + engine
+def _which_or_none(binary_name):
+    return shutil.which(binary_name)
 
-        p = subprocess.run(
-            cmd,
-            capture_output=True,
-            timeout=timeout,
-            cwd=os.getcwd(),
-        )
-        stdout = (p.stdout or b"").decode("utf-8", errors="replace")
-        stderr = (p.stderr or b"").decode("utf-8", errors="replace")
-        output = stdout
-        if stderr:
-            output = output + "\n[STDERR]\n" + stderr
-        return p.returncode, output.strip()
+def _validate_timeout(raw_timeout, default_value):
+    try:
+        value = int(raw_timeout)
+        if value <= 0:
+            return default_value
+        return value
+    except Exception:
+        return default_value
+
+def _join_output(stdout_text, stderr_text):
+    out = (stdout_text or "").strip()
+    err = (stderr_text or "").strip()
+
+    if out and err:
+        return f"{out}\n\n[STDERR]\n{err}"
+    if err and not out:
+        return f"[STDERR]\n{err}"
+    return out
+
+def _run_process(cmd, timeout, cwd, use_shell=False):
+    p = subprocess.run(
+        cmd,
+        capture_output=True,
+        text=True,
+        timeout=timeout,
+        cwd=cwd,
+        shell=use_shell,
+    )
+    return p.returncode, (p.stdout or ""), (p.stderr or "")
+
+def execute_command(engine, content, timeout):
+    """
+    يرجع:
+    (return_code: int, output_text: str)
+    """
+    engine_upper = str(engine or "").strip().upper()
+    timeout_value = _validate_timeout(timeout, COMMAND_TIMEOUT)
+    cwd = os.getcwd()
+
+    try:
+        if engine_upper == "PYTHON":
+            py = _which_or_none("python") or _which_or_none("py")
+            if not py:
+                return 1, "Engine 'PYTHON' not found on this system (python/py missing)."
+            cmd = [py, "-c", content]
+            rc, stdout, stderr = _run_process(cmd, timeout_value, cwd)
+
+        elif engine_upper == "POWERSHELL":
+            ps = (
+                _which_or_none("powershell")
+                or _which_or_none("pwsh")
+                or "powershell"
+            )
+            cmd = [ps, "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", content]
+            rc, stdout, stderr = _run_process(cmd, timeout_value, cwd)
+
+        elif engine_upper == "BASH":
+            bash = _which_or_none("bash")
+            if not bash:
+                return 1, "Engine 'BASH' not found on this system."
+            cmd = [bash, "-c", content]
+            rc, stdout, stderr = _run_process(cmd, timeout_value, cwd)
+
+        elif engine_upper == "CMD":
+            # مهم: بعض أوامر CMD المركبة (cd/start/redirection/&&)
+            # تتصرف أفضل بهذا الشكل الصريح:
+            # cmd.exe /d /s /c "<command>"
+            cmd_exe = _which_or_none("cmd") or "cmd.exe"
+            cmd = [cmd_exe, "/d", "/s", "/c", content]
+            rc, stdout, stderr = _run_process(cmd, timeout_value, cwd)
+
+            # تشخيص إضافي إذا فشل بدون أي مخرجات
+            if rc != 0 and not (stdout or "").strip() and not (stderr or "").strip():
+                stderr = (
+                    "Command failed with empty output. "
+                    "Likely CMD parsing/start behavior issue. "
+                    "Tip: test the same command manually in cmd.exe."
+                )
+        else:
+            return 1, f"Unsupported engine: {engine}"
+
+        output = _join_output(stdout, stderr)
+        if not output.strip():
+            output = "(no output)"
+        return rc, output
 
     except subprocess.TimeoutExpired:
-        return 124, "Timeout expired after " + str(timeout) + "s"
+        return 124, f"Timeout expired after {timeout_value}s"
     except FileNotFoundError:
-        return 1, "Engine '" + engine + "' not found on this system"
+        return 1, f"Engine '{engine}' not found on this system"
     except Exception as e:
-        return 1, "Execution error: " + str(e)
-
+        return 1, f"Execution error: {e}"
 
 # ---------------------------------------------------------------------------
 # Main loop - AUTO EXECUTE (no local confirmation needed)
@@ -169,10 +243,11 @@ def main():
         sys.exit(1)
 
     _header("Local Bridge Agent V2.0 - Auto Execute Mode")
-    print("  Repo      : " + REPO_OWNER + "/" + REPO_NAME)
-    print("  Task file : " + TASK_FILE)
-    print("  Polling   : every " + str(POLL_INTERVAL) + "s")
-    print("  Timeout   : " + str(COMMAND_TIMEOUT) + "s")
+    print(f"  Repo      : {REPO_OWNER}/{REPO_NAME}")
+    print(f"  Task file : {TASK_FILE}")
+    print(f"  Polling   : every {POLL_INTERVAL}s")
+    print(f"  Timeout   : {COMMAND_TIMEOUT}s")
+    print(f"  Branch    : {BRANCH_NAME}")
     print()
     print("  >> Auto-execute enabled.")
     print("  >> Approval happens in Notion, not here.")
@@ -190,76 +265,78 @@ def main():
                 time.sleep(POLL_INTERVAL)
                 continue
 
-            # Parse task
             try:
                 task = json.loads(raw)
             except json.JSONDecodeError:
+                _log("!!", "Task file is not valid JSON yet. Retrying...")
                 time.sleep(POLL_INTERVAL)
                 continue
 
-            # Skip if already processed
-            task_hash = hashlib.md5(raw.encode()).hexdigest()
+            # تجنب تكرار نفس المهمة
+            task_hash = hashlib.md5(raw.encode("utf-8", errors="replace")).hexdigest()
             if task_hash == last_task_hash:
                 time.sleep(POLL_INTERVAL)
                 continue
 
-            # ---- AUTO EXECUTE ----
             task_count += 1
             task_id = str(task.get("task_id", "?"))
             engine = task.get("engine", "PYTHON")
             command = task.get("command", "")
             description = task.get("description", "No description")
-            timeout = task.get("timeout", COMMAND_TIMEOUT)
+            timeout = _validate_timeout(task.get("timeout", COMMAND_TIMEOUT), COMMAND_TIMEOUT)
 
-            _header("Task #" + str(task_count) + " received [" + task_id + "]")
-            print("  Description : " + description)
-            print("  Engine      : " + engine)
-            print("  Timeout     : " + str(timeout) + "s")
+            _header(f"Task #{task_count} received [{task_id}]")
+            print(f"  Description : {description}")
+            print(f"  Engine      : {engine}")
+            print(f"  Timeout     : {timeout}s")
             _line("-")
             print("  Command:")
-            for line in command.split("\n"):
+            for line in str(command).splitlines() or [""]:
                 print("    " + line)
             _line("-")
 
             _log(">>", "Executing...")
-
             rc, output = execute_command(engine, command, timeout)
 
-            # Display result
             status_word = "SUCCESS" if rc == 0 else "FAILED"
-            _log("<<", "Result: " + status_word + " (exit code: " + str(rc) + ")")
+            _log("<<", f"Result: {status_word} (exit code: {rc})")
             _line("-")
             print("Output:")
-            print(output[:3000])
+            print((output or "")[:3000])
             _footer()
 
-            # Upload result to GitHub
             result = {
                 "task_id": task_id,
                 "status": status_word,
                 "return_code": rc,
                 "engine": engine,
                 "description": description,
-                "command_preview": command[:500],
-                "output": output[:5000],
+                "command_preview": str(command)[:800],
+                "output": (output or "")[:5000],
                 "timestamp": _now(),
                 "executed_on": "local_machine",
+                "repo": f"{REPO_OWNER}/{REPO_NAME}",
+                "bridge_version": "2.1",
             }
 
-            result_name = RESULT_DIR + "/bridge_result_" + str(int(time.time())) + ".json"
-            if gh_put_file(
+            result_name = f"{RESULT_DIR}/bridge_result_{int(time.time())}.json"
+            uploaded = gh_put_file(
                 result_name,
                 json.dumps(result, ensure_ascii=False, indent=2),
-                "Bridge: executed task " + task_id,
-            ):
-                _log("OK", "Result uploaded -> " + result_name)
+                f"Bridge: executed task {task_id}",
+            )
+
+            if uploaded:
+                _log("OK", f"Result uploaded -> {result_name}")
             else:
                 _log("!!", "Failed to upload result")
 
-            # Clear task file
-            gh_put_file(TASK_FILE, "waiting", "Bridge: task processed")
-            last_task_hash = task_hash
+            # مسح ملف المهمة بعد المعالجة
+            cleared = gh_put_file(TASK_FILE, "waiting", "Bridge: task processed")
+            if not cleared:
+                _log("!!", f"Failed to clear {TASK_FILE}; may retry same task later.")
 
+            last_task_hash = task_hash
             _log("..", "Waiting for next task...")
             time.sleep(POLL_INTERVAL)
 
@@ -268,9 +345,8 @@ def main():
             _log("--", "Bridge stopped. Goodbye!")
             break
         except Exception as e:
-            _log("!!", "Unexpected error: " + str(e))
+            _log("!!", f"Unexpected error: {e}")
             time.sleep(POLL_INTERVAL)
-
 
 if __name__ == "__main__":
     main()
