@@ -1,7 +1,1 @@
-{
-  "task_id": "001",
-  "engine": "POWERSHELL",
-  "command": "Get-ChildItem -Path \"$env:USERPROFILE\\Desktop\\antigravity\" -Recurse -File | Select-Object Name, FullName, Length, LastWriteTime | Format-Table -AutoSize",
-  "description": "استكشاف محتوى مجلد antigravity على سطح المكتب لمعرفة الملفات الموجودة",
-  "timeout": 60
-}
+waiting
