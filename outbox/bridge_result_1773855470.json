@@ -1,0 +1,13 @@
+{
+  "task_id": "FIX-SYNTAX-005",
+  "status": "FAILED",
+  "return_code": 1,
+  "engine": "PYTHON",
+  "description": "التحقق من عدم وجود أخطاء بناء جملة في code_analyzer.py بعد الإصلاح",
+  "command_preview": "import py_compile; py_compile.compile(r'C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py', doraise=True); print('Syntax check PASSED - no SyntaxError found!')",
+  "output": "[STDERR]\nTraceback (most recent call last):\n  File \"C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\py_compile.py\", line 144, in compile\n    code = loader.source_to_code(source_bytes, dfile or file,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen importlib._bootstrap_external>\", line 1059, in source_to_code\n  File \"<frozen importlib._bootstrap>\", line 488, in _call_with_frames_removed\n  File \"C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py\", line 115\n    lines = content.split(\"\n                          ^\nSyntaxError: unterminated string literal (detected at line 115)\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\py_compile.py\", line 150, in compile\n    raise py_exc\npy_compile.PyCompileError:   File \"C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py\", line 115\n    lines = content.split(\"\n                          ^\nSyntaxError: unterminated string literal (detected at line 115)",
+  "timestamp": "2026-03-18T17:37:50.413402+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
