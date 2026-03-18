@@ -1,7 +1,1 @@
-{
-  "task_id": "TEST-001",
-  "engine": "POWERSHELL",
-  "command": "python -c \"import py_compile; py_compile.compile(r'C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py', doraise=True); print('SUCCESS: py_compile passed - no syntax errors')\"",
-  "description": "اختبار 1: فحص بناء الجملة عبر py_compile",
-  "timeout": 60
-}
+waiting
