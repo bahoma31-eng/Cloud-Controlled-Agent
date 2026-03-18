@@ -1,0 +1,13 @@
+{
+  "task_id": "CA-READ-007",
+  "status": "FAILED",
+  "return_code": 1,
+  "engine": "PYTHON",
+  "description": "استخراج هيكل الكلاسات والدوال من code_analyzer.py",
+  "command_preview": "import ast, sys\nsys.stdout.reconfigure(encoding='utf-8')\nwith open(r'C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py', 'r', encoding='utf-8') as f:\n    source = f.read()\ntree = ast.parse(source)\nfor node in ast.walk(tree):\n    if isinstance(node, ast.ClassDef):\n        print(f'CLASS: {node.name}')\n        for item in node.body:\n            if isinstance(item, ast.FunctionDef):\n                args = [a.arg for a in item.args.args]\n                print(f'  METHOD: {item.name}({', '.join(args)})')\n    elif isinstance(node, ast.FunctionDef) and not hasattr(node, '_in_class'):\n        if node.col_offset == 0:\n            args = [a.arg for a in node.args.args]\n            print(f'FUNCTION: {node.name}({', '.join(args)})')",
+  "output": "[STDERR]\nTraceback (most recent call last):\n  File \"<string>\", line 5, in <module>\n  File \"C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\ast.py\", line 52, in parse\n    return compile(source, filename, mode, flags,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<unknown>\", line 82\n    print(f\"\n          ^\nSyntaxError: unterminated f-string literal (detected at line 82)",
+  "timestamp": "2026-03-18T16:56:48.118573+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.1"
+}
