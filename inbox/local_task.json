@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "task_20260318_001",
+  "engine": "POWERSHELL",
+  "command": "Write-Output '=== Listening Ports (Servers) ===' ; Get-NetTCPConnection -State Listen | Select-Object LocalAddress, LocalPort, OwningProcess, @{Name='ProcessName';Expression={(Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue).ProcessName}} | Sort-Object LocalPort | Format-Table -AutoSize | Out-String -Width 200 ; Write-Output '=== Terminal/Console Windows ===' ; Get-Process | Where-Object { $_.MainWindowTitle -ne '' -and ($_.ProcessName -match 'cmd|powershell|pwsh|WindowsTerminal|ConEmu|mintty|bash|wt|conhost|Code|terminal') } | Select-Object Id, ProcessName, MainWindowTitle, StartTime | Format-Table -AutoSize | Out-String -Width 200",
+  "description": "فحص الخوادم (المنافذ المفتوحة) والنوافذ الطرفية العاملة حالياً",
+  "timeout": 60
+}
