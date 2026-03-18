@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "generated_at": "2026-03-18T01:30:34.300137+00:00",
+  "source_image": {
+    "filename": "Sans titsre.jpg",
+    "width": 1024,
+    "height": 768
+  },
+  "analysis": {
+    "dominant_colors": [
+      "#201d1a",
+      "#553720",
+      "#8e623c"
+    ],
+    "brightness": 0.3901,
+    "recommended_text_theme": "light"
+  },
+  "layout": {
+    "empty_regions_px": [
+      {
+        "x": 61,
+        "y": 61,
+        "w": 460,
+        "h": 122,
+        "score": 8.3359
+      },
+      {
+        "x": 61,
+        "y": 245,
+        "w": 460,
+        "h": 122,
+        "score": 10.1539
+      },
+      {
+        "x": 512,
+        "y": 61,
+        "w": 460,
+        "h": 122,
+        "score": 11.2133
+      },
+      {
+        "x": 512,
+        "y": 245,
+        "w": 460,
+        "h": 122,
+        "score": 20.3891
+      }
+    ],
+    "chosen_region_px": {
+      "x": 61,
+      "y": 61,
+      "w": 460,
+      "h": 122
+    }
+  },
+  "text_style": {
+    "font_family": "Cairo",
+    "font_weight": 800,
+    "font_size_px": 42,
+    "color": "#ffffff",
+    "shadow": {
+      "enabled": true,
+      "blur": 14,
+      "opacity": 0.28,
+      "x": 0,
+      "y": 8
+    }
+  },
+  "filters": {
+    "brightness": 1.03,
+    "contrast": 1.06,
+    "saturation": 1.05,
+    "sharpness": 1.1,
+    "background_blur_px": 0
+  },
+  "copy": {
+    "title": "عرض اليوم",
+    "cta": "اطلب الآن"
+  }
+}
