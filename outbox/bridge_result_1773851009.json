@@ -1,0 +1,13 @@
+{
+  "task_id": "AGENT-005",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "PYTHON",
+  "description": "إنشاء ملف report_generator.py — مولد تقارير HTML احترافي",
+  "command_preview": "import os\n\ncode = '''\nimport os\nimport json\nfrom datetime import datetime\nfrom pathlib import Path\n\n\nclass ReportGenerator:\n    \"\"\"مولد تقارير HTML احترافي لنتائج التحليل\"\"\"\n    \n    VERSION = \"1.0.0\"\n    \n    def __init__(self, output_dir=None):\n        self.output_dir = Path(output_dir) if output_dir else Path(\"reports\")\n        self.output_dir.mkdir(parents=True, exist_ok=True)\n    \n    def generate_html_report(self, analysis_results, project_name=\"Unknown\", screenshots=None):\n        \"\"\"توليد تقرير HTML شامل من نتائج التحليل\n        Args:\n            analysis_results: dict من نتائج CodeAnalyzer\n            project_name: اسم المشروع\n            screenshots: قائمة مسارات لقطات الشاشة (اختياري)\n        Returns:\n            str: مسار ملف التقرير\n        \"\"\"\n        ts = datetime.now().strf",
+  "output": "FILE_CREATED: C:\\Users\\Revexn\\CodeAnalyzer\\report_generator.py\nSIZE: 9250 bytes\nREPORT_GENERATOR_OK",
+  "timestamp": "2026-03-18T16:23:29.516805+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.1"
+}
