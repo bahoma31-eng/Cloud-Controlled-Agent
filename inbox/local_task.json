@@ -1,7 +1,1 @@
-{
-  "task_id": "AGENT-004-CMD",
-  "engine": "CMD",
-  "command": "cd /d C:\\Users\\Revexn\\Cloud-Controlled-Agent && dir /b .env* && echo === CONTENT === && type .env",
-  "description": "List .env files and read .env content from Cloud-Controlled-Agent folder",
-  "timeout": 60
-}
+waiting
