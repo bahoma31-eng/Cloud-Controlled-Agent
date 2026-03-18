@@ -1,0 +1,13 @@
+{
+  "task_id": "FIX-SYNTAX-014",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "إصلاح أنماط regex في السطور 189 و191 باستخدام hex escapes بدلاً من علامات التنصيص المباشرة",
+  "command_preview": "$file = 'C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py'; $lines = [System.IO.File]::ReadAllLines($file, [System.Text.Encoding]::UTF8); Write-Output \"Before:\"; Write-Output \"L189: $($lines[188])\"; Write-Output \"L191: $($lines[190])\"; $lines[188] = '            if re.search(r\"password\\s*=\\s*[\\x27\\x22][^\\x27\\x22]+[\\x27\\x22]\", stripped, re.IGNORECASE):'; $lines[190] = '            if re.search(r\"(api_key|secret|token)\\s*=\\s*[\\x27\\x22][^\\x27\\x22]{8,}[\\x27\\x22]\", stripped, re.IGNORECASE):'; [System.IO.File]::WriteAllLines($file, $lines, [System.Text.Encoding]::UTF8); Write-Output \"After:\"; Write-Output \"L189: $($lines[188])\"; Write-Output \"L191: $($lines[190])\"; Write-Output \"Done!\"",
+  "output": "Before:\nL189:             if re.search(r\"password\\s*=\\s*['\"][^'\"]+['\"]\" , stripped, re.IGNORECASE):\nL191:             if re.search(r\"(api_key|secret|token)\\s*=\\s*['\"][^'\"]{8,}['\"]\" , stripped, re.IGNORECASE):\nAfter:\nL189:             if re.search(r\"password\\s*=\\s*[\\x27\\x22][^\\x27\\x22]+[\\x27\\x22]\", stripped, re.IGNORECASE):\nL191:             if re.search(r\"(api_key|secret|token)\\s*=\\s*[\\x27\\x22][^\\x27\\x22]{8,}[\\x27\\x22]\", stripped, re.IGNORECASE):\nDone!",
+  "timestamp": "2026-03-18T17:55:19.459674+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
