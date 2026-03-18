@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "CA-READ-004",
+  "engine": "POWERSHELL",
+  "command": "Get-Content 'C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py' | Select-Object -First 100",
+  "description": "قراءة أول 100 سطر من code_analyzer.py لفهم واجهة الاستخدام",
+  "timeout": 30
+}
