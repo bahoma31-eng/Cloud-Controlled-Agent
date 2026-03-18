@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "ENV-READ-001",
+  "engine": "CMD",
+  "command": "type .env",
+  "description": "Read .env file contents to create smart agent",
+  "timeout": 30
+}
