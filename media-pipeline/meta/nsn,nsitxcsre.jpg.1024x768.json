@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "generated_at": "2026-03-18T11:29:32.705807+00:00",
+  "source_image": {
+    "filename": "nsn,nsitxcsre.jpg",
+    "width": 1024,
+    "height": 768
+  },
+  "analysis": {
+    "dominant_colors": [
+      "#333333",
+      "#A0522D",
+      "#FFC107"
+    ],
+    "brightness": 0.5,
+    "recommended_text_theme": "light"
+  },
+  "layout": {
+    "empty_regions_px": [
+      {
+        "x": 0,
+        "y": 0,
+        "w": 1024,
+        "h": 120,
+        "score": 0.9
+      }
+    ],
+    "chosen_region_px": {
+      "x": 50,
+      "y": 30,
+      "w": 400,
+      "h": 80
+    }
+  },
+  "text_style": {
+    "font_family": "Cairo",
+    "font_weight": 800,
+    "font_size_px": 36,
+    "color": "#ffffff",
+    "shadow": {
+      "enabled": true,
+      "blur": 8,
+      "opacity": 0.3,
+      "x": 0,
+      "y": 4
+    }
+  },
+  "filters": {
+    "brightness": 1.0,
+    "contrast": 1.05,
+    "saturation": 1.05,
+    "sharpness": 1.0,
+    "background_blur_px": 0
+  },
+  "copy": {
+    "title": "عنوان جذاب قصير",
+    "cta": "اطلب الآن"
+  }
+}
