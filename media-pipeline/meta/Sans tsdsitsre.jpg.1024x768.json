@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "generated_at": "2026-03-18T01:46:48.414096+00:00",
+  "source_image": {
+    "filename": "Sans tsdsitsre.jpg",
+    "width": 1024,
+    "height": 768
+  },
+  "analysis": {
+    "dominant_colors": [
+      "#5C3A21",
+      "#D4B89A",
+      "#E8B94B"
+    ],
+    "brightness": 0.65,
+    "recommended_text_theme": "light"
+  },
+  "layout": {
+    "empty_regions_px": [
+      {
+        "x": 50,
+        "y": 500,
+        "w": 300,
+        "h": 100,
+        "score": 0.9
+      }
+    ],
+    "chosen_region_px": {
+      "x": 50,
+      "y": 500,
+      "w": 300,
+      "h": 100
+    }
+  },
+  "text_style": {
+    "font_family": "Cairo",
+    "font_weight": 800,
+    "font_size_px": 36,
+    "color": "#ffffff",
+    "shadow": {
+      "enabled": true,
+      "blur": 8,
+      "opacity": 0.3,
+      "x": 0,
+      "y": 4
+    }
+  },
+  "filters": {
+    "brightness": 1.0,
+    "contrast": 1.05,
+    "saturation": 1.05,
+    "sharpness": 1.0,
+    "background_blur_px": 0
+  },
+  "copy": {
+    "title": "عنوان جذاب قصير",
+    "cta": "اطلب الآن"
+  }
+}
