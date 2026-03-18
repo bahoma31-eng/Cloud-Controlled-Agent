@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "FIX-SYNTAX-006",
+  "engine": "POWERSHELL",
+  "command": "$file = 'C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py'; $lines = [System.IO.File]::ReadAllLines($file, [System.Text.Encoding]::UTF8); for($i=110; $i -lt [Math]::Min(125, $lines.Count); $i++) { Write-Output \"L$($i+1): $($lines[$i])\" }",
+  "description": "قراءة سطور 111-125 من code_analyzer.py لفهم خطأ SyntaxError في السطر 115",
+  "timeout": 60
+}
