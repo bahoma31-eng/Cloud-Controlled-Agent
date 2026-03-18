@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "generated_at": "2026-03-18T00:27:41.086458+00:00",
+  "source_image": {
+    "filename": "S titreb55.jpg",
+    "width": 1024,
+    "height": 768
+  },
+  "analysis": {
+    "dominant_colors": [
+      "#8B6F5A",
+      "#D4A04F",
+      "#3A3F42"
+    ],
+    "brightness": 0.6,
+    "recommended_text_theme": "light"
+  },
+  "layout": {
+    "empty_regions_px": [
+      {
+        "x": 50,
+        "y": 50,
+        "w": 600,
+        "h": 200,
+        "score": 0.9
+      },
+      {
+        "x": 1270,
+        "y": 50,
+        "w": 600,
+        "h": 200,
+        "score": 0.8
+      },
+      {
+        "x": 50,
+        "y": 1190,
+        "w": 600,
+        "h": 200,
+        "score": 0.6
+      },
+      {
+        "x": 1270,
+        "y": 1190,
+        "w": 600,
+        "h": 200,
+        "score": 0.5
+      }
+    ],
+    "chosen_region_px": {
+      "x": 50,
+      "y": 50,
+      "w": 600,
+      "h": 200
+    }
+  },
+  "text_style": {
+    "font_family": "Cairo",
+    "font_weight": 800,
+    "font_size_px": 72,
+    "color": "#F8F8F8",
+    "shadow": {
+      "enabled": true,
+      "blur": 8,
+      "opacity": 0.7,
+      "x": 3,
+      "y": 3
+    }
+  },
+  "filters": {
+    "brightness": 0.0,
+    "contrast": 0.1,
+    "saturation": 0.15,
+    "sharpness": 0.0,
+    "background_blur_px": 5
+  },
+  "copy": {
+    "title": "طعم الشارع الأصيل",
+    "cta": "اطلب الآن!"
+  }
+}
