@@ -1,0 +1,13 @@
+{
+  "task_id": "CA-EXPLORE-002",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "استكشاف بنية مجلد CodeAnalyzer وقراءة أول 50 سطر من ملفات Python",
+  "command_preview": "Write-Output '=== CodeAnalyzer Directory Structure ==='; Get-ChildItem -Path 'C:\\Users\\Revexn\\CodeAnalyzer' -Recurse -ErrorAction SilentlyContinue | Select-Object FullName, Length, LastWriteTime, @{N='Type';E={if($_.PSIsContainer){'DIR'}else{'FILE'}}} | Format-Table -AutoSize; Write-Output '=== Python files content preview ==='; Get-ChildItem -Path 'C:\\Users\\Revexn\\CodeAnalyzer' -Filter '*.py' -Recurse -ErrorAction SilentlyContinue | ForEach-Object { Write-Output \"--- FILE: $($_.FullName) ---\"; Get-Content $_.FullName -ErrorAction SilentlyContinue | Select-Object -First 50; Write-Output '' }",
+  "output": "(no output)",
+  "timestamp": "2026-03-18T16:47:07.851209+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.1"
+}
