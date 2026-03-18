@@ -1,7 +1,1 @@
-{
-  "task_id": "CA-READ-005",
-  "engine": "CMD",
-  "command": "type C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py",
-  "description": "قراءة code_analyzer.py بالكامل عبر CMD",
-  "timeout": 30
-}
+waiting
