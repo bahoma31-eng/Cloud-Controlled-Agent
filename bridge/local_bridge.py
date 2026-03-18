@@ -2,7 +2,7 @@
 """
 bridge/local_bridge.py
 ~~~~~~~~~~~~~~~~~~~~~~
-Local Bridge Script V2 - Auto-Execute Mode
+Local Bridge Script V2.2 - Auto-Execute Mode + CodeAnalyzer Integration
 
 يربط جهازك المحلي بالوكيل السحابي عبر GitHub.
 الموافقة تتم من Notion، والسكريبت ينفذ تلقائيا بدون تدخل محلي.
@@ -13,7 +13,14 @@ Local Bridge Script V2 - Auto-Execute Mode
 3. الوكيل يكتب المهمة في inbox/local_task.json
 4. هذا السكريبت يكتشفها وينفذها تلقائيا
 5. النتيجة ترفع الى outbox/
-6. الو��يل يقرأ النتيجة
+6. الوكيل يقرأ النتيجة
+
+المحركات المدعومة:
+- PYTHON: تنفيذ كود Python
+- POWERSHELL: تنفيذ أوامر PowerShell
+- BASH: تنفيذ أوامر Bash
+- CMD: تنفيذ أوامر CMD
+- ANALYZER: استدعاء CodeAnalyzer لتحليل مجلد/مستودع (جديد V2.2)
 
 الاستخدام:
 python bridge/local_bridge.py
@@ -50,6 +57,9 @@ RESULT_DIR = "outbox"
 POLL_INTERVAL = int(os.getenv("BRIDGE_POLL_SECONDS", "10"))
 COMMAND_TIMEOUT = int(os.getenv("BRIDGE_TIMEOUT", "120"))
 BRANCH_NAME = os.getenv("BRIDGE_BRANCH", "main")
+
+# CodeAnalyzer configuration (V2.2)
+CODE_ANALYZER_PATH = os.getenv("CODE_ANALYZER_PATH", r"C:\Users\Revexn\CodeAnalyzer")
 
 GITHUB_API_BASE = "https://api.github.com"
 
@@ -219,6 +229,55 @@ def execute_command(engine, content, timeout):
                     "Likely CMD parsing/start behavior issue. "
                     "Tip: test the same command manually in cmd.exe."
                 )
+
+        elif engine_upper == "ANALYZER":
+            # =============================================================
+            # CodeAnalyzer Engine (V2.2)
+            # عين الجسر التحليلية - يستدعي CodeAnalyzer لتحليل مجلد/مستودع
+            #
+            # الاستخدام:
+            #   engine: "ANALYZER"
+            #   command: "C:\path\to\target\directory"
+            #   (اختياري) description: وصف ما تريد تحليله
+            #
+            # المخرجات: تقرير JSON بنتائج التحليل
+            # =============================================================
+            py = _which_or_none("python") or _which_or_none("py")
+            if not py:
+                return 1, "Engine 'PYTHON' not found on this system (required for ANALYZER)."
+
+            if not os.path.isdir(CODE_ANALYZER_PATH):
+                return 1, f"CodeAnalyzer directory not found: {CODE_ANALYZER_PATH}"
+
+            analyzer_script = os.path.join(CODE_ANALYZER_PATH, "code_analyzer.py")
+            if not os.path.isfile(analyzer_script):
+                return 1, f"CodeAnalyzer script not found: {analyzer_script}"
+
+            target_path = content.strip()
+            if not target_path:
+                return 1, "ANALYZER engine requires target path in 'command' field."
+
+            if not os.path.exists(target_path):
+                return 1, f"Target path does not exist: {target_path}"
+
+            _log(">>", f"CodeAnalyzer: analyzing {target_path}")
+
+            # Build safe Python code using repr() for proper path escaping
+            analyze_code = (
+                "import sys, json\n"
+                "sys.stdout.reconfigure(encoding='utf-8')\n"
+                "sys.path.insert(0, " + repr(CODE_ANALYZER_PATH) + ")\n"
+                "from code_analyzer import CodeAnalyzer\n"
+                "ca = CodeAnalyzer(" + repr(target_path) + ")\n"
+                "ca.scan()\n"
+                "findings = ca.get_findings_json()\n"
+                "print(json.dumps(findings, ensure_ascii=False, indent=2))\n"
+            )
+            cmd = [py, "-c", analyze_code]
+            rc, stdout, stderr = _run_process(cmd, timeout_value, CODE_ANALYZER_PATH)
+
+            _log("<<", f"CodeAnalyzer finished (exit code: {rc})")
+
         else:
             return 1, f"Unsupported engine: {engine}"
 
@@ -242,15 +301,17 @@ def main():
         print("GITHUB_TOKEN is missing! Add it to .env file")
         sys.exit(1)
 
-    _header("Local Bridge Agent V2.0 - Auto Execute Mode")
+    _header("Local Bridge Agent V2.2 - Auto Execute Mode + CodeAnalyzer")
     print(f"  Repo      : {REPO_OWNER}/{REPO_NAME}")
     print(f"  Task file : {TASK_FILE}")
     print(f"  Polling   : every {POLL_INTERVAL}s")
     print(f"  Timeout   : {COMMAND_TIMEOUT}s")
     print(f"  Branch    : {BRANCH_NAME}")
+    print(f"  Analyzer  : {CODE_ANALYZER_PATH}")
     print()
     print("  >> Auto-execute enabled.")
     print("  >> Approval happens in Notion, not here.")
+    print("  >> Engines: PYTHON | POWERSHELL | BASH | CMD | ANALYZER")
     print("  >> Press Ctrl+C to stop.")
     _footer()
 
@@ -316,7 +377,7 @@ def main():
                 "timestamp": _now(),
                 "executed_on": "local_machine",
                 "repo": f"{REPO_OWNER}/{REPO_NAME}",
-                "bridge_version": "2.1",
+                "bridge_version": "2.2",
             }
 
             result_name = f"{RESULT_DIR}/bridge_result_{int(time.time())}.json"
