@@ -1,7 +1,7 @@
 {
-  "task_id": "restart_server_001",
-  "engine": "POWERSHELL",
-  "command": "Set-Location 'C:\\Users\\Revexn\\Cloud-Controlled-Agent'; $logFile = 'C:\\Users\\Revexn\\Cloud-Controlled-Agent\\media_bridge_error.log'; Start-Process -FilePath 'C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\python.exe' -ArgumentList 'media-pipeline/media_bridge.py' -RedirectStandardError $logFile -WindowStyle Normal -PassThru | ForEach-Object { $pid_new = $_.Id; Start-Sleep -Seconds 25; $proc = Get-Process -Id $pid_new -ErrorAction SilentlyContinue; if ($proc) { Write-Output \"SUCCESS: media_bridge.py restarted with NEW PID=$pid_new\"; Write-Output \"Log file: $logFile\"; if (Test-Path $logFile) { $logContent = Get-Content $logFile -Raw -ErrorAction SilentlyContinue; if ($logContent) { Write-Output \"=== STDERR LOG (first 2000 chars) ===\"; Write-Output $logContent.Substring(0, [Math]::Min(2000, $logContent.Length)) } else { Write-Output 'No stderr output yet (log empty)' } } else { Write-Output 'Log file not created yet' }; Write-Output ''; Write-Output '=== Check input/ for San.jpg ==='; $sanPath = 'C:\\Users\\Revexn\\Cloud-Controlled-Agent\\media-pipeline\\input\\San.jpg'; if (Test-Path $sanPath) { Write-Output 'San.jpg STILL in input/ (not processed yet)' } else { Write-Output 'San.jpg GONE from input/ (processed or moved!)' } } else { Write-Output \"FAILED: Process $pid_new not running after 25s\" } }",
-  "description": "Restart media_bridge.py with stderr logging and check San.jpg processing",
-  "timeout": 60
+  "task_id": "restart_001",
+  "engine": "CMD",
+  "command": "cd /d C:\\Users\\Revexn\\Cloud-Controlled-Agent && start \"media_bridge\" C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\python.exe media-pipeline/media_bridge.py 2>media_bridge_error.log && timeout /t 5 /nobreak >nul && tasklist /FI \"IMAGENAME eq python.exe\" /FO CSV | findstr media",
+  "description": "Restart media_bridge.py with error log",
+  "timeout": 30
 }
