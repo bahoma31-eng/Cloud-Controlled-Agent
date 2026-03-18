@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "003",
+  "engine": "POWERSHELL",
+  "command": "Write-Output \"=== Check Desktop path ===\"; Write-Output $env:USERPROFILE\\Desktop; Test-Path \"$env:USERPROFILE\\Desktop\\antigravity\"; Write-Output \"=== List Desktop folders ===\"; Get-ChildItem -Path \"$env:USERPROFILE\\Desktop\" -Directory | Select-Object Name; Write-Output \"=== Search for antigravity ===\"; Get-ChildItem -Path \"$env:USERPROFILE\\Desktop\" -Directory -Filter '*anti*' -ErrorAction SilentlyContinue | Select-Object FullName; Get-ChildItem -Path \"$env:USERPROFILE\" -Directory -Filter '*antigravity*' -ErrorAction SilentlyContinue | Select-Object FullName",
+  "description": "Check if antigravity folder exists and list Desktop directories",
+  "timeout": 60
+}
