@@ -1,7 +1,1 @@
-{
-  "task_id": "err_check_002",
-  "engine": "POWERSHELL",
-  "command": "Write-Output '=== Searching for .env files ==='; Get-ChildItem -Path 'C:\\Users\\Revexn\\Cloud-Controlled-Agent' -Filter '.env' -Recurse -ErrorAction SilentlyContinue | Select-Object FullName, Length, LastWriteTime | Format-List; Write-Output '=== Working directory of media_bridge.py ==='; $cwd = (Get-WmiObject Win32_Process | Where-Object { $_.ProcessId -eq 6320 }).ExecutablePath; Write-Output $cwd; Write-Output '=== Check media-pipeline directory contents ==='; Get-ChildItem -Path 'C:\\Users\\Revexn\\Cloud-Controlled-Agent\\media-pipeline' -Force | Where-Object { $_.Name -like '.env*' -or $_.Name -like '*.log' } | Select-Object Name, Length, LastWriteTime | Format-Table; Write-Output '=== Try to read media_bridge.py recent console output via log ==='; $logFiles = Get-ChildItem -Path 'C:\\Users\\Revexn\\Cloud-Controlled-Agent\\media-pipeline' -Filter '*.log' -ErrorAction SilentlyContinue; if ($logFiles) { Get-Content ($logFiles | Sort-Object LastWriteTime -Descending | Select-Object -First 1).FullName -Tail 30 } else { Write-Output 'No log files found' }",
-  "description": "Search for .env files and capture media_bridge.py error output",
-  "timeout": 60
-}
+waiting
