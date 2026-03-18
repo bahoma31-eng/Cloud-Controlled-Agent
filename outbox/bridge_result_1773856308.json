@@ -1,0 +1,13 @@
+{
+  "task_id": "FIX-SYNTAX-013",
+  "status": "FAILED",
+  "return_code": 1,
+  "engine": "PYTHON",
+  "description": "التحقق النهائي من صحة بناء الجملة بعد كل الإصلاحات",
+  "command_preview": "import py_compile; py_compile.compile(r'C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py', doraise=True); print('SUCCESS: No SyntaxError found! File compiles cleanly.')",
+  "output": "[STDERR]\nTraceback (most recent call last):\n  File \"C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\py_compile.py\", line 144, in compile\n    code = loader.source_to_code(source_bytes, dfile or file,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen importlib._bootstrap_external>\", line 1059, in source_to_code\n  File \"<frozen importlib._bootstrap>\", line 488, in _call_with_frames_removed\n  File \"C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py\", line 189\n    if re.search(r\"password\\s*=\\s*['\"][^'\"]+['\"]\" , stripped, re.IGNORECASE):\n                                     ^\nSyntaxError: closing parenthesis ']' does not match opening parenthesis '('\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\py_compile.py\", line 150, in compile\n    raise py_exc\npy_compile.PyCompileError:   File \"C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py\", line 189\n    if re.search(r\"password\\s*=\\s*['\"][^'\"]+['\"]\" , stripped, re.IGNORECASE):\n                                     ^\nSyntaxError: closing parenthesis ']' does not match opening parenthesis '('",
+  "timestamp": "2026-03-18T17:51:48.529236+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
