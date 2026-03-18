@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "AGENT-001-CMD",
+  "engine": "CMD",
+  "command": "type \"C:\\Users\\Revexn\\Cloud-Controlled-Agent\\.env\"",
+  "description": "Read .env file using CMD engine (retry with different engine)",
+  "timeout": 60
+}
