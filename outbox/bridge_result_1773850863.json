@@ -1,0 +1,13 @@
+{
+  "task_id": "AGENT-004",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "PYTHON",
+  "description": "إنشاء ملف screenshot_tool.py — أداة لقطات الشاشة",
+  "command_preview": "import os\n\ncode = '''\nimport os\nimport sys\nimport time\nfrom datetime import datetime\nfrom pathlib import Path\n\ntry:\n    from PIL import ImageGrab, Image\n    PIL_AVAILABLE = True\nexcept ImportError:\n    PIL_AVAILABLE = False\n\ntry:\n    import mss\n    import mss.tools\n    MSS_AVAILABLE = True\nexcept ImportError:\n    MSS_AVAILABLE = False\n\n\nclass ScreenshotTool:\n    \"\"\"اداة لقطات الشاشة للوكيل - تدعم عدة مكتبات\"\"\"\n    \n    VERSION = \"1.0.0\"\n    \n    def __init__(self, output_dir=None):\n        self.output_dir = Path(output_dir) if output_dir else Path(\"screenshots\")\n        self.output_dir.mkdir(parents=True, exist_ok=True)\n        self.backend = self._detect_backend()\n        print(f\"[ScreenshotTool v{self.VERSION}] Backend: {self.backend}\")\n    \n    def _detect_backend(self):\n        if MSS_",
+  "output": "FILE_CREATED: C:\\Users\\Revexn\\CodeAnalyzer\\screenshot_tool.py\nSIZE: 5376 bytes\nSCREENSHOT_TOOL_OK",
+  "timestamp": "2026-03-18T16:21:03.007862+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.1"
+}
