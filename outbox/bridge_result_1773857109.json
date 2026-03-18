@@ -1,0 +1,13 @@
+{
+  "task_id": "TEST-002",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "اختبار 2: استيراد الوحدة وفحص الأعضاء العامة",
+  "command_preview": "python -c \"import sys; sys.path.insert(0, r'C:\\Users\\Revexn\\CodeAnalyzer'); import code_analyzer; print('SUCCESS: import passed'); print('Module:', code_analyzer.__name__); classes = [c for c in dir(code_analyzer) if not c.startswith('_')]; print('Public members:', len(classes)); print('Members:', ', '.join(classes[:20]))\"",
+  "output": "SUCCESS: import passed\nModule: code_analyzer\nPublic members: 11\nMembers: CodeAnalyzer, Path, ast, datetime, defaultdict, hashlib, json, os, re, sys, traceback",
+  "timestamp": "2026-03-18T18:05:09.361697+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
