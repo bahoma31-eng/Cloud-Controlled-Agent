@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "generated_at": "2026-03-18T18:48:25.097777+00:00",
+  "source_image": {
+    "filename": "Screenshot_20260318_194644_Gallery.png",
+    "width": 720,
+    "height": 1600
+  },
+  "analysis": {
+    "dominant_colors": [
+      "#5C7A5C",
+      "#A0A0A0",
+      "#2C2C2C"
+    ],
+    "brightness": 0.5,
+    "recommended_text_theme": "light"
+  },
+  "layout": {
+    "empty_regions_px": [
+      {
+        "x": 50,
+        "y": 50,
+        "w": 300,
+        "h": 100,
+        "score": 0.9
+      },
+      {
+        "x": 700,
+        "y": 50,
+        "w": 150,
+        "h": 100,
+        "score": 0.8
+      }
+    ],
+    "chosen_region_px": {
+      "x": 50,
+      "y": 50,
+      "w": 300,
+      "h": 100
+    }
+  },
+  "text_style": {
+    "font_family": "Cairo",
+    "font_weight": 800,
+    "font_size_px": 36,
+    "color": "#ffffff",
+    "shadow": {
+      "enabled": true,
+      "blur": 8,
+      "opacity": 0.3,
+      "x": 0,
+      "y": 4
+    }
+  },
+  "filters": {
+    "brightness": 1.0,
+    "contrast": 1.05,
+    "saturation": 1.05,
+    "sharpness": 1.0,
+    "background_blur_px": 0
+  },
+  "copy": {
+    "title": "عنوان جذاب قصير",
+    "cta": "اطلب الآن"
+  }
+}
