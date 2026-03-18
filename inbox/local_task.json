@@ -1,7 +1,1 @@
-{
-  "task_id": "002",
-  "engine": "POWERSHELL",
-  "command": "Get-ChildItem -Path \"$env:USERPROFILE\\Desktop\\antigravity\" -File | Select-Object Name, Length | Format-Table -AutoSize",
-  "description": "List files in antigravity folder on Desktop (non-recursive, simple)",
-  "timeout": 60
-}
+waiting
