@@ -1,7 +1,1 @@
-{
-  "task_id": "TEST-003",
-  "engine": "POWERSHELL",
-  "command": "python -c \"import sys; sys.path.insert(0, r'C:\\Users\\Revexn\\CodeAnalyzer'); from code_analyzer import CodeAnalyzer; analyzer = CodeAnalyzer(r'C:\\Users\\Revexn\\CodeAnalyzer'); print('SUCCESS: CodeAnalyzer instance created'); print('Target dir:', analyzer.target_dir); methods = [m for m in dir(analyzer) if not m.startswith('_') and callable(getattr(analyzer, m))]; print('Public methods:', len(methods)); print('Methods:', ', '.join(methods[:15]))\"",
-  "description": "اختبار 3: إنشاء كائن CodeAnalyzer وفحص الطرق المتاحة",
-  "timeout": 60
-}
+waiting
