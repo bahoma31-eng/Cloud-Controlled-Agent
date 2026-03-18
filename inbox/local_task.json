@@ -1,7 +1,1 @@
-{
-  "task_id": "SRV-001",
-  "engine": "POWERSHELL",
-  "command": "Get-NetTCPConnection -State Listen | Select-Object LocalAddress, LocalPort, OwningProcess, @{Name='ProcessName';Expression={(Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue).ProcessName}}, @{Name='Path';Expression={(Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue).Path}} | Sort-Object LocalPort | Format-Table -AutoSize | Out-String -Width 200",
-  "description": "List all TCP listening ports with their process names and paths",
-  "timeout": 60
-}
+waiting
