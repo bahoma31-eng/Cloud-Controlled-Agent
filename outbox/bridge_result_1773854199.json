@@ -1,0 +1,13 @@
+{
+  "task_id": "ANALYZER-TEST-001",
+  "status": "FAILED",
+  "return_code": 1,
+  "engine": "ANALYZER",
+  "description": "اختبار محرك ANALYZER — تحليل مجلد CodeAnalyzer نفسه لاكتشاف القدرات",
+  "command_preview": "C:\\Users\\Revexn\\CodeAnalyzer",
+  "output": "Unsupported engine: ANALYZER",
+  "timestamp": "2026-03-18T17:16:39.110428+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.1"
+}
