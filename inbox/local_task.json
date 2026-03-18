@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "DIAG-001",
+  "engine": "POWERSHELL",
+  "command": "Get-Process python* -ErrorAction SilentlyContinue | Select-Object Id, ProcessName, CPU, WorkingSet64, StartTime, @{N='CmdLine';E={(Get-CimInstance Win32_Process -Filter \"ProcessId=$($_.Id)\").CommandLine}} | Format-List",
+  "description": "فحص حالة عمليات Python الحالية - هل media_bridge.py يعمل؟",
+  "timeout": 60
+}
