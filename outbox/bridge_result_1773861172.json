@@ -1,0 +1,13 @@
+{
+  "task_id": "004",
+  "status": "FAILED",
+  "return_code": 124,
+  "engine": "POWERSHELL",
+  "description": "List ALL contents of antigravity folder recursively (files and subdirectories)",
+  "command_preview": "Get-ChildItem -Path \"$env:USERPROFILE\\Desktop\\antigravity\" -Recurse | Select-Object FullName, Length, PSIsContainer | Format-Table -AutoSize",
+  "output": "Timeout expired after 60s",
+  "timestamp": "2026-03-18T19:12:52.251289+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
