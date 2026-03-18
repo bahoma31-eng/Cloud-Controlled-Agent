@@ -1,0 +1,13 @@
+{
+  "task_id": "SRV-003",
+  "status": "FAILED",
+  "return_code": 1,
+  "engine": "POWERSHELL",
+  "description": "Check media-pipeline input/output folders and process health",
+  "command_preview": "$inputDir = 'C:\\Users\\Revexn\\Cloud-Controlled-Agent\\media-pipeline\\input'; $outputDir = 'C:\\Users\\Revexn\\Cloud-Controlled-Agent\\media-pipeline\\output'; Write-Output '=== INPUT FOLDER ==='; if (Test-Path $inputDir) { $files = Get-ChildItem $inputDir -File -ErrorAction SilentlyContinue; if ($files) { $files | Select-Object Name, Length, LastWriteTime | Format-Table -AutoSize | Out-String -Width 200 } else { Write-Output 'EMPTY - No pending files' } } else { Write-Output 'FOLDER NOT FOUND' }; Write-Output ''; Write-Output '=== OUTPUT FOLDER (last 5) ==='; if (Test-Path $outputDir) { $ofiles = Get-ChildItem $outputDir -File -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object -First 5; if ($ofiles) { $ofiles | Select-Object Name, Length, LastWriteTime | Format-",
+  "output": "=== INPUT FOLDER ===\n\nName     Length LastWriteTime      \n----     ------ -------------      \n.gitkeep      0 17/03/2026 02:25:43\nSan.jpg  113237 17/03/2026 18:24:49\n\n\n\n\n=== OUTPUT FOLDER (last 5) ===\n\nName                     Length LastWriteTime      \n----                     ------ -------------      \nSans titre_1200x630.png  532977 17/03/2026 18:08:11\nSans titre_400x400.png   151196 17/03/2026 18:08:11\nSans titre_1080x1350.png 755067 17/03/2026 18:08:11\nSans titre_1080x1920.png 952752 17/03/2026 18:08:11\nSans titre_1080x1080.png 658388 17/03/2026 18:08:11\n\n\n\n\n=== PROCESS CPU CHECK (current snapshot) ===\n\n  Id ProcessName        CPU RAM_MB Threads Handles\n  -- -----------        --- ------ ------- -------\n3580 python      257,859375   27,9       4     164",
+  "timestamp": "2026-03-18T14:27:01.970693+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.1"
+}
