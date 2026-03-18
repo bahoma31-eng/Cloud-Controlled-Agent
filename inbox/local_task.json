@@ -1,7 +1,1 @@
-{
-  "task_id": "DIAG-001",
-  "engine": "CMD",
-  "command": "echo === CURRENT DIR === && cd && echo === .ENV EXISTS? === && if exist .env (echo YES .env found) else (echo NO .env not found) && echo === LOCAL OUTBOX FILES === && if exist outbox\\*.json (dir /b outbox\\*.json) else (echo no local outbox files) && echo === BRIDGE RUNNING? === && tasklist /fi \"imagename eq python.exe\" /fo list",
-  "description": "Diagnostic: check cwd, .env existence, local outbox files, bridge process",
-  "timeout": 30
-}
+waiting
