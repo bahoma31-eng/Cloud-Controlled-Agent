@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "generated_at": "2026-03-18T16:52:24.741354+00:00",
+  "source_image": {
+    "filename": "nsn,ne.jpg",
+    "width": 1024,
+    "height": 768
+  },
+  "analysis": {
+    "dominant_colors": [
+      "#2C2C2C",
+      "#8B4513",
+      "#D2B48C"
+    ],
+    "brightness": 0.5,
+    "recommended_text_theme": "light"
+  },
+  "layout": {
+    "empty_regions_px": [
+      {
+        "x": 50,
+        "y": 50,
+        "w": 924,
+        "h": 100,
+        "score": 0.95
+      }
+    ],
+    "chosen_region_px": {
+      "x": 50,
+      "y": 50,
+      "w": 924,
+      "h": 100
+    }
+  },
+  "text_style": {
+    "font_family": "Cairo",
+    "font_weight": 800,
+    "font_size_px": 36,
+    "color": "#ffffff",
+    "shadow": {
+      "enabled": true,
+      "blur": 8,
+      "opacity": 0.3,
+      "x": 0,
+      "y": 4
+    }
+  },
+  "filters": {
+    "brightness": 1.0,
+    "contrast": 1.05,
+    "saturation": 1.05,
+    "sharpness": 1.0,
+    "background_blur_px": 0
+  },
+  "copy": {
+    "title": "نكهة لا تقاوم",
+    "cta": "اطلب الآن"
+  }
+}
