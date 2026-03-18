@@ -1,7 +1,1 @@
-{
-  "task_id": "FIX-SYNTAX-014",
-  "engine": "POWERSHELL",
-  "command": "$file = 'C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py'; $lines = [System.IO.File]::ReadAllLines($file, [System.Text.Encoding]::UTF8); Write-Output \"Before:\"; Write-Output \"L189: $($lines[188])\"; Write-Output \"L191: $($lines[190])\"; $lines[188] = '            if re.search(r\"password\\s*=\\s*[\\x27\\x22][^\\x27\\x22]+[\\x27\\x22]\", stripped, re.IGNORECASE):'; $lines[190] = '            if re.search(r\"(api_key|secret|token)\\s*=\\s*[\\x27\\x22][^\\x27\\x22]{8,}[\\x27\\x22]\", stripped, re.IGNORECASE):'; [System.IO.File]::WriteAllLines($file, $lines, [System.Text.Encoding]::UTF8); Write-Output \"After:\"; Write-Output \"L189: $($lines[188])\"; Write-Output \"L191: $($lines[190])\"; Write-Output \"Done!\"",
-  "description": "إصلاح أنماط regex في السطور 189 و191 باستخدام hex escapes بدلاً من علامات التنصيص المباشرة",
-  "timeout": 30
-}
+waiting
