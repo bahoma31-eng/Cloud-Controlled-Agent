@@ -1,0 +1,13 @@
+{
+  "task_id": "SRV-002",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "Check for Python, Node.js, and other server processes with their command lines",
+  "command_preview": "Get-Process python*, node*, ruby*, java*, httpd*, nginx*, apache* -ErrorAction SilentlyContinue | Select-Object Id, ProcessName, CPU, @{Name='RAM_MB';Expression={[math]::Round($_.WorkingSet64/1MB,1)}}, StartTime, @{Name='CommandLine';Expression={(Get-CimInstance Win32_Process -Filter \"ProcessId=$($_.Id)\" -ErrorAction SilentlyContinue).CommandLine}} | Format-Table -AutoSize -Wrap | Out-String -Width 300",
+  "output": "Id ProcessName       CPU RAM_MB StartTime           CommandLine                                                                                        \n  -- -----------       --- ------ ---------           -----------                                                                                        \n3580 python      235,15625   28,2 18/03/2026 14:53:22 \"C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\python.exe\" bridge/local_bridge.py        \n4080 python      46,359375   34,6 18/03/2026 15:12:05 \"C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\python.exe\" media-pipeline/media_bridge.py",
+  "timestamp": "2026-03-18T14:24:43.204045+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.1"
+}
