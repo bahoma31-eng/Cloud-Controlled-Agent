@@ -1,7 +1,1 @@
-{
-  "task_id": "CA-READ-008",
-  "engine": "PYTHON",
-  "command": "import sys\nsys.stdout.reconfigure(encoding='utf-8')\nwith open(r'C:\\Users\\Revexn\\CodeAnalyzer\\code_analyzer.py', 'r', encoding='utf-8') as f:\n    for i, line in enumerate(f, 1):\n        stripped = line.rstrip()\n        if stripped.startswith('class ') or stripped.startswith('def ') or stripped.startswith('    def ') or stripped.startswith('if __name__'):\n            print(str(i) + ': ' + stripped)",
-  "description": "استخراج تعريفات الكلاسات والدوال من code_analyzer.py",
-  "timeout": 30
-}
+waiting
