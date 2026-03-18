@@ -1,7 +1,1 @@
-{
-  "task_id": "AGENT-001",
-  "engine": "POWERSHELL",
-  "command": "Write-Output \"CWD: $(Get-Location)\"; Write-Output \"REPO_PATH: $((Get-Item .).FullName)\"; Write-Output \"PARENT: $((Get-Item ..).FullName)\"",
-  "description": "اكتشاف مسار المستودع الحالي والمجلد الأب لإنشاء وكيل التحليل خارجه",
-  "timeout": 30
-}
+waiting
