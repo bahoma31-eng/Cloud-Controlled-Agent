@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "generated_at": "2026-03-18T10:21:55.450625+00:00",
+  "source_image": {
+    "filename": "Sans tsd;lksitsre.jpg",
+    "canvas_width": 1024,
+    "canvas_height": 768
+  },
+  "footer_region_px": {
+    "x": 0,
+    "y": 615,
+    "w": 1024,
+    "h": 153
+  },
+  "gradient": {
+    "direction": "90deg",
+    "stops": [
+      "#e67328",
+      "#ffa03c"
+    ]
+  },
+  "typography": {
+    "font_family": "Cairo",
+    "brand_size_px": 33,
+    "row_size_px": 19,
+    "whatsapp_size_px": 22,
+    "font_weight_brand": 900,
+    "font_weight_row": 700,
+    "font_weight_whatsapp": 800,
+    "line_height": 1.2
+  },
+  "palette": {
+    "brand_color": "#ffffff",
+    "row_text_color": "#ffffff",
+    "icon_color": "#ffffff",
+    "whatsapp_bg": "#1f9d55",
+    "whatsapp_text": "#ffffff",
+    "whatsapp_label": "#d8ffd8",
+    "card_bg": "rgba(0,0,0,0.28)",
+    "card_border": "rgba(255,255,255,0.16)",
+    "divider_color": "rgba(255,255,255,0.55)"
+  },
+  "layout_inside_footer_px": {
+    "brand_box": {
+      "x": 0,
+      "y": 0,
+      "w": 80,
+      "h": 26
+    },
+    "card_box": {
+      "x": 0,
+      "y": 0,
+      "w": 120,
+      "h": 60
+    },
+    "rows": [
+      {
+        "slot": "facebook",
+        "x": 47,
+        "y": 14,
+        "w": 847,
+        "h": 13
+      },
+      {
+        "slot": "instagram",
+        "x": 47,
+        "y": 31,
+        "w": 847,
+        "h": 13
+      },
+      {
+        "slot": "tiktok",
+        "x": 47,
+        "y": 48,
+        "w": 847,
+        "h": 13
+      },
+      {
+        "slot": "whatsapp",
+        "x": 47,
+        "y": 68,
+        "w": 847,
+        "h": 22
+      }
+    ],
+    "card_radius_px": 12,
+    "row_gap_px": 6,
+    "padding_px": 10
+  },
+  "effects": {
+    "card_shadow_opacity": 0.18,
+    "text_shadow_opacity": 0.25,
+    "text_shadow_blur_px": 8,
+    "glass_blur_px": 0
+  }
+}
