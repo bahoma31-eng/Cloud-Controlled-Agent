@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-03-19T20:46:44.913186+00:00",
+  "generated_at": "2026-03-19T21:16:57.250190+00:00",
   "source_image": {
     "filename": "Screenshot_20260319_212401_Gallery.png",
     "width": 720,
@@ -8,27 +8,27 @@
   },
   "analysis": {
     "dominant_colors": [
-      "#d2691e",
-      "#ffd700",
-      "#2f4f4f"
+      "#f5f5f5",
+      "#8b4513",
+      "#4a3d30"
     ],
-    "brightness": 0.6,
+    "brightness": 0.65,
     "recommended_text_theme": "light"
   },
   "layout": {
     "empty_regions_px": [
       {
-        "x": 50,
-        "y": 50,
-        "w": 300,
+        "x": 80,
+        "y": 80,
+        "w": 600,
         "h": 100,
         "score": 0.95
       }
     ],
     "chosen_region_px": {
-      "x": 50,
-      "y": 50,
-      "w": 300,
+      "x": 80,
+      "y": 80,
+      "w": 600,
       "h": 100
     }
   },
