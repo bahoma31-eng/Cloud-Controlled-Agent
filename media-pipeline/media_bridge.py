@@ -292,206 +292,180 @@ def _safe_float(v, default):
         return float(default)
 
 
-def _footer_defaults(target_h: int):
-    return {
-        "gradient": {"direction": "90deg", "stops": ["#e67328", "#ffa03c"]},
+def _footer_defaults(target_h: int, footer_meta: dict = None):
+    fm = footer_meta if isinstance(footer_meta, dict) else {}
+    ft = fm.get("typography", {})
+    
+    # Base defaults for when AI is completely offline
+    base_defaults = {
+        "gradient": {"direction": "180deg", "stops": ["rgba(255,160,60,0)", "rgba(230,115,40,1)"]},
         "typography": {
             "font_family": "Cairo",
-            "brand_size_px": max(22, int(target_h * 0.06)),
-            "row_size_px": max(16, int(target_h * 0.032)),
-            "whatsapp_size_px": max(18, int(target_h * 0.038)),
+            "brand_size_px": max(32, int(target_h * 0.08)),
+            "row_size_px": max(22, int(target_h * 0.04)),
+            "whatsapp_size_px": max(24, int(target_h * 0.045)),
             "font_weight_brand": 900,
             "font_weight_row": 700,
             "font_weight_whatsapp": 800,
-            "line_height": 1.2,
+            "line_height": 1.1,
         },
         "palette": {
             "brand_color": "#ffffff",
             "row_text_color": "#ffffff",
             "icon_color": "#ffffff",
-            "whatsapp_bg": "rgba(255,255,255,0.12)",
-            "whatsapp_text": "#00ff00",
+            "whatsapp_bg": "rgba(37, 211, 102, 0.5)",
+            "whatsapp_text": "#ffffff",
             "whatsapp_label": "#d8ffd8",
-            "card_bg": "rgba(0,0,0,0.28)",
-            "card_border": "rgba(255,255,255,0.16)",
-            "divider_color": "rgba(255,255,255,0.55)",
+            "card_bg": "rgba(0,0,0,0.0)",
+            "card_border": "rgba(0,0,0,0.0)",
+            "divider_color": "rgba(255,255,255,0.0)",
         },
         "layout_inside_footer_px": {
-            "card_radius_px": 18,
-            "row_gap_px": 10,
-            "padding_px": 14,
+            "card_radius_px": 0,
+            "row_gap_px": 20,
+            "padding_px": 20,
         },
         "effects": {
-            "card_shadow_opacity": 0.18,
-            "text_shadow_opacity": 0.25,
-            "text_shadow_blur_px": 8,
+            "card_shadow_opacity": 0.0,
+            "text_shadow_opacity": 0.6,
+            "text_shadow_blur_px": 12,
             "glass_blur_px": 0,
         }
     }
+    return base_defaults
 
 
 def build_contact_footer_html(target_w: int, target_h: int, footer_h: int, footer_meta: dict = None):
-    d = _footer_defaults(target_h)
+    d = _footer_defaults(target_h, footer_meta=footer_meta)
     fm = footer_meta if isinstance(footer_meta, dict) else {}
 
+    # 1. Gradient (Priority to AI)
     gradient = fm.get("gradient", {})
     stops = gradient.get("stops", d["gradient"]["stops"])
-    if not isinstance(stops, list) or len(stops) < 2:
-        stops = d["gradient"]["stops"]
     direction = str(gradient.get("direction", d["gradient"]["direction"]))
 
+    # 2. Typography (STRICT adherence to AI sizes if present)
     typography = fm.get("typography", {})
-    brand_size = _safe_int(typography.get("brand_size_px", d["typography"]["brand_size_px"]), d["typography"]["brand_size_px"])
-    row_size_base = _safe_int(typography.get("row_size_px", d["typography"]["row_size_px"]), d["typography"]["row_size_px"])
-    wa_size = _safe_int(typography.get("whatsapp_size_px", d["typography"]["whatsapp_size_px"]), d["typography"]["whatsapp_size_px"])
-    w_brand = _safe_int(typography.get("font_weight_brand", d["typography"]["font_weight_brand"]), d["typography"]["font_weight_brand"])
-    w_row_base = _safe_int(typography.get("font_weight_row", d["typography"]["font_weight_row"]), d["typography"]["font_weight_row"])
-    w_wa = _safe_int(typography.get("font_weight_whatsapp", d["typography"]["font_weight_whatsapp"]), d["typography"]["font_weight_whatsapp"])
-    line_height = _safe_float(typography.get("line_height", d["typography"]["line_height"]), d["typography"]["line_height"])
+    brand_size = _safe_int(typography.get("brand_size_px"), d["typography"]["brand_size_px"])
+    row_size = _safe_int(typography.get("row_size_px"), d["typography"]["row_size_px"])
+    wa_size = _safe_int(typography.get("whatsapp_size_px"), d["typography"]["whatsapp_size_px"])
+    
+    font_family = typography.get("font_family", d["typography"]["font_family"])
+    w_brand = _safe_int(typography.get("font_weight_brand"), d["typography"]["font_weight_brand"])
+    w_row = _safe_int(typography.get("font_weight_row"), d["typography"]["font_weight_row"])
+    w_wa = _safe_int(typography.get("font_weight_whatsapp"), d["typography"]["font_weight_whatsapp"])
+    line_height = _safe_float(typography.get("line_height"), d["typography"]["line_height"])
 
+    # 3. Palette
     palette = d["palette"].copy()
-    palette.update(fm.get("palette", {}) if isinstance(fm.get("palette", {}), dict) else {})
+    palette.update(fm.get("palette", {}))
 
+    # 4. Layout (No more forced "compact" shrinking)
     layout = d["layout_inside_footer_px"].copy()
-    layout.update(fm.get("layout_inside_footer_px", {}) if isinstance(fm.get("layout_inside_footer_px", {}), dict) else {})
-    card_radius = _safe_int(layout.get("card_radius_px", d["layout_inside_footer_px"]["card_radius_px"]), d["layout_inside_footer_px"]["card_radius_px"])
-    row_gap = _safe_int(layout.get("row_gap_px", d["layout_inside_footer_px"]["row_gap_px"]), d["layout_inside_footer_px"]["row_gap_px"])
-    pad = _safe_int(layout.get("padding_px", d["layout_inside_footer_px"]["padding_px"]), d["layout_inside_footer_px"]["padding_px"])
-    layout_mode = str(layout.get("layout_mode", "inline_single")).strip().lower()
-    max_lines = 2 if _safe_int(layout.get("max_lines", 1), 1) >= 2 else 1
-    icons_policy = str(layout.get("icons_policy", "auto")).strip().lower()
-    if icons_policy not in ("auto", "on", "off"):
-        icons_policy = "auto"
+    layout.update(fm.get("layout_inside_footer_px", {}))
+    
+    row_gap = _safe_int(layout.get("row_gap_px"), d["layout_inside_footer_px"]["row_gap_px"])
+    pad = _safe_int(layout.get("padding_px"), d["layout_inside_footer_px"]["padding_px"])
+    
+    # WhatsApp styling from JSON or defaults
+    wa_bg = palette.get("whatsapp_bg", d["palette"]["whatsapp_bg"])
+    wa_text = palette.get("whatsapp_text", d["palette"]["whatsapp_text"])
+    wa_label = palette.get("whatsapp_label", d["palette"]["whatsapp_label"])
+
+    # Build Social Items with Colored Icons
+    social_items = []
+    if FACEBOOK: 
+        social_items.append(f'<div class="social-item"><i class="fab fa-facebook" style="color: #1877F2; margin-left: 8px;"></i> {FACEBOOK}</div>')
+    if INSTAGRAM: 
+        social_items.append(f'<div class="social-item"><i class="fab fa-instagram" style="color: #E4405F; margin-left: 8px;"></i> {INSTAGRAM}</div>')
+    if TIKTOK: 
+        social_items.append(f'<div class="social-item"><i class="fab fa-tiktok" style="color: #000000; margin-left: 8px;"></i> {TIKTOK}</div>')
+    
+    social_html_distributed = "".join(social_items)
 
     effects = d["effects"].copy()
-    effects.update(fm.get("effects", {}) if isinstance(fm.get("effects", {}), dict) else {})
-    card_shadow_opacity = _safe_float(effects.get("card_shadow_opacity", d["effects"]["card_shadow_opacity"]), d["effects"]["card_shadow_opacity"])
-    text_shadow_opacity = _safe_float(effects.get("text_shadow_opacity", d["effects"]["text_shadow_opacity"]), d["effects"]["text_shadow_opacity"])
-    text_shadow_blur_px = _safe_int(effects.get("text_shadow_blur_px", d["effects"]["text_shadow_blur_px"]), d["effects"]["text_shadow_blur_px"])
-    glass_blur_px = _safe_int(effects.get("glass_blur_px", d["effects"]["glass_blur_px"]), d["effects"]["glass_blur_px"])
-
-    compact_width = target_w < 980
-    very_compact_width = target_w < 860
-
-    info_score = len(FACEBOOK) + len(INSTAGRAM) + len(TIKTOK) + len(WHATSAPP)
-    use_icons = True
-    if icons_policy == "off":
-        use_icons = False
-    elif icons_policy == "auto":
-        if compact_width or info_score > 56:
-            use_icons = False
-
-    wrap_two = (layout_mode == "inline_wrapped") or (max_lines >= 2) or compact_width
-
-    row_size = row_size_base
-    w_row = w_row_base
-    if compact_width:
-        row_size = max(14, int(row_size_base * 0.92))
-        w_row = max(500, min(700, int(w_row_base * 0.92)))
-    if very_compact_width:
-        row_size = max(13, int(row_size_base * 0.86))
-        w_row = max(500, min(680, int(w_row * 0.95)))
-
-    icon_fb = "📘" if use_icons else ""
-    icon_ig = "📸" if use_icons else ""
-    icon_tt = "🎵" if use_icons else ""
-
-    social_line_1 = (
-        f"{icon_fb + ' ' if icon_fb else ''}Facebook | {FACEBOOK}  •  "
-        f"{icon_ig + ' ' if icon_ig else ''}Instagram | {INSTAGRAM}"
-    )
-    social_line_2 = (
-        f"{icon_tt + ' ' if icon_tt else ''}TikTok | {TIKTOK}"
-    )
-
-    social_single = (
-        f"{icon_fb + ' ' if icon_fb else ''}Facebook | {FACEBOOK}  •  "
-        f"{icon_ig + ' ' if icon_ig else ''}Instagram | {INSTAGRAM}  •  "
-        f"{icon_tt + ' ' if icon_tt else ''}TikTok | {TIKTOK}"
-    )
-
-    if not wrap_two and (len(social_single) > 84 or very_compact_width):
-        wrap_two = True
-
-    if wrap_two:
-        social_html = f"""
-            <div class="social-inline line1">{social_line_1}</div>
-            <div class="social-inline line2">{social_line_2}</div>
-        """
-    else:
-        social_html = f"""<div class="social-inline single">{social_single}</div>"""
-
-    wa_bg = palette.get("whatsapp_bg", "rgba(255,255,255,0.12)")
-    wa_text = palette.get("whatsapp_text", "#ffffff")
-    wa_label = palette.get("whatsapp_label", "#d8ffd8")
+    effects.update(fm.get("effects", {}))
+    text_shadow_opacity = _safe_float(effects.get("text_shadow_opacity"), d["effects"]["text_shadow_opacity"])
+    text_shadow_blur_px = _safe_int(effects.get("text_shadow_blur_px"), d["effects"]["text_shadow_blur_px"])
 
     return f"""
-    <div class="footer footer-base" style="background: linear-gradient({direction}, {stops[0]} 0%, {stops[1]} 100%);">
-        <div class="brand">{BRAND}</div>
-        <div class="footer-card">
-            {social_html}
-            <div class="row whatsapp">
-                <div class="handles-text label">WhatsApp</div>
-                <div class="handles-text">{WHATSAPP}</div>
-                <div class="handles-text cta">اتصل الآن</div>
+    <div class="footer footer-base" style="background: linear-gradient({direction}, {stops[0]} 0%, {stops[1] if len(stops)>1 else stops[0]} 100%);">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        
+        <div class="brand" style="font-family: {font_family}; font-size: {brand_size}px; font-weight: {w_brand}; color: {palette['brand_color']};">
+            {BRAND}
+        </div>
+
+        <div class="distributed-container">
+            {social_html_distributed}
+        </div>
+
+        <div class="row whatsapp-row">
+            <div class="wa-box" style="background: {wa_bg}; color: {wa_text};">
+                <div class="wa-label" style="color: {wa_label};">
+                    <i class="fab fa-whatsapp" style="color: #25D366; font-size: 1.2em; margin-left: 8px;"></i>
+                    WhatsApp
+                </div>
+                <div class="wa-number">{WHATSAPP}</div>
+                <div class="wa-cta">اتصل الآن</div>
             </div>
         </div>
 
         <style>
             .footer-base {{
                 position:absolute; left:0; right:0; bottom:0; height:{footer_h}px;
-                display:flex; flex-direction:column; justify-content:center; align-items:center; gap:10px;
-                padding:{pad}px {max(12, int(pad*1.2))}px;
+                display:flex; flex-direction:column; justify-content:flex-end; align-items:stretch;
+                padding: {pad}px {pad*2}px;
                 z-index: 3;
-            }}
-            .footer-card {{
-                width:92%; max-width:1100px;
-                background:{palette["card_bg"]};
-                border:1px solid {palette["card_border"]};
-                border-radius:{card_radius}px;
-                padding:{pad}px {max(12, int(pad*1.2))}px;
-                display:flex; flex-direction:column; gap:{max(6, row_gap - 2)}px;
-                box-shadow: 0 10px 25px rgba(0,0,0,{card_shadow_opacity});
-                backdrop-filter: blur({glass_blur_px}px);
+                box-sizing: border-box;
             }}
             .brand {{
-                font-size:{brand_size}px; font-weight:{w_brand};
-                color:{palette["brand_color"]};
                 text-align:center;
-                text-shadow:0 2px {text_shadow_blur_px}px rgba(0,0,0,{text_shadow_opacity});
-                z-index:4; line-height:{line_height};
+                text-shadow: 0 2px {text_shadow_blur_px}px rgba(0,0,0,{text_shadow_opacity});
+                text-transform: uppercase;
+                margin-bottom: {row_gap}px;
+                line-height: {line_height};
             }}
-            .social-inline {{
-                color:{palette["row_text_color"]};
-                font-size:{row_size}px; font-weight:{w_row}; line-height:{max(1.15, line_height)};
-                text-align:center;
-                unicode-bidi:plaintext;
+            .distributed-container {{
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                width: 100%;
+                margin-bottom: {row_gap}px;
+                font-family: '{font_family}', sans-serif;
+                flex-wrap: wrap;
+                gap: 10px;
             }}
-            .social-inline.single {{
-                white-space:nowrap;
-                overflow:hidden;
-                text-overflow:ellipsis;
+            .social-item {{
+                font-size: {row_size}px;
+                font-weight: {w_row};
+                color: {palette["row_text_color"]};
+                text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+                white-space: nowrap;
+                display: flex; align-items: center;
             }}
-            .social-inline.line1, .social-inline.line2 {{
-                white-space:normal;
+            .whatsapp-row {{
+                display: flex; justify-content: center; width: 100%;
             }}
-
-            .row.whatsapp {{
-                display:flex; align-items:center; gap:10px;
-                background:{wa_bg};
-                border:1px solid rgba(255,255,255,0.20);
-                border-radius:{max(10, int(card_radius*0.62))}px;
-                padding:8px 10px;
-                font-size:{max(16, int(wa_size * 0.92))}px; font-weight:{max(650, int(w_wa * 0.9))};
-                color:{wa_text};
-                text-shadow:0 1px {max(3, int(text_shadow_blur_px*0.6))}px rgba(0,0,0,{text_shadow_opacity});
+            .wa-box {{
+                display: flex; align-items: center; gap: 15px;
+                padding: 8px 25px; border-radius: 50px;
+                border: 1px solid rgba(255,255,255,0.25);
+                backdrop-filter: blur(4px);
+                font-family: '{font_family}', sans-serif;
             }}
-            .row.whatsapp .label {{ color:{wa_label}; opacity:0.92; }}
-            .row.whatsapp .cta {{
-                margin-inline-start:auto;
-                opacity:0.92;
+            .wa-label {{
+                font-size: {wa_size}px; font-weight: 800; display: flex; align-items: center;
             }}
-            .handles-text {{ color:{palette["row_text_color"]}; opacity:0.96; }}
+            .wa-number {{
+                font-size: {wa_size}px; font-weight: {w_wa};
+            }}
+            .wa-cta {{
+                background: #25d366; color: white;
+                padding: 6px 16px; border-radius: 12px;
+                font-size: {max(16, wa_size-2)}px; font-weight: 900;
+                margin-right: 5px;
+            }}
         </style>
     </div>
     """
@@ -523,21 +497,41 @@ def build_html(bg_data_url: str, target_w: int, target_h: int, meta: dict, foote
     contrast = float(filters.get("contrast", 1.08))
     saturation = float(filters.get("saturation", 1.08))
 
+    # --- AI-Aware Safe Area logic ---
+    footer_meta_dict = footer_meta if isinstance(footer_meta, dict) else {}
+    footer_y_ai = footer_meta_dict.get("footer_y") # Might be absolute px or None
+    
     footer_h = int(target_h * FOOTER_HEIGHT_RATIO)
-    safe_bottom = footer_h + int(target_h * 0.02)
+    # Default fallback: 80% down
+    default_footer_top = target_h - footer_h
+
+    # Use AI coordinate if provided, else fallback
+    actual_footer_top = _safe_int(footer_y_ai, default_footer_top) if footer_y_ai is not None else default_footer_top
+    
+    # Text should stay at least 20px above the footer
+    safe_bottom_limit = actual_footer_top - 20 
 
     x = int(box.get("x", int(target_w * 0.08)))
     y = int(box.get("y", int(target_h * 0.55)))
     bw = int(box.get("w", int(target_w * 0.84)))
     bh = int(box.get("h", int(target_h * 0.22)))
 
-    x = max(0, min(x, target_w - 1))
-    max_y = max(0, target_h - safe_bottom - 80)
-    y = max(0, min(y, max_y))
-    bw = max(180, min(bw, target_w - x))
-    bh = max(100, min(bh, max(100, target_h - safe_bottom - y)))
+    # Constraint Enforcement: Clamp Y and Height so they don't hit the footer
+    x = max(0, min(x, target_w - 50))
+    
+    # Ensure y is not pushed into footer
+    y = max(10, min(y, safe_bottom_limit - 80)) 
+    
+    # Ensure box width/height fit within safe space
+    bw = max(180, min(bw, target_w - x - 10))
+    bh = max(60, min(bh, safe_bottom_limit - y))
 
     footer_html = build_contact_footer_html(target_w, target_h, footer_h, footer_meta=footer_meta)
+
+    # احترافية: إذا كان الهدف هو المعاينة فقط (show_promo=False)، نقوم بتظليل الفوتر 
+    # لضمان عدم قيام Gemini بوضع نصوص فوقه لاحقاً
+    if not show_promo:
+        footer_html += f'<div style="position:absolute; top:{actual_footer_top}px; left:0; width:100%; height:{target_h - actual_footer_top + 40}px; background:rgba(0,0,0,0.95); z-index:9999; backdrop-filter:blur(10px); border-top:4px solid #ff0000;"></div>'
 
     promo_html = ""
     if show_promo:
@@ -576,11 +570,13 @@ def build_html(bg_data_url: str, target_w: int, target_h: int, meta: dict, foote
         }}
 
         .gemini-overlay {{
-            position:absolute; left:{x}px; top:{y}px; width:{bw}px; height:{bh}px;
-            padding:20px 24px; box-sizing:border-box; border-radius:20px;
-            background: linear-gradient(180deg, rgba(0,0,0,0.32), rgba(0,0,0,0.16));
-            backdrop-filter: blur(3px);
-            border: 1px solid rgba(255,255,255,0.14);
+            position:absolute; left:{x}px; top:{y}px;
+            max-width:{bw}px; 
+            width: fit-content;
+            padding:16px 24px; box-sizing:border-box; border-radius:18px;
+            background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.15);
             z-index: 5;
         }}
 
@@ -655,12 +651,14 @@ def export_single(image_bytes: bytes, image_name: str, orig_w: int, orig_h: int)
         f.write(bg_html)
     render_with_playwright(bg_html_path, bg_png_path, w, h)
 
+    # المرحلة 1: معاينة الصورة الأصلية لتصميم الفوتر (Footer First)
     footer_meta = None
     footer_meta_name = f"{image_name}.{w}x{h}.footer.json"
     local_footer_meta = os.path.join(LOCAL_META, footer_meta_name)
 
     if USE_GEMINI_FOOTER_WATCHER:
         try:
+            # هنا يرى الذكاء الاصطناعي الصورة الأصلية ويحدد مكان الفوتر
             run_watcher_footer_gemini(
                 bg_png_path, "image/png", w, h, image_name,
                 footer_x, footer_y, footer_w, footer_h,
@@ -676,43 +674,48 @@ def export_single(image_bytes: bytes, image_name: str, orig_w: int, orig_h: int)
                 raise
             log("Footer watcher failed -> using default footer style.")
 
+    # المرحلة 2: رسم الفوتر فقط على الصورة (Fixed Content Layer)
+    # نقوم بإنشاء نسخة من الصورة تحتوي على الفوتر فقط ليريها للذكاء الاصطناعي لاحقاً
     pre_meta = {
-        "copy": {"title": DEFAULT_HEADLINE, "cta": DEFAULT_CTA},
-        "text_style": {
-            "font_family": "Cairo",
-            "font_weight": 800,
-            "font_size_px": max(30, int(h * 0.055)),
-            "color": "#ffffff",
-            "shadow": {"opacity": 0.35, "x": 0, "y": 10, "blur": 22}
-        },
-        "layout": {"chosen_region_px": {"x": int(w * 0.08), "y": int(h * 0.55), "w": int(w * 0.84), "h": int(h * 0.22)}},
-        "filters": {"brightness": 1.04, "contrast": 1.08, "saturation": 1.08},
+        "copy": {"title": "", "cta": ""}, # لا نضع نصوص ترويجية هنا
+        "text_style": {"font_family": "Cairo"},
+        "layout": {"chosen_region_px": {"x": 0, "y": 0, "w": 0, "h": 0}},
+        "filters": {"brightness": 1.0, "contrast": 1.0, "saturation": 1.0},
     }
+    # بناء HTML يحتوي على الخلفية والفوتر فقط
     pre_html = build_html(bg_url, w, h, pre_meta, footer_meta=footer_meta, show_promo=False)
-    pre_html_path = os.path.join(LOCAL_HTML, f"{base}_{w}x{h}_prepromo.html")
-    prepromo_png_path = os.path.join(LOCAL_OUT, f"{base}_{w}x{h}_prepromo.png")
+    pre_html_path = os.path.join(LOCAL_HTML, f"{base}_{w}x{h}_with_footer_only.html")
+    pre_footer_png_path = os.path.join(LOCAL_OUT, f"{base}_{w}x{h}_with_footer_only.png")
+    
     with open(pre_html_path, "w", encoding="utf-8") as f:
         f.write(pre_html)
-    render_with_playwright(pre_html_path, prepromo_png_path, w, h)
+    
+    # نحول الـ HTML إلى صورة حقيقية ليريها للذكاء الاصطناعي في الخطوة القادمة
+    render_with_playwright(pre_html_path, pre_footer_png_path, w, h)
 
+    # المرحلة 3: المعاينة الثانية (Headline Placement Awareness)
+    # الآن يرى الذكاء الاصطناعي الصورة وبها الفوتر مرسوماً فعلياً
     meta_name = f"{image_name}.{w}x{h}.json"
     local_meta = os.path.join(LOCAL_META, meta_name)
 
     if USE_GEMINI_WATCHER:
         try:
-            run_watcher_gemini(prepromo_png_path, "image/png", w, h, image_name, local_meta)
+            # نمرر له الصورة التي تحتوي على الفوتر (pre_footer_png_path)
+            # وبذلك لن يضع النص فوق الفوتر لأنه "يراه" فعلياً يشغل مساحة من الصورة
+            run_watcher_gemini(pre_footer_png_path, "image/png", w, h, image_name, local_meta)
         except Exception as e:
             log(str(e).strip())
             if FALLBACK_TO_OPENCV_ON_GEMINI_FAIL:
                 log(f"Falling back to OpenCV watcher for {w}x{h}...")
-                local_img = os.path.join(LOCAL_WORKDIR, image_name)
+                local_img = os.path.join(LOCAL_WORKDIR, name)
                 run_watcher_opencv(local_img, local_meta)
             else:
                 raise
     else:
-        local_img = os.path.join(LOCAL_WORKDIR, image_name)
+        local_img = os.path.join(LOCAL_WORKDIR, name)
         run_watcher_opencv(local_img, local_meta)
 
+    # المرحلة 4: التنفيذ النهائي (Final Assembly)
     meta = json.load(open(local_meta, "r", encoding="utf-8"))
     if PRINT_META_TO_TERMINAL:
         log(f"Meta JSON ({w}x{h}):")
