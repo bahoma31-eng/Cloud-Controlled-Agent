@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-03-19T21:16:11.513487+00:00",
+  "generated_at": "2026-03-19T21:29:25.470315+00:00",
   "source_image": {
     "filename": "Screenshot_20260319_212401_Gallery.png",
     "canvas_width": 720,
@@ -20,7 +20,7 @@
     ]
   },
   "typography": {
-    "font_family": "Impact, sans-serif",
+    "font_family": "Arial Black, sans-serif",
     "brand_size_px": 20,
     "row_size_px": 14,
     "whatsapp_size_px": 16,
