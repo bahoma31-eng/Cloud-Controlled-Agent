@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-03-19T17:32:42.102481+00:00",
+  "generated_at": "2026-03-19T17:55:22.064936+00:00",
   "source_image": {
     "filename": "nsn,ne.jpg",
     "canvas_width": 1024,
@@ -13,10 +13,10 @@
     "h": 153
   },
   "gradient": {
-    "direction": "90deg",
+    "direction": "180deg",
     "stops": [
-      "#e67328",
-      "#ffa03c"
+      "#ffa03c",
+      "#e67328"
     ]
   },
   "typography": {
@@ -88,7 +88,9 @@
     "padding_px": 10,
     "layout_mode": "inline_single",
     "max_lines": 1,
-    "icons_policy": "auto"
+    "icons_policy": "auto",
+    "whatsapp_alignment": "right",
+    "whatsapp_x_percent": 90
   },
   "effects": {
     "card_shadow_opacity": 0.18,
