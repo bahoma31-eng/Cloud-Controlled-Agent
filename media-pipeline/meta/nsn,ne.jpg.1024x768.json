@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-03-19T17:33:21.801811+00:00",
+  "generated_at": "2026-03-19T17:56:03.283575+00:00",
   "source_image": {
     "filename": "nsn,ne.jpg",
     "width": 1024,
@@ -8,41 +8,41 @@
   },
   "analysis": {
     "dominant_colors": [
-      "#2C2C2C",
-      "#A0522D",
-      "#F0C040"
+      "#1a1a1a",
+      "#8b4513",
+      "#f5deb3"
     ],
-    "brightness": 0.5,
+    "brightness": 0.55,
     "recommended_text_theme": "light"
   },
   "layout": {
     "empty_regions_px": [
       {
-        "x": 360,
-        "y": 50,
-        "w": 300,
+        "x": 100,
+        "y": 40,
+        "w": 800,
         "h": 100,
         "score": 0.95
       },
       {
         "x": 50,
-        "y": 50,
-        "w": 250,
+        "y": 200,
+        "w": 200,
         "h": 100,
-        "score": 0.8
+        "score": 0.7
       },
       {
-        "x": 700,
-        "y": 50,
-        "w": 250,
+        "x": 750,
+        "y": 200,
+        "w": 200,
         "h": 100,
-        "score": 0.75
+        "score": 0.6
       }
     ],
     "chosen_region_px": {
-      "x": 360,
-      "y": 50,
-      "w": 300,
+      "x": 100,
+      "y": 40,
+      "w": 800,
       "h": 100
     }
   },
@@ -67,7 +67,7 @@
     "background_blur_px": 0
   },
   "copy": {
-    "title": "المذاق الأصيل",
+    "title": "تجربة طعام لا تُنسى",
     "cta": "اطلب الآن"
   }
 }
