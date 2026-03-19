@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-03-19T20:23:55.685733+00:00",
+  "generated_at": "2026-03-19T20:39:37.940604+00:00",
   "source_image": {
     "filename": "Screenshot_20260319_212401_Gallery.png",
     "width": 720,
@@ -8,9 +8,9 @@
   },
   "analysis": {
     "dominant_colors": [
-      "#FFD700",
-      "#8B4513",
-      "#2F2F2F"
+      "#F0C78C",
+      "#4A2B1B",
+      "#3A2E24"
     ],
     "brightness": 0.5,
     "recommended_text_theme": "light"
@@ -18,31 +18,17 @@
   "layout": {
     "empty_regions_px": [
       {
-        "x": 240,
-        "y": 1150,
-        "w": 480,
-        "h": 100,
-        "score": 0.95
-      },
-      {
-        "x": 50,
-        "y": 50,
-        "w": 250,
-        "h": 80,
-        "score": 0.4
-      },
-      {
-        "x": 719,
+        "x": 650,
         "y": 50,
         "w": 150,
-        "h": 80,
-        "score": 0.3
+        "h": 100,
+        "score": 0.9
       }
     ],
     "chosen_region_px": {
-      "x": 240,
-      "y": 1150,
-      "w": 480,
+      "x": 650,
+      "y": 50,
+      "w": 150,
       "h": 100
     }
   },
@@ -67,7 +53,7 @@
     "background_blur_px": 0
   },
   "copy": {
-    "title": "طعم لا يُنسى",
+    "title": "عنوان جذاب قصير",
     "cta": "اطلب الآن"
   }
 }
