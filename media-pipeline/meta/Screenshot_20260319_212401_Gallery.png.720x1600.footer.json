@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-03-19T20:46:00.567428+00:00",
+  "generated_at": "2026-03-19T21:16:11.513487+00:00",
   "source_image": {
     "filename": "Screenshot_20260319_212401_Gallery.png",
     "canvas_width": 720,
@@ -20,17 +20,17 @@
     ]
   },
   "typography": {
-    "font_family": "Cairo",
-    "brand_size_px": 70,
-    "row_size_px": 41,
-    "whatsapp_size_px": 48,
+    "font_family": "Impact, sans-serif",
+    "brand_size_px": 20,
+    "row_size_px": 14,
+    "whatsapp_size_px": 16,
     "font_weight_brand": 900,
     "font_weight_row": 700,
     "font_weight_whatsapp": 800,
     "line_height": 1.2
   },
   "palette": {
-    "brand_color": "#ffffff",
+    "brand_color": "#ff9900",
     "row_text_color": "#ffffff",
     "icon_color": "#ffffff",
     "whatsapp_bg": "#1f9d55",
@@ -89,8 +89,8 @@
     "layout_mode": "inline_wrapped",
     "max_lines": 2,
     "icons_policy": "auto",
-    "whatsapp_alignment": "left",
-    "whatsapp_x_percent": 10
+    "whatsapp_alignment": "right",
+    "whatsapp_x_percent": 90
   },
   "effects": {
     "card_shadow_opacity": 0.18,
