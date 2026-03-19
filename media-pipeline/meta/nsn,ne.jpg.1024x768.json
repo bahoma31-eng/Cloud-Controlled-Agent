@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-03-18T20:33:29.341310+00:00",
+  "generated_at": "2026-03-19T17:33:21.801811+00:00",
   "source_image": {
     "filename": "nsn,ne.jpg",
     "width": 1024,
@@ -8,9 +8,9 @@
   },
   "analysis": {
     "dominant_colors": [
-      "#2F2F2F",
-      "#8B5A2B",
-      "#E0B05C"
+      "#2C2C2C",
+      "#A0522D",
+      "#F0C040"
     ],
     "brightness": 0.5,
     "recommended_text_theme": "light"
@@ -18,18 +18,32 @@
   "layout": {
     "empty_regions_px": [
       {
-        "x": 50,
-        "y": 30,
-        "w": 924,
-        "h": 80,
+        "x": 360,
+        "y": 50,
+        "w": 300,
+        "h": 100,
         "score": 0.95
+      },
+      {
+        "x": 50,
+        "y": 50,
+        "w": 250,
+        "h": 100,
+        "score": 0.8
+      },
+      {
+        "x": 700,
+        "y": 50,
+        "w": 250,
+        "h": 100,
+        "score": 0.75
       }
     ],
     "chosen_region_px": {
-      "x": 50,
-      "y": 30,
-      "w": 924,
-      "h": 80
+      "x": 360,
+      "y": 50,
+      "w": 300,
+      "h": 100
     }
   },
   "text_style": {
@@ -53,7 +67,7 @@
     "background_blur_px": 0
   },
   "copy": {
-    "title": "تجربة لا تُنسى",
+    "title": "المذاق الأصيل",
     "cta": "اطلب الآن"
   }
 }
