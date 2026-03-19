@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-03-19T19:08:45.814447+00:00",
+  "generated_at": "2026-03-19T19:21:39.855853+00:00",
   "source_image": {
     "filename": "nsn,ne.jpg",
     "width": 1024,
@@ -8,9 +8,9 @@
   },
   "analysis": {
     "dominant_colors": [
-      "#222222",
-      "#A0522D",
-      "#FFD700"
+      "#5C3D2E",
+      "#F0C27B",
+      "#FFFFFF"
     ],
     "brightness": 0.5,
     "recommended_text_theme": "light"
@@ -20,16 +20,23 @@
       {
         "x": 50,
         "y": 50,
-        "w": 350,
-        "h": 100,
+        "w": 400,
+        "h": 120,
         "score": 0.95
+      },
+      {
+        "x": 550,
+        "y": 50,
+        "w": 400,
+        "h": 100,
+        "score": 0.8
       }
     ],
     "chosen_region_px": {
       "x": 50,
       "y": 50,
-      "w": 350,
-      "h": 100
+      "w": 400,
+      "h": 120
     }
   },
   "text_style": {
@@ -53,7 +60,7 @@
     "background_blur_px": 0
   },
   "copy": {
-    "title": "عنوان جذاب قصير",
+    "title": "مذاق الشاورما الأصيل",
     "cta": "اطلب الآن"
   }
 }
