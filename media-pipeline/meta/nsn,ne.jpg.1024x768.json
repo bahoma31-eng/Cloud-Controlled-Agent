@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-03-19T19:35:49.221408+00:00",
+  "generated_at": "2026-03-19T19:53:03.476843+00:00",
   "source_image": {
     "filename": "nsn,ne.jpg",
     "width": 1024,
@@ -8,9 +8,9 @@
   },
   "analysis": {
     "dominant_colors": [
-      "#8B4513",
-      "#FFD700",
-      "#556B2F"
+      "#6B3E2B",
+      "#E8B84F",
+      "#F2F2E8"
     ],
     "brightness": 0.55,
     "recommended_text_theme": "light"
@@ -18,17 +18,17 @@
   "layout": {
     "empty_regions_px": [
       {
-        "x": 50,
-        "y": 50,
-        "w": 300,
+        "x": 100,
+        "y": 70,
+        "w": 824,
         "h": 100,
         "score": 0.95
       }
     ],
     "chosen_region_px": {
-      "x": 50,
-      "y": 50,
-      "w": 300,
+      "x": 100,
+      "y": 70,
+      "w": 824,
       "h": 100
     }
   },
