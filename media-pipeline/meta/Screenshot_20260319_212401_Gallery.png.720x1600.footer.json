@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated_at": "2026-03-19T21:29:25.470315+00:00",
+  "generated_at": "2026-03-19T21:43:08.867333+00:00",
   "source_image": {
     "filename": "Screenshot_20260319_212401_Gallery.png",
     "canvas_width": 720,
@@ -20,7 +20,7 @@
     ]
   },
   "typography": {
-    "font_family": "Arial Black, sans-serif",
+    "font_family": "Arial Black, Impact",
     "brand_size_px": 20,
     "row_size_px": 14,
     "whatsapp_size_px": 16,
@@ -90,7 +90,7 @@
     "max_lines": 2,
     "icons_policy": "auto",
     "whatsapp_alignment": "right",
-    "whatsapp_x_percent": 90
+    "whatsapp_x_percent": 100
   },
   "effects": {
     "card_shadow_opacity": 0.18,
