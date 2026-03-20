@@ -1,7 +1,1 @@
-{
-  "task_id": "BT001",
-  "engine": "POWERSHELL",
-  "command": "try { $adapter = Get-PnpDevice -Class Bluetooth -ErrorAction Stop | Where-Object { $_.Status -eq 'Error' -or $_.Status -eq 'Degraded' -or $_.Status -eq 'Unknown' -or $_.Status -eq 'OK' } | Select-Object -First 1; if ($adapter) { Enable-PnpDevice -InstanceId $adapter.InstanceId -Confirm:$false -ErrorAction SilentlyContinue }; $btRadio = Get-PnpDevice -Class Bluetooth | Select-Object Status, Name, InstanceId | Format-Table -AutoSize | Out-String; Write-Output \"Bluetooth Devices:`n$btRadio\"; Add-Type -AssemblyName System.Runtime.WindowsRuntime; $asTaskGeneric = ([System.WindowsRuntimeSystemExtensions].GetMethods() | Where-Object { $_.Name -eq 'AsTask' -and $_.GetParameters().Count -eq 1 -and $_.GetParameters()[0].ParameterType.Name -eq 'IAsyncOperation`1' })[0]; function Await($WinRtTask, $ResultType) { $asTask = $asTaskGeneric.MakeGenericMethod($ResultType); $netTask = $asTask.Invoke($null, @($WinRtTask)); $netTask.Wait(-1) | Out-Null; $netTask.Result }; [Windows.Devices.Radios.Radio,Windows.System.Devices,ContentType=WindowsRuntime] | Out-Null; $radios = Await ([Windows.Devices.Radios.Radio]::GetRadiosAsync()) ([System.Collections.Generic.IReadOnlyList[Windows.Devices.Radios.Radio]]); $btRadio = $radios | Where-Object { $_.Kind -eq 'Bluetooth' }; if ($btRadio) { Await ($btRadio.SetStateAsync('On')) ([Windows.Devices.Radios.RadioAccessStatus]); Write-Output \"Bluetooth radio turned ON successfully. State: $($btRadio.State)\" } else { Write-Output 'No Bluetooth radio found' } } catch { Write-Output \"Error: $_\" }",
-  "description": "تفعيل البلوتوث على الجهاز المحلي",
-  "timeout": 120
-}
+waiting
