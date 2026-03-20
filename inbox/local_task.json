@@ -1,7 +1,1 @@
-{
-  "task_id": "GMAPS-ENV-001",
-  "engine": "POWERSHELL",
-  "command": "Write-Output '=== Python Version ==='; python --version 2>&1; Write-Output ''; Write-Output '=== Installed Packages (Google/Selenium/Playwright) ==='; pip list 2>&1 | Select-String -Pattern 'selenium|playwright|google|requests|beautifulsoup|browser' ; Write-Output ''; Write-Output '=== Chrome/Edge Browser Check ==='; $chrome = Get-ItemProperty 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe' -ErrorAction SilentlyContinue; if($chrome) { Write-Output \"Chrome found: $($chrome.'(default)')\" } else { Write-Output 'Chrome not found in registry' }; $edge = Get-ItemProperty 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\msedge.exe' -ErrorAction SilentlyContinue; if($edge) { Write-Output \"Edge found: $($edge.'(default)')\" } else { Write-Output 'Edge not found' }; Write-Output ''; Write-Output '=== Google Maps Related Files ==='; Get-ChildItem -Path 'C:\\Users\\Revexn' -Recurse -Depth 2 -Include '*google*','*maps*','*gmaps*','*business*','*boncoin*' -ErrorAction SilentlyContinue | Select-Object FullName, Length | Format-Table -AutoSize",
-  "description": "فحص البيئة المحلية: Python، المتصفحات، الحزم المتاحة، وملفات Google Maps",
-  "timeout": 60
-}
+waiting
