@@ -1,7 +1,1 @@
-{
-  "task_id": "desk-002",
-  "engine": "POWERSHELL",
-  "command": "Move-Item -Path \"$env:USERPROFILE\\Desktop\\Antigravity.lnk\" -Destination \"$env:USERPROFILE\\Desktop\\Shortcuts\\Antigravity.lnk\" -Force; Move-Item -Path \"$env:USERPROFILE\\Desktop\\Notion.lnk\" -Destination \"$env:USERPROFILE\\Desktop\\Shortcuts\\Notion.lnk\" -Force; Write-Output 'Shortcuts moved successfully: Antigravity.lnk, Notion.lnk -> Shortcuts/'",
-  "description": "نقل الاختصارات Antigravity.lnk و Notion.lnk إلى مجلد Shortcuts",
-  "timeout": 60
-}
+waiting
