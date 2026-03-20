@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "BT_INV_001",
+  "engine": "POWERSHELL",
+  "command": "Write-Output '=== BLUETOOTH RADIO ===' ; Get-PnpDevice -Class Bluetooth -ErrorAction SilentlyContinue | Format-Table Status, Class, FriendlyName, InstanceId -AutoSize ; Write-Output '=== HIDDEN BLUETOOTH DEVICES ===' ; Get-PnpDevice -Class Bluetooth -Status Unknown -ErrorAction SilentlyContinue | Format-Table Status, FriendlyName, InstanceId -AutoSize ; Get-PnpDevice -Class Bluetooth -Status Error -ErrorAction SilentlyContinue | Format-Table Status, FriendlyName, InstanceId -AutoSize ; Write-Output '=== ALL AUDIO ENDPOINTS ===' ; Get-PnpDevice -Class AudioEndpoint -ErrorAction SilentlyContinue | Format-Table Status, FriendlyName -AutoSize ; Write-Output '=== BLUETOOTH SERVICES ===' ; Get-Service -Name *bluetooth* -ErrorAction SilentlyContinue | Format-Table Status, Name, DisplayName -AutoSize",
+  "description": "تحقيق 1: فحص أجهزة البلوتوث والصوت والخدمات",
+  "timeout": 60
+}
