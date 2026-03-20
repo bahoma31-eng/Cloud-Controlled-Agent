@@ -1,0 +1,13 @@
+{
+  "task_id": "desk-003",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "نقل صورة nsn,ne.jpg إلى مجلد Images",
+  "command_preview": "Move-Item -Path \"$env:USERPROFILE\\Desktop\\nsn,ne.jpg\" -Destination \"$env:USERPROFILE\\Desktop\\Images\\nsn,ne.jpg\" -Force; Write-Output 'Image moved successfully: nsn,ne.jpg -> Images/'",
+  "output": "Image moved successfully: nsn,ne.jpg -> Images/",
+  "timestamp": "2026-03-20T17:38:08.665187+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
