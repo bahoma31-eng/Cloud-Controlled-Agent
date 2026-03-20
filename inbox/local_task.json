@@ -1,7 +1,1 @@
-{
-  "task_id": "gmap_001",
-  "engine": "POWERSHELL",
-  "command": "Write-Output '=== System Info ==='; python --version 2>&1; Write-Output ''; Write-Output '=== Chrome Check ==='; if (Test-Path 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe') { Write-Output 'Chrome: FOUND' } elseif (Test-Path 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe') { Write-Output 'Chrome (x86): FOUND' } else { Write-Output 'Chrome: NOT FOUND' }; Write-Output ''; Write-Output '=== Edge Check ==='; if (Test-Path 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe') { Write-Output 'Edge: FOUND' } else { Write-Output 'Edge: NOT FOUND' }; Write-Output ''; Write-Output '=== Pip Packages ==='; pip list 2>&1 | Select-String -Pattern 'selenium|playwright|requests|beautifulsoup' ; Write-Output ''; Write-Output '=== Chrome Version ==='; try { (Get-Item 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe').VersionInfo.FileVersion } catch { 'N/A' }",
-  "description": "فحص بيئة الجهاز: Python, Chrome, Edge, المكتبات المثبتة",
-  "timeout": 60
-}
+waiting
