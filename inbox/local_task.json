@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "desk-001",
+  "engine": "POWERSHELL",
+  "command": "Get-ChildItem -Path \"$env:USERPROFILE\\Desktop\" | Select-Object Name, Mode, Length, LastWriteTime | Format-Table -AutoSize | Out-String -Width 200",
+  "description": "استكشاف محتويات سطح المكتب",
+  "timeout": 30
+}
