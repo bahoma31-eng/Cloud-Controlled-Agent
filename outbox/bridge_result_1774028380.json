@@ -1,0 +1,13 @@
+{
+  "task_id": "desk-004",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "نقل سكريبت prompt_text.py إلى مجلد Projects",
+  "command_preview": "Move-Item -Path \"$env:USERPROFILE\\Desktop\\prompt_text.py\" -Destination \"$env:USERPROFILE\\Desktop\\Projects\\prompt_text.py\" -Force; Write-Output 'Script moved successfully: prompt_text.py -> Projects/'",
+  "output": "Script moved successfully: prompt_text.py -> Projects/",
+  "timestamp": "2026-03-20T17:39:40.888917+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
