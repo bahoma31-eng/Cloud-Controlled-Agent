@@ -1,0 +1,13 @@
+{
+  "task_id": "fb_003",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "PYTHON",
+  "description": "سكريبت Playwright لجلب بيانات صفحة difrence food على فيسبوك",
+  "command_preview": "import asyncio, json, re\nfrom playwright.async_api import async_playwright\n\nasync def scrape():\n    results = {'page_name': 'difrence food', 'location': 'Oran, Algeria', 'type': 'Fast food restaurant', 'data': {}, 'errors': []}\n    async with async_playwright() as p:\n        browser = await p.chromium.launch(headless=True)\n        ctx = await browser.new_context(user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36', locale='fr-FR', viewport={'width':1280,'height':720})\n        page = await ctx.new_page()\n        # Approach 1: Try direct Facebook page URL\n        urls_to_try = ['https://www.facebook.com/difrencefood', 'https://www.facebook.com/difrence.food', 'https://www.facebook.com/Difrencefood', 'https://www.facebook",
+  "output": "{\n  \"page_name\": \"difrence food\",\n  \"location\": \"Oran, Algeria\",\n  \"type\": \"Fast food restaurant\",\n  \"data\": {\n    \"attempt_https://www.facebook.com/difrencefood\": {\n      \"title\": \"Facebook\",\n      \"status\": 200\n    },\n    \"attempt_https://www.facebook.com/difrence.food\": {\n      \"title\": \"Facebook\",\n      \"status\": 200\n    },\n    \"attempt_https://www.facebook.com/Difrencefood\": {\n      \"title\": \"Facebook\",\n      \"status\": 200\n    },\n    \"attempt_https://www.facebook.com/difrence-food\": {\n      \"title\": \"Facebook\",\n      \"status\": 200\n    },\n    \"google_results\": \"\\n\\nÀ propos de cette page\\n\\nNos systèmes ont détecté un trafic exceptionnel sur votre réseau informatique. Cette page permet de vérifier que c'est bien vous qui envoyez des requêtes, et non un robot. Que s'est-il passé ?\\n\\n\\n\\nAdresse IP : 129.45.14.190\\nHeure : 2026-03-20T20:41:24Z\\nURL : https://www.google.com/search?q=difrence+food+oran+facebook&sei=8rC9aZPyPMbn7_UPtuGl8Ak\\n\",\n    \"mobile_text_preview\": \"\"\n  },\n  \"errors\": []\n}",
+  "timestamp": "2026-03-20T20:39:30.076206+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
