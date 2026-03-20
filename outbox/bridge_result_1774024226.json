@@ -1,0 +1,13 @@
+{
+  "task_id": "HEALTH-CHECK-001",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "فحص صحة الجسر - اختبار اتصال سريع",
+  "command_preview": "Write-Output 'Bridge is alive! Current time:'; Get-Date -Format 'yyyy-MM-dd HH:mm:ss'; Write-Output 'Hostname:'; hostname",
+  "output": "Bridge is alive! Current time:\n2026-03-20 17:30:26\nHostname:\nDESKTOP-556TJ6M",
+  "timestamp": "2026-03-20T16:30:26.944413+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
