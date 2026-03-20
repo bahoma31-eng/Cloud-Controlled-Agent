@@ -1,7 +1,1 @@
-{
-  "task_id": "HEALTH-CHECK-001",
-  "engine": "POWERSHELL",
-  "command": "Write-Output 'Bridge is alive! Current time:'; Get-Date -Format 'yyyy-MM-dd HH:mm:ss'; Write-Output 'Hostname:'; hostname",
-  "description": "فحص صحة الجسر - اختبار اتصال سريع",
-  "timeout": 30
-}
+waiting
