@@ -1,0 +1,13 @@
+{
+  "task_id": "DIAG_001",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "CMD",
+  "description": "تشخيص: تشغيل PowerShell عبر CMD لاختبار التقاط المخرجات",
+  "command_preview": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"Write-Output 'HELLO_FROM_PS_VIA_CMD'; $PSVersionTable.PSVersion.ToString(); [Console]::OutputEncoding.EncodingName; $OutputEncoding.EncodingName\" 2>&1",
+  "output": "Write-Output 'HELLO_FROM_PS_VIA_CMD'; System.Collections.Hashtable.PSVersion.ToString(); [Console]::OutputEncoding.EncodingName; System.Text.ASCIIEncoding.EncodingName",
+  "timestamp": "2026-03-20T16:42:00.273483+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
