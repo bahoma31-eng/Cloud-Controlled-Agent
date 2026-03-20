@@ -1,0 +1,13 @@
+{
+  "task_id": "BT_INV_004",
+  "status": "FAILED",
+  "return_code": 1,
+  "engine": "CMD",
+  "description": "تحقيق 4: استخدام pnputil على مستوى CMD للبحث عن أجهزة البلوتوث والصوت المتصلة",
+  "command_preview": "pnputil /enum-devices /connected 2>&1 | findstr /i \"bluetooth audio headphone headset ew43 speaker sound\"",
+  "output": "[STDERR]\nFINDSTRÿ: Impossible d'ouvrir audio\nFINDSTRÿ: Impossible d'ouvrir headphone\nFINDSTRÿ: Impossible d'ouvrir headset\nFINDSTRÿ: Impossible d'ouvrir ew43\nFINDSTRÿ: Impossible d'ouvrir speaker\nFINDSTRÿ: Impossible d'ouvrir sound\"",
+  "timestamp": "2026-03-20T16:01:27.253836+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
