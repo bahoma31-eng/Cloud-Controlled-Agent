@@ -1,0 +1,13 @@
+{
+  "task_id": "gmap_001",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "فحص بيئة الجهاز: Python, Chrome, Edge, المكتبات المثبتة",
+  "command_preview": "Write-Output '=== System Info ==='; python --version 2>&1; Write-Output ''; Write-Output '=== Chrome Check ==='; if (Test-Path 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe') { Write-Output 'Chrome: FOUND' } elseif (Test-Path 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe') { Write-Output 'Chrome (x86): FOUND' } else { Write-Output 'Chrome: NOT FOUND' }; Write-Output ''; Write-Output '=== Edge Check ==='; if (Test-Path 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe') { Write-Output 'Edge: FOUND' } else { Write-Output 'Edge: NOT FOUND' }; Write-Output ''; Write-Output '=== Pip Packages ==='; pip list 2>&1 | Select-String -Pattern 'selenium|playwright|requests|beautifulsoup' ; Write-Output ''; Write-Output '=== Chrome Version ==='; try { (Get-Item 'C:\\Pr",
+  "output": "=== System Info ===\nPython 3.12.3\n\n=== Chrome Check ===\nChrome: FOUND\n\n=== Edge Check ===\nEdge: NOT FOUND\n\n=== Pip Packages ===\n\nplaywright                   1.58.0\nrequests                     2.32.5\n\n=== Chrome Version ===\n146.0.7680.81",
+  "timestamp": "2026-03-20T22:45:27.813560+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
