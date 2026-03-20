@@ -1,7 +1,1 @@
-{
-  "task_id": "DIAG_001",
-  "engine": "CMD",
-  "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"Write-Output 'HELLO_FROM_PS_VIA_CMD'; $PSVersionTable.PSVersion.ToString(); [Console]::OutputEncoding.EncodingName; $OutputEncoding.EncodingName\" 2>&1",
-  "description": "تشخيص: تشغيل PowerShell عبر CMD لاختبار التقاط المخرجات",
-  "timeout": 30
-}
+waiting
