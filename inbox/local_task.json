@@ -1,7 +1,1 @@
-{
-  "task_id": "fb_002",
-  "engine": "POWERSHELL",
-  "command": "playwright install chromium 2>&1 | Select-Object -First 20",
-  "description": "تثبيت متصفح Chromium لـ Playwright",
-  "timeout": 120
-}
+waiting
