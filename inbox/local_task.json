@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "gmap_002",
+  "engine": "POWERSHELL",
+  "command": "python -m playwright install chromium 2>&1 | Select-Object -Last 10",
+  "description": "تثبيت متصفح Chromium لـ Playwright",
+  "timeout": 120
+}
