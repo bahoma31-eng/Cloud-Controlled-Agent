@@ -1,0 +1,13 @@
+{
+  "task_id": "test-protocol-001",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "مهمة اختبار بروتوكول التواصل بين الوكلاء - من المدير الاستراتيجي للمطعم",
+  "command_preview": "hostname; Get-Date -Format 'yyyy-MM-dd HH:mm:ss'; Write-Output 'اختبار بروتوكول التواصل بين الوكلاء — ناجح ✅'",
+  "output": "DESKTOP-556TJ6M\n2026-03-20 19:55:43\n?????? ???????? ??????? ??? ??????? - ???? ?",
+  "timestamp": "2026-03-20T18:55:43.118039+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
