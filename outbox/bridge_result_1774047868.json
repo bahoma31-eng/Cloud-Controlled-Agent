@@ -1,0 +1,13 @@
+{
+  "task_id": "gmap_005",
+  "status": "FAILED",
+  "return_code": 1,
+  "engine": "PYTHON",
+  "description": "تنفيذ سكريبت التسجيل على Google Business Profile - سيفتح متصفح مرئي",
+  "command_preview": "exec(open(r'C:\\temp\\gbp\\register_boncoin.py', encoding='utf-8').read())",
+  "output": "[STDERR]\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"<string>\", line 1\n    \\ufeffimport json, time, os, sys\n    ^\nSyntaxError: invalid non-printable character U+FEFF",
+  "timestamp": "2026-03-20T23:04:28.242922+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
