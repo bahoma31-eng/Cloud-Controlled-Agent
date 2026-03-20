@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "BT001",
+  "engine": "POWERSHELL",
+  "command": "Add-Type -AssemblyName System.Runtime.WindowsRuntime; $radio = [Windows.Devices.Radios.Radio,Windows.System.Devices,ContentType=WindowsRuntime]::GetRadiosAsync().GetAwaiter().GetResult() | Where-Object { $_.Kind -eq 'Bluetooth' }; if ($radio) { $radio.SetStateAsync([Windows.Devices.Radios.RadioState]::On).GetAwaiter().GetResult(); Write-Output \"Bluetooth enabled successfully. State: $($radio.State)\" } else { Write-Output 'No Bluetooth radio found on this device' }",
+  "description": "تفعيل البلوتوث على الجهاز",
+  "timeout": 60
+}
