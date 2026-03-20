@@ -1,0 +1,13 @@
+{
+  "task_id": "BT_INV_002",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "تحقيق 2: بحث شامل عن ew43 في كل الأجهزة + سجل الأجهزة المقترنة + أجهزة الصوت",
+  "command_preview": "Write-Output '=== ALL PNP DEVICES WITH ew43 OR bluetooth OR audio ===' ; Get-PnpDevice | Where-Object { $_.FriendlyName -match 'ew43|bluetooth|audio|headphone|headset|speaker|earphone|earbuds|سماعة' } | Format-Table Status, Class, FriendlyName, InstanceId -AutoSize ; Write-Output '=== BLUETOOTH PAIRED DEVICES REGISTRY ===' ; $btPath = 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\BTHPORT\\Parameters\\Devices' ; if (Test-Path $btPath) { Get-ChildItem $btPath | ForEach-Object { $name = (Get-ItemProperty $_.PSPath -Name 'Name' -ErrorAction SilentlyContinue).Name; if($name) { [System.Text.Encoding]::UTF8.GetString($name) } else { $_.PSChildName } } } else { Write-Output 'Registry path not found' } ; Write-Output '=== SOUND DEVICES (Win32_SoundDevice) ===' ; Get-CimInstance Win32_SoundDevice | Format-",
+  "output": "(no output)",
+  "timestamp": "2026-03-20T15:53:41.630669+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
