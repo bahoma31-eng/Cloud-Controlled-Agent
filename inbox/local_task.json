@@ -1,7 +1,1 @@
-{
-  "task_id": "BT_INV_003",
-  "engine": "POWERSHELL",
-  "command": "Write-Output '=== ALL USB CONNECTED DEVICES ===' ; Get-PnpDevice -Class USB -Status OK -ErrorAction SilentlyContinue | Format-Table FriendlyName, InstanceId -AutoSize ; Write-Output '=== ALL DEVICE CLASSES IN SYSTEM ===' ; Get-PnpDevice -Status OK | Group-Object Class | Sort-Object Count -Descending | Format-Table Count, Name -AutoSize ; Write-Output '=== NETWORK ADAPTERS (BT may appear here) ===' ; Get-NetAdapter -ErrorAction SilentlyContinue | Format-Table Name, InterfaceDescription, Status, MediaType -AutoSize ; Write-Output '=== DEVICE MANAGER - BLUETOOTH ENUM ===' ; Get-PnpDevice | Where-Object { $_.InstanceId -match 'BTHENUM|BTH' } | Format-Table Status, Class, FriendlyName, InstanceId -AutoSize",
-  "description": "تحقيق 3: فحص USB المتصلة + كل فئات الأجهزة + محولات الشبكة + أجهزة BTHENUM",
-  "timeout": 60
-}
+waiting
