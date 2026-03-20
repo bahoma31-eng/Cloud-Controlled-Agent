@@ -1,7 +1,1 @@
-{
-  "task_id": "desk-004",
-  "engine": "POWERSHELL",
-  "command": "Move-Item -Path \"$env:USERPROFILE\\Desktop\\prompt_text.py\" -Destination \"$env:USERPROFILE\\Desktop\\Projects\\prompt_text.py\" -Force; Write-Output 'Script moved successfully: prompt_text.py -> Projects/'",
-  "description": "نقل سكريبت prompt_text.py إلى مجلد Projects",
-  "timeout": 60
-}
+waiting
