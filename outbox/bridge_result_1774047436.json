@@ -1,0 +1,13 @@
+{
+  "task_id": "gmap_003",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "معرفة اسم المستخدم ومسار Chrome Profile لاستخدام الجلسة المسجلة",
+  "command_preview": "Write-Output \"=== Username ===\"; $env:USERNAME; Write-Output \"\"; Write-Output \"=== UserProfile ===\"; $env:USERPROFILE; Write-Output \"\"; Write-Output \"=== Chrome Profiles ===\"; if (Test-Path \"$env:LOCALAPPDATA\\Google\\Chrome\\User Data\") { Get-ChildItem \"$env:LOCALAPPDATA\\Google\\Chrome\\User Data\" -Directory | Where-Object { $_.Name -match '^(Default|Profile)' } | Select-Object -First 5 -ExpandProperty Name } else { Write-Output 'Chrome User Data not found' }; Write-Output \"\"; Write-Output \"=== Temp Dir ===\"; $env:TEMP",
+  "output": "=== Username ===\nRevexn\n\n=== UserProfile ===\nC:\\Users\\Revexn\n\n=== Chrome Profiles ===\nDefault\n\n=== Temp Dir ===\nC:\\Users\\Revexn\\AppData\\Local\\Temp",
+  "timestamp": "2026-03-20T22:57:16.078046+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
