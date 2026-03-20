@@ -1,7 +1,1 @@
-{
-  "task_id": "BT_INV_004",
-  "engine": "CMD",
-  "command": "pnputil /enum-devices /connected 2>&1 | findstr /i \"bluetooth audio headphone headset ew43 speaker sound\"",
-  "description": "تحقيق 4: استخدام pnputil على مستوى CMD للبحث عن أجهزة البلوتوث والصوت المتصلة",
-  "timeout": 60
-}
+waiting
