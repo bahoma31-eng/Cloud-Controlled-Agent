@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "gmap_003",
+  "engine": "POWERSHELL",
+  "command": "Write-Output \"=== Username ===\"; $env:USERNAME; Write-Output \"\"; Write-Output \"=== UserProfile ===\"; $env:USERPROFILE; Write-Output \"\"; Write-Output \"=== Chrome Profiles ===\"; if (Test-Path \"$env:LOCALAPPDATA\\Google\\Chrome\\User Data\") { Get-ChildItem \"$env:LOCALAPPDATA\\Google\\Chrome\\User Data\" -Directory | Where-Object { $_.Name -match '^(Default|Profile)' } | Select-Object -First 5 -ExpandProperty Name } else { Write-Output 'Chrome User Data not found' }; Write-Output \"\"; Write-Output \"=== Temp Dir ===\"; $env:TEMP",
+  "description": "معرفة اسم المستخدم ومسار Chrome Profile لاستخدام الجلسة المسجلة",
+  "timeout": 30
+}
