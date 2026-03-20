@@ -1,0 +1,13 @@
+{
+  "task_id": "gmap_006",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "إزالة BOM من السكريبت وتنفيذه - سيفتح متصفح مرئي على الشاشة",
+  "command_preview": "$utf8NoBom = New-Object System.Text.UTF8Encoding($false); [System.IO.File]::WriteAllText('C:\\temp\\gbp\\register_boncoin.py', (Get-Content 'C:\\temp\\gbp\\register_boncoin.py' -Raw), $utf8NoBom); Write-Output 'BOM removed'; python 'C:\\temp\\gbp\\register_boncoin.py' 2>&1 | Select-Object -Last 20",
+  "output": "BOM removed\n[OK] Navigate: https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fbusiness.google.com%2Fcreate&dsh=S1192117483%3A1774048254327507&followup=https%3A%2F%2Fbusiness.google.com%2Fcreate&passive=1209600&service=lbc&flowName=GlifWebSignIn&flowEntry=ServiceLogin&ifkv=ASfE1-qmfNWOE7BlnnPr6JjQaRS2TAECsa9Sew1KrSboxEc-rK68uML-Q57aiPACqNVnSPgipp1jIQ\n[NEED] Login: Login page detected - waiting 90s for manual login\n[OK] Progress: https://accounts.google.com/v3/signin/rejected?continue=https%3A%2F%2Fbusiness.google.com%2Fcreate&dsh=S1109241083%3A1774048325646886&epd=AVxC5Fd39QjdUFElxQPhf77BbvkXRocwlu5LuAcgYneMYaGV2LeiHzEqzw&flowEntry=ServiceLogin&flowName=GlifWebSignIn&followup=https%3A%2F%2Fbusiness.google.com%2Fcreate&idnf=kaderamb1%40gmail.com&ifkv=ASfE1-oV805hl6TXPFm_5r5dzv_QxB-l4mmn5bdL_PcK418CqXOiIDff4InOqj4HNll9r7uGAHeLAQ&rhlk=le&rrk=46&service=lbc\n{\"status\": \"DONE\", \"steps\": [{\"step\": \"Navigate\", \"status\": \"OK\", \"detail\": \"https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fbusiness.google.com%2Fcreate&dsh=S1192117483%3A1774048254327507&followup=https%3A%2F%2Fbusiness.google.com%2Fcreate&passive=1209600&service=lbc&flowName=GlifWebSignIn&flowEntry=ServiceLogin&ifkv=ASfE1-qmfNWOE7BlnnPr6JjQaRS2TAECsa9Sew1KrSboxEc-rK68uML-Q57aiPACqNVnSPgipp1jIQ\"}, {\"step\": \"Login\", \"status\": \"NEED\", \"detail\": \"Login page detected - waiting 90s for manual login\"}, {\"step\": \"Progress\", \"status\": \"OK\", \"detail\": \"https://accounts.google.com/v3/signin/rejected?continue=https%3A%2F%2Fbusiness.google.com%2Fcreate&dsh=S1109241083%3A1774048325646886&epd=AVxC5Fd39QjdUFElxQPhf77BbvkXRocwlu5LuAcgYneMYaGV2LeiHzEqzw&flowEntry=ServiceLogin&flowName=GlifWebSignIn&followup=https%3A%2F%2Fbusiness.google.com%2Fcreate&idnf=kaderamb1%40gmail.com&ifkv=ASfE1-oV805hl6TXPFm_5r5dzv_QxB-l4mmn5bdL_PcK418CqXOiIDff4InOqj4HNll9r7uGAHeLAQ&rhlk=le&rrk=46&service=lbc\"}]}",
+  "timestamp": "2026-03-20T23:10:19.686919+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
