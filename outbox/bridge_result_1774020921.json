@@ -1,0 +1,13 @@
+{
+  "task_id": "BT001",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "تفعيل البلوتوث على الجهاز",
+  "command_preview": "Add-Type -AssemblyName System.Runtime.WindowsRuntime; $radio = [Windows.Devices.Radios.Radio,Windows.System.Devices,ContentType=WindowsRuntime]::GetRadiosAsync().GetAwaiter().GetResult() | Where-Object { $_.Kind -eq 'Bluetooth' }; if ($radio) { $radio.SetStateAsync([Windows.Devices.Radios.RadioState]::On).GetAwaiter().GetResult(); Write-Output \"Bluetooth enabled successfully. State: $($radio.State)\" } else { Write-Output 'No Bluetooth radio found on this device' }",
+  "output": "No Bluetooth radio found on this device",
+  "timestamp": "2026-03-20T15:35:21.484432+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
