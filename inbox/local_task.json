@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "BT004",
+  "engine": "POWERSHELL",
+  "command": "Write-Output '=== Bluetooth Service ==='; Get-Service -Name bthserv -ErrorAction SilentlyContinue | Select-Object Name, Status, StartType | Format-Table -AutoSize | Out-String; Write-Output '=== Hidden Bluetooth devices ==='; Get-PnpDevice -Class Bluetooth -Status Unknown -ErrorAction SilentlyContinue | Select-Object Status, Name | Format-Table -AutoSize | Out-String; Write-Output '=== USB devices (potential BT dongle) ==='; Get-PnpDevice -Class USB -ErrorAction SilentlyContinue | Where-Object { $_.Name -match 'Bluetooth|BT|Radio|Wireless' } | Select-Object Status, Name | Format-Table -AutoSize | Out-String; Write-Output '=== All radio devices ==='; Get-PnpDevice | Where-Object { $_.Class -match 'Radio|Bluetooth|Net' -and $_.Name -match 'Radio|Bluetooth|Wireless' } | Select-Object Status, Class, Name | Format-Table -AutoSize | Out-String -Width 300",
+  "description": "بحث عن خدمات البلوتوث والأجهزة المخفية ودونجل USB",
+  "timeout": 30
+}
