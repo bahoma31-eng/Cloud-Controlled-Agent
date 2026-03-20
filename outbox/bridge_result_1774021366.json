@@ -1,0 +1,13 @@
+{
+  "task_id": "BT003",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "بحث شامل عن أي جهاز بلوتوث على النظام",
+  "command_preview": "Write-Output '=== All PnP Devices with Bluetooth in name ==='; Get-PnpDevice | Where-Object { $_.Name -match 'Bluetooth' -or $_.FriendlyName -match 'Bluetooth' } | Select-Object Status, Class, Name | Format-Table -AutoSize | Out-String -Width 300; Write-Output '=== Network adapters with Bluetooth ==='; Get-NetAdapter | Where-Object { $_.Name -match 'Bluetooth' -or $_.InterfaceDescription -match 'Bluetooth' } | Select-Object Name, Status, InterfaceDescription | Format-Table -AutoSize | Out-String -Width 300; Write-Output '=== Bluetooth radio check ==='; Get-PnpDevice -FriendlyName '*Bluetooth*' -ErrorAction SilentlyContinue | Select-Object Status, Class, FriendlyName | Format-Table -AutoSize | Out-String -Width 300",
+  "output": "(no output)",
+  "timestamp": "2026-03-20T15:42:46.433841+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
