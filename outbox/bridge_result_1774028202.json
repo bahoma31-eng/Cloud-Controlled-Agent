@@ -1,0 +1,13 @@
+{
+  "task_id": "desk-002",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "نقل الاختصارات Antigravity.lnk و Notion.lnk إلى مجلد Shortcuts",
+  "command_preview": "Move-Item -Path \"$env:USERPROFILE\\Desktop\\Antigravity.lnk\" -Destination \"$env:USERPROFILE\\Desktop\\Shortcuts\\Antigravity.lnk\" -Force; Move-Item -Path \"$env:USERPROFILE\\Desktop\\Notion.lnk\" -Destination \"$env:USERPROFILE\\Desktop\\Shortcuts\\Notion.lnk\" -Force; Write-Output 'Shortcuts moved successfully: Antigravity.lnk, Notion.lnk -> Shortcuts/'",
+  "output": "Shortcuts moved successfully: Antigravity.lnk, Notion.lnk -> Shortcuts/",
+  "timestamp": "2026-03-20T17:36:42.685990+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
