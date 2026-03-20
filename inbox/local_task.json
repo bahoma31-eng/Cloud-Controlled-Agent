@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "test-protocol-001",
+  "engine": "POWERSHELL",
+  "command": "hostname; Get-Date -Format 'yyyy-MM-dd HH:mm:ss'; Write-Output 'اختبار بروتوكول التواصل بين الوكلاء — ناجح ✅'",
+  "description": "مهمة اختبار بروتوكول التواصل بين الوكلاء - من المدير الاستراتيجي للمطعم",
+  "timeout": 120
+}
