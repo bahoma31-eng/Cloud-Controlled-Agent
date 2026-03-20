@@ -1,0 +1,13 @@
+{
+  "task_id": "BT_INV_001",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "تحقيق 1: فحص أجهزة البلوتوث والصوت والخدمات",
+  "command_preview": "Write-Output '=== BLUETOOTH RADIO ===' ; Get-PnpDevice -Class Bluetooth -ErrorAction SilentlyContinue | Format-Table Status, Class, FriendlyName, InstanceId -AutoSize ; Write-Output '=== HIDDEN BLUETOOTH DEVICES ===' ; Get-PnpDevice -Class Bluetooth -Status Unknown -ErrorAction SilentlyContinue | Format-Table Status, FriendlyName, InstanceId -AutoSize ; Get-PnpDevice -Class Bluetooth -Status Error -ErrorAction SilentlyContinue | Format-Table Status, FriendlyName, InstanceId -AutoSize ; Write-Output '=== ALL AUDIO ENDPOINTS ===' ; Get-PnpDevice -Class AudioEndpoint -ErrorAction SilentlyContinue | Format-Table Status, FriendlyName -AutoSize ; Write-Output '=== BLUETOOTH SERVICES ===' ; Get-Service -Name *bluetooth* -ErrorAction SilentlyContinue | Format-Table Status, Name, DisplayName -AutoS",
+  "output": "(no output)",
+  "timestamp": "2026-03-20T15:51:35.015329+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
