@@ -1,7 +1,1 @@
-{
-  "task_id": "gmap_006",
-  "engine": "POWERSHELL",
-  "command": "$utf8NoBom = New-Object System.Text.UTF8Encoding($false); [System.IO.File]::WriteAllText('C:\\temp\\gbp\\register_boncoin.py', (Get-Content 'C:\\temp\\gbp\\register_boncoin.py' -Raw), $utf8NoBom); Write-Output 'BOM removed'; python 'C:\\temp\\gbp\\register_boncoin.py' 2>&1 | Select-Object -Last 20",
-  "description": "إزالة BOM من السكريبت وتنفيذه - سيفتح متصفح مرئي على الشاشة",
-  "timeout": 300
-}
+waiting
