@@ -1,7 +1,1 @@
-{
-  "task_id": "fb_005",
-  "engine": "POWERSHELL",
-  "command": "$headers = @{'User-Agent'='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'; 'Accept-Language'='fr-FR,fr;q=0.9,en;q=0.8'}; Write-Output '=== BING SEARCH ==='; try { $r = Invoke-WebRequest -Uri 'https://www.bing.com/search?q=difrence+food+oran+facebook+restaurant+page' -Headers $headers -UseBasicParsing -TimeoutSec 10; $r.Content -match '(?s)<body.*?>(.*)</body>' | Out-Null; $body = $Matches[1] -replace '<[^>]+>',''; $body.Substring(0, [Math]::Min(3000, $body.Length)) } catch { Write-Output \"Bing error: $_\" }; Write-Output '=== FACEBOOK PAGE ==='; try { $fb = Invoke-WebRequest -Uri 'https://www.facebook.com/difrencefood/' -Headers $headers -UseBasicParsing -TimeoutSec 10; $ogMatches = [regex]::Matches($fb.Content, '<meta[^>]*property=\"og:([^\"]+)\"[^>]*content=\"([^\"]+)\"'); foreach($m in $ogMatches) { Write-Output \"og:$($m.Groups[1].Value) = $($m.Groups[2].Value)\" }; $descMatch = [regex]::Match($fb.Content, '<meta[^>]*name=\"description\"[^>]*content=\"([^\"]+)\"'); if($descMatch.Success) { Write-Output \"description = $($descMatch.Groups[1].Value)\" } } catch { Write-Output \"FB error: $_\" }; Write-Output '=== FACEBOOK MOBILE ==='; try { $mfb = Invoke-WebRequest -Uri 'https://m.facebook.com/difrencefood/' -Headers $headers -UseBasicParsing -TimeoutSec 10; $mogMatches = [regex]::Matches($mfb.Content, '<meta[^>]*property=\"og:([^\"]+)\"[^>]*content=\"([^\"]+)\"'); foreach($m in $mogMatches) { Write-Output \"m_og:$($m.Groups[1].Value) = $($m.Groups[2].Value)\" } } catch { Write-Output \"Mobile FB error: $_\" }",
-  "description": "جلب بيانات عبر PowerShell HTTP - Bing + Facebook direct",
-  "timeout": 60
-}
+waiting
