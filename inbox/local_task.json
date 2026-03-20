@@ -1,7 +1,1 @@
-{
-  "task_id": "GMAPS-ALT-001",
-  "engine": "POWERSHELL",
-  "command": "# Check if Chrome is available and get user profile path\n$chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'\nif (-not (Test-Path $chromePath)) { $chromePath = 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe' }\nif (-not (Test-Path $chromePath)) { $chromePath = (Get-ItemProperty 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe' -ErrorAction SilentlyContinue).'(Default)' }\n$profilePath = \"$env:LOCALAPPDATA\\Google\\Chrome\\User Data\"\nWrite-Output \"Chrome path: $chromePath\"\nWrite-Output \"Chrome exists: $(Test-Path $chromePath)\"\nWrite-Output \"Profile path: $profilePath\"\nWrite-Output \"Profile exists: $(Test-Path $profilePath)\"\n# List Chrome profiles\nif (Test-Path $profilePath) { Get-ChildItem $profilePath -Directory | Where-Object { $_.Name -match '^(Default|Profile)' } | Select-Object Name | Format-Table -AutoSize }",
-  "description": "التحقق من مسار Chrome العادي وملفات تعريف المستخدم المتاحة",
-  "timeout": 30
-}
+waiting
