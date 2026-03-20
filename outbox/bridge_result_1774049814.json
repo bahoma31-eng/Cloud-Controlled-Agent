@@ -1,0 +1,13 @@
+{
+  "task_id": "GMAPS-ENV-001",
+  "status": "FAILED",
+  "return_code": 124,
+  "engine": "POWERSHELL",
+  "description": "فحص البيئة المحلية: Python، المتصفحات، الحزم المتاحة، وملفات Google Maps",
+  "command_preview": "Write-Output '=== Python Version ==='; python --version 2>&1; Write-Output ''; Write-Output '=== Installed Packages (Google/Selenium/Playwright) ==='; pip list 2>&1 | Select-String -Pattern 'selenium|playwright|google|requests|beautifulsoup|browser' ; Write-Output ''; Write-Output '=== Chrome/Edge Browser Check ==='; $chrome = Get-ItemProperty 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe' -ErrorAction SilentlyContinue; if($chrome) { Write-Output \"Chrome found: $($chrome.'(default)')\" } else { Write-Output 'Chrome not found in registry' }; $edge = Get-ItemProperty 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\msedge.exe' -ErrorAction SilentlyContinue; if($edge) { Write-Output \"Edge found: $($edge.'(default)')\" } else { Write-Output 'Edge not found' }; W",
+  "output": "Timeout expired after 60s",
+  "timestamp": "2026-03-20T23:36:54.121269+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
