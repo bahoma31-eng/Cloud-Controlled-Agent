@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "desk-003",
+  "engine": "POWERSHELL",
+  "command": "Move-Item -Path \"$env:USERPROFILE\\Desktop\\nsn,ne.jpg\" -Destination \"$env:USERPROFILE\\Desktop\\Images\\nsn,ne.jpg\" -Force; Write-Output 'Image moved successfully: nsn,ne.jpg -> Images/'",
+  "description": "نقل صورة nsn,ne.jpg إلى مجلد Images",
+  "timeout": 60
+}
