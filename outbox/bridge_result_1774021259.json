@@ -1,0 +1,13 @@
+{
+  "task_id": "BT002",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "التحقق من حالة أجهزة البلوتوث على الجهاز",
+  "command_preview": "Get-PnpDevice -Class Bluetooth | Select-Object Status, Name | Format-Table -AutoSize | Out-String -Width 200",
+  "output": "(no output)",
+  "timestamp": "2026-03-20T15:40:59.253819+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
