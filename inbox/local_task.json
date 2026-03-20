@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "BT_INV_005",
+  "engine": "POWERSHELL",
+  "command": "Write-Output '=== DIAGNOSTIC TEST ==='; Write-Output \"Hostname: $env:COMPUTERNAME\"; Write-Output \"Date: $(Get-Date)\"; Write-Output ''; Write-Output '=== ALL PNP DEVICES (first 30) ==='; $allDevices = Get-PnpDevice -Status OK -ErrorAction SilentlyContinue; Write-Output \"Total connected devices: $($allDevices.Count)\"; $allDevices | Select-Object -First 30 Class, FriendlyName, InstanceId | Format-Table -AutoSize; Write-Output ''; Write-Output '=== DEVICE CLASSES SUMMARY ==='; $allDevices | Group-Object Class | Sort-Object Count -Descending | Select-Object -First 20 Count, Name | Format-Table -AutoSize",
+  "description": "تحقيق 5: اختبار تشخيصي - التحقق من أن الجسر يلتقط المخرجات + عرض أول 30 جهاز متصل وملخص الفئات",
+  "timeout": 60
+}
