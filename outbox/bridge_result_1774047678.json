@@ -1,0 +1,13 @@
+{
+  "task_id": "gmap_004",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "كتابة سكريبت التسجيل على Google Business Profile إلى ملف محلي",
+  "command_preview": "New-Item -ItemType Directory -Path 'C:\\temp\\gbp' -Force | Out-Null; $py = @'\nimport json, time, os, sys\nfrom playwright.sync_api import sync_playwright\nos.makedirs(r\"C:\\temp\\gbp\\screenshots\", exist_ok=True)\nRF = r\"C:\\temp\\gbp\\result.json\"\nB = {\"name\":\"Boncoin Fast Food\",\"addr\":\"02 Boulevard Benarbia Lahouari, Oran, Algeria\",\"cat\":\"Fast food restaurant\",\"phone\":\"\",\"desc\":\"Sandwiches, Pizza, Burger, Tacos\"}\nsteps = []\ndef log(s, st, d=\"\"): steps.append({\"step\":s,\"status\":st,\"detail\":d}); print(f\"[{st}] {s}: {d}\")\ntry:\n    with sync_playwright() as p:\n        br = p.chromium.launch(headless=False, slow_mo=500)\n        ctx = br.new_context(viewport={\"width\":1280,\"height\":900}, locale=\"en-US\")\n        pg = ctx.new_page()\n        pg.goto(\"https://business.google.com/create\", timeout=30000)\n     ",
+  "output": "Script written to C:\\temp\\gbp\\register_boncoin.py\n44\nlines",
+  "timestamp": "2026-03-20T23:01:18.454750+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
