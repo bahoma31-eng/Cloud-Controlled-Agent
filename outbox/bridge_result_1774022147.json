@@ -1,0 +1,13 @@
+{
+  "task_id": "BT_INV_003",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "تحقيق 3: فحص USB المتصلة + كل فئات الأجهزة + محولات الشبكة + أجهزة BTHENUM",
+  "command_preview": "Write-Output '=== ALL USB CONNECTED DEVICES ===' ; Get-PnpDevice -Class USB -Status OK -ErrorAction SilentlyContinue | Format-Table FriendlyName, InstanceId -AutoSize ; Write-Output '=== ALL DEVICE CLASSES IN SYSTEM ===' ; Get-PnpDevice -Status OK | Group-Object Class | Sort-Object Count -Descending | Format-Table Count, Name -AutoSize ; Write-Output '=== NETWORK ADAPTERS (BT may appear here) ===' ; Get-NetAdapter -ErrorAction SilentlyContinue | Format-Table Name, InterfaceDescription, Status, MediaType -AutoSize ; Write-Output '=== DEVICE MANAGER - BLUETOOTH ENUM ===' ; Get-PnpDevice | Where-Object { $_.InstanceId -match 'BTHENUM|BTH' } | Format-Table Status, Class, FriendlyName, InstanceId -AutoSize",
+  "output": "(no output)",
+  "timestamp": "2026-03-20T15:55:47.832984+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
