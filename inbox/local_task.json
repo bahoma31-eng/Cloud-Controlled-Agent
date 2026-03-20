@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "fb_001",
+  "engine": "POWERSHELL",
+  "command": "pip show playwright 2>&1; pip show selenium 2>&1",
+  "description": "التحقق من تثبيت Playwright و Selenium",
+  "timeout": 60
+}
