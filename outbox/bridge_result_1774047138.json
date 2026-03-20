@@ -1,0 +1,13 @@
+{
+  "task_id": "gmap_002",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "تثبيت متصفح Chromium لـ Playwright",
+  "command_preview": "python -m playwright install chromium 2>&1 | Select-Object -Last 10",
+  "output": "(no output)",
+  "timestamp": "2026-03-20T22:52:18.149060+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
