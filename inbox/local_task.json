@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "BT002",
+  "engine": "POWERSHELL",
+  "command": "Get-PnpDevice -Class Bluetooth | Select-Object Status, Name | Format-Table -AutoSize | Out-String -Width 200",
+  "description": "التحقق من حالة أجهزة البلوتوث على الجهاز",
+  "timeout": 30
+}
