@@ -1,0 +1,13 @@
+{
+  "task_id": "fb_004",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "PYTHON",
+  "description": "محاولة بديلة: البحث عبر DuckDuckGo/Bing + requests لجلب بيانات difrence food",
+  "command_preview": "import asyncio, json, re\nfrom playwright.async_api import async_playwright\n\nasync def scrape():\n    results = {'data': {}, 'errors': []}\n    async with async_playwright() as p:\n        browser = await p.chromium.launch(headless=True)\n        ctx = await browser.new_context(user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36', locale='fr-FR')\n        page = await ctx.new_page()\n        # 1. DuckDuckGo search\n        try:\n            await page.goto('https://duckduckgo.com/?q=difrence+food+oran+facebook+restaurant', timeout=15000)\n            await page.wait_for_timeout(3000)\n            ddg = await page.inner_text('body')\n            results['data']['duckduckgo'] = ddg[:2000]\n        except Exception as e:\n            r",
+  "output": "{\n  \"data\": {\n    \"duckduckgo\": \"Main navigation menu closed\\nMenu\\nDuckDuckGo\\nDuckDuckGo\\n\\nUnexpected error. Please try again.\\n\\nIf error persists, please email us.\\n\\n\\n\\n\\nNote: Our support email address includes an anonymized error code that helps us understand the context of your search.\\n\\nDownload DuckDuckGo Browser\",\n    \"bing\": \"Passer au contenu\\nRewards\\nTOUTRECHERCHERIMAGESVIDÉOSCARTES\\nPLUS\",\n    \"reviews_search\": \"Main navigation menu closed\\nMenu\\nDuckDuckGo\\nDuckDuckGo\\n\\nUnexpected error. Please try again.\\n\\nIf error persists, please email us.\\n\\n\\n\\n\\nNote: Our support email address includes an anonymized error code that helps us understand the context of your search.\\n\\nDownload DuckDuckGo Browser\",\n    \"maps_search\": \"Main navigation menu closed\\nMenu\\nDuckDuckGo\\nDuckDuckGo\\n\\nUnexpected error. Please try again.\\n\\nIf error persists, please email us.\\n\\n\\n\\n\\nNote: Our support email address includes an anonymized error code that helps us understand the context of your search.\\n\\nDownload DuckDuckGo Browser\"\n  },\n  \"errors\": []\n}",
+  "timestamp": "2026-03-20T20:42:53.290917+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
