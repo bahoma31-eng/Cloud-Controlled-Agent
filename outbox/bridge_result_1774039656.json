@@ -1,0 +1,13 @@
+{
+  "task_id": "fb_006",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "PYTHON",
+  "description": "بحث Bing عبر Playwright مع انتظار تحميل النتائج - difrence food oran",
+  "command_preview": "import asyncio, json\nfrom playwright.async_api import async_playwright\n\nasync def scrape():\n    results = {'data': {}, 'errors': []}\n    async with async_playwright() as p:\n        browser = await p.chromium.launch(headless=True)\n        ctx = await browser.new_context(user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36', locale='fr-FR')\n        page = await ctx.new_page()\n        # Try Bing search with proper JS wait\n        try:\n            await page.goto('https://www.bing.com/search?q=%22difrence+food%22+oran', timeout=15000)\n            await page.wait_for_selector('#b_results', timeout=10000)\n            await page.wait_for_timeout(2000)\n            items = await page.query_selector_all('#b_results .b_algo')\n    ",
+  "output": "{\n  \"data\": {},\n  \"errors\": [\n    \"Bing: Page.wait_for_selector: Timeout 10000ms exceeded.\\nCall log:\\n  - waiting for locator(\\\"#b_results\\\") to be visible\\n    9 × locator resolved to hidden <ol class=\\\"\\\" id=\\\"b_results\\\">…</ol>\\n    - waiting for \",\n    \"Bing2: Page.wait_for_selector: Timeout 10000ms exceeded.\\nCall log:\\n  - waiting for locator(\\\"#b_results\\\") to be visible\\n    - waiting for\\\" https://www.bing.com/search?q=difrence+food+oran+algerie+fast+food+re\"\n  ]\n}",
+  "timestamp": "2026-03-20T20:47:36.709991+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
