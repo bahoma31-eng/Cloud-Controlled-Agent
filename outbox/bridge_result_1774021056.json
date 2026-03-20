@@ -1,0 +1,13 @@
+{
+  "task_id": "BT001",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "تفعيل البلوتوث على الجهاز المحلي",
+  "command_preview": "try { $adapter = Get-PnpDevice -Class Bluetooth -ErrorAction Stop | Where-Object { $_.Status -eq 'Error' -or $_.Status -eq 'Degraded' -or $_.Status -eq 'Unknown' -or $_.Status -eq 'OK' } | Select-Object -First 1; if ($adapter) { Enable-PnpDevice -InstanceId $adapter.InstanceId -Confirm:$false -ErrorAction SilentlyContinue }; $btRadio = Get-PnpDevice -Class Bluetooth | Select-Object Status, Name, InstanceId | Format-Table -AutoSize | Out-String; Write-Output \"Bluetooth Devices:`n$btRadio\"; Add-Type -AssemblyName System.Runtime.WindowsRuntime; $asTaskGeneric = ([System.WindowsRuntimeSystemExtensions].GetMethods() | Where-Object { $_.Name -eq 'AsTask' -and $_.GetParameters().Count -eq 1 -and $_.GetParameters()[0].ParameterType.Name -eq 'IAsyncOperation`1' })[0]; function Await($WinRtTask, $Re",
+  "output": "(no output)",
+  "timestamp": "2026-03-20T15:37:36.819446+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
