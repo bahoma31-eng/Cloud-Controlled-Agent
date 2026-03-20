@@ -1,0 +1,13 @@
+{
+  "task_id": "010",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "إنشاء ملف RULES.md محلياً في مجلد session",
+  "command_preview": "$scriptDir = Split-Path -Parent (Get-Process -Id $PID).Path; $repoDir = (Get-Location).Path; Write-Output \"Current directory: $repoDir\"; Write-Output \"Script directory: $scriptDir\"; $sessionDir = Join-Path $repoDir 'session'; if (!(Test-Path $sessionDir)) { New-Item -ItemType Directory -Path $sessionDir -Force | Out-Null }; $rulesContent = @'\n# 🚫 قواعد إلزامية للجلسة — اقرأها قبل أي تعديل\n\n## القاعدة رقم 1: ممنوع لمس local_bridge.py ⛔\n\n**ممنوع منعاً باتاً لمس أو تعديل ملف `local_bridge.py` تحت أي ظرف من الظروف.**\n\n- ❌ لا تعدّل الكود\n- ❌ لا تضف أسطراً\n- ❌ لا تحذف أسطراً\n- ❌ لا تعد كتابة الملف\n- ❌ لا تنقل الملف\n- ❌ لا تعد تسميته\n\n> **هذه القاعدة مطلقة ولا استثناء لها. حتى لو كان الحل يتطلب تعديل الملف، يجب إيجاد حل بديل أو إبلاغ المستخدم.**\n\n---\n\n📅 تاريخ الإضافة: 2026-03-20\n👤 بأمر من: bahoma",
+  "output": "Current directory: C:\\Users\\Revexn\\Cloud-Controlled-Agent\nScript directory: C:\\Windows\\System32\\WindowsPowerShell\\v1.0\nRULES.md created successfully in session folder\n# ?? ????? ??????? ?????? - ?????? ??? ?? ?????\n\n## ??????? ??? 1: ????? ??? local_bridge.py ?\n\n**????? ????? ????? ??? ?? ????? ??? `local_bridge.py` ??? ?? ??? ?? ??????.**",
+  "timestamp": "2026-03-20T17:04:36.625461+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
