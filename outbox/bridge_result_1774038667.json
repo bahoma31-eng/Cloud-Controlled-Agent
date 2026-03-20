@@ -1,0 +1,13 @@
+{
+  "task_id": "fb_001",
+  "status": "FAILED",
+  "return_code": 1,
+  "engine": "POWERSHELL",
+  "description": "التحقق من تثبيت Playwright و Selenium",
+  "command_preview": "pip show playwright 2>&1; pip show selenium 2>&1",
+  "output": "Name: playwright\nVersion: 1.58.0\nSummary: A high-level API to automate web browsers\nHome-page: https://github.com/Microsoft/playwright-python\nAuthor: Microsoft Corporation\nAuthor-email: \nLicense-Expression: Apache-2.0\nLocation: C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\nRequires: greenlet, pyee\nRequired-by:\n\n[STDERR]\npip : WARNING: Package(s) not found: selenium\nAu caractŠre Ligne:1 : 27\n+ pip show playwright 2>&1; pip show selenium 2>&1\n+                           ~~~~~~~~~~~~~~~~~~~~~~\n    + CategoryInfo          : NotSpecified: (WARNING: Package(s) not found: selenium:String) [],  \n   RemoteException\n    + FullyQualifiedErrorId : NativeCommandError",
+  "timestamp": "2026-03-20T20:31:07.081356+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
