@@ -1,0 +1,13 @@
+{
+  "task_id": "gmaps_104",
+  "status": "FAILED",
+  "return_code": 1,
+  "engine": "PYTHON",
+  "description": "الاتصال بـ Chrome عبر Playwright CDP وفحص صفحة التسجيل",
+  "command_preview": "import asyncio\nfrom playwright.async_api import async_playwright\n\nasync def main():\n    async with async_playwright() as p:\n        browser = await p.chromium.connect_over_cdp('http://localhost:9222')\n        context = browser.contexts[0]\n        page = await context.new_page()\n        print('Navigating to Add a Place...')\n        await page.goto('https://www.google.com/maps/contrib/0/add-a-place', wait_until='networkidle', timeout=30000)\n        await asyncio.sleep(3)\n        print(f'Page title: {await page.title()}')\n        print(f'Page URL: {page.url}')\n        # Take screenshot of current state\n        content = await page.content()\n        # Check for form fields\n        inputs = await page.query_selector_all('input')\n        print(f'Found {len(inputs)} input fields')\n        for i, ",
+  "output": "Navigating to Add a Place...\n\n[STDERR]\n(node:11384) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.\n(Use `node --trace-deprecation ...` to show where the warning was created)\nTraceback (most recent call last):\n  File \"<string>\", line 32, in <module>\n  File \"C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\asyncio\\runners.py\", line 194, in run\n    return runner.run(main)\n           ^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\asyncio\\runners.py\", line 118, in run\n    return self._loop.run_until_complete(task)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\asyncio\\base_events.py\", line 687, in run_until_complete\n    return future.result()\n           ^^^^^^^^^^^^^^^\n  File \"<string>\", line 12, in main\n  File \"C:\\Users\\Revexn\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\encodings\\cp1252.py\", line 19, in encode\n    return codecs.charmap_encode(input,self.errors,encoding_table)[0]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nUnicodeEncodeError: 'charmap' codec can't encode characters in position 12-16: character maps to <undefined>",
+  "timestamp": "2026-03-21T00:56:58.771612+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
