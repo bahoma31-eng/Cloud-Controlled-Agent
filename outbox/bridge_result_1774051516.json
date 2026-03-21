@@ -1,0 +1,13 @@
+{
+  "task_id": "gmaps_002",
+  "status": "FAILED",
+  "return_code": 124,
+  "engine": "POWERSHELL",
+  "description": "تثبيت مكتبات pyautogui و pyperclip للتحكم بالماوس والكيبورد",
+  "command_preview": "pip install pyautogui pyperclip 2>&1 | Select-Object -Last 10",
+  "output": "Timeout expired after 120s",
+  "timestamp": "2026-03-21T00:05:16.963314+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
