@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "bridge_test_001",
+  "engine": "POWERSHELL",
+  "command": "Write-Output 'Bridge is ALIVE'; Get-Date -Format 'yyyy-MM-dd HH:mm:ss'; hostname",
+  "description": "اختبار حالة الجسر - هل يعمل أم لا",
+  "timeout": 60
+}
