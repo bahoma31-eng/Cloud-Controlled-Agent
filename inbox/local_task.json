@@ -1,7 +1,1 @@
-{
-  "task_id": "gmaps_101",
-  "engine": "POWERSHELL",
-  "command": "Write-Host '=== Chrome Windows ==='; Get-Process chrome -ErrorAction SilentlyContinue | Where-Object {$_.MainWindowTitle -ne ''} | Select-Object Id, MainWindowTitle | Format-Table -AutoSize; Write-Host '=== Guide File Check ==='; if (Test-Path 'C:\\temp\\gbp\\registration_guide.html') { Write-Host 'Guide exists'; $content = Get-Content 'C:\\temp\\gbp\\registration_guide.html' -Raw -Encoding UTF8; Write-Host ($content.Substring(0, [Math]::Min(3000, $content.Length))) } else { Write-Host 'Guide NOT found at C:\\temp\\gbp\\' ; Get-ChildItem 'C:\\temp\\' -ErrorAction SilentlyContinue | Select-Object Name }",
-  "description": "قراءة دليل التسجيل + فحص نوافذ Chrome المفتوحة",
-  "timeout": 60
-}
+waiting
