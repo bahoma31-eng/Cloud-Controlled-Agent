@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "MUSIC-002",
+  "engine": "POWERSHELL",
+  "command": "Add-Type -AssemblyName PresentationCore; $player = New-Object System.Windows.Media.MediaPlayer; $files = Get-ChildItem 'C:\\Windows\\Media' -Filter *.wav -ErrorAction SilentlyContinue | Select-Object -First 5; Write-Output \"Found files:\"; $files | ForEach-Object { $_.FullName }; if ($files.Count -gt 0) { $file = $files[0].FullName; $player.Open([Uri]$file); Start-Sleep -Seconds 1; $player.Play(); Start-Sleep -Seconds 10; $player.Stop(); Write-Output \"Played: $file\" } else { Write-Output 'No WAV files found in Windows Media folder' }",
+  "description": "تشغيل ملف صوتي من أصوات Windows المدمجة لاختبار سماعة بلوتوث",
+  "timeout": 30
+}
