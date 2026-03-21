@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "gmaps_002c",
+  "engine": "CMD",
+  "command": "python -c \"try:\n import pyautogui; print('pyautogui OK v' + pyautogui.__version__)\nexcept: print('pyautogui NOT FOUND')\ntry:\n import pyperclip; print('pyperclip OK')\nexcept: print('pyperclip NOT FOUND')\"",
+  "description": "فحص سريع: هل pyautogui و pyperclip مثبتان بالفعل؟",
+  "timeout": 30
+}
