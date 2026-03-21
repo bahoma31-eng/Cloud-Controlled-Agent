@@ -1,0 +1,13 @@
+{
+  "task_id": "gmaps_111",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "CDP - الانتقال لصفحة business.google.com/create وفحص النموذج",
+  "command_preview": "$script = @'\nimport json, urllib.request, struct, base64, os, socket, time\n\ndef cdp_get_pages():\n    r = urllib.request.urlopen(\"http://localhost:9222/json\", timeout=5)\n    return json.loads(r.read())\n\ndef ws_send_recv(ws_url, msg, wait=3):\n    from urllib.parse import urlparse\n    u = urlparse(ws_url)\n    host = u.hostname\n    port = u.port or 80\n    s = socket.create_connection((host, port), timeout=15)\n    key = base64.b64encode(os.urandom(16)).decode()\n    req = f\"GET {u.path} HTTP/1.1\\r\\nHost: {host}:{port}\\r\\nUpgrade: websocket\\r\\nConnection: Upgrade\\r\\nSec-WebSocket-Key: {key}\\r\\nSec-WebSocket-Version: 13\\r\\n\\r\\n\"\n    s.sendall(req.encode())\n    resp = b\"\"\n    while b\"\\r\\n\\r\\n\" not in resp:\n        resp += s.recv(4096)\n    data = msg.encode(\"utf-8\")\n    frame = bytearray([0x81])\n   ",
+  "output": "Navigating to business.google.com/create...\nNav done\nPage info: {\"id\":2,\"result\":{\"result\":{\"type\":\"string\",\"value\":\"{\\\"title\\\":\\\"\\u0627\\u0644\\u0645\\u0644\\u0641 \\u0627\\u0644\\u062a\\u062c\\u0627\\u0631\\u064a \\u0639\\u0644\\u0649 Google\\\",\\\"url\\\":\\\"https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fbusiness.google.com%2Fcreate&dsh=S1192117483%3A1774055540490443&followup=https%3A%2F%2Fbusiness.google.com%2Fcreate&passive=1209600&service=lbc&flowName=GlifWebSignIn&flowEntry=ServiceLogin&ifkv=ASfE1-qifhGnVkWngubNzIwkKRuExmTu0RPA1LCP5yevtSnpGfEjILcIHbngwGFuAqTM1X7r2x14Dg\\\",\\\"inputs\\\":[{\\\"name\\\":\\\"identifier\\\",\\\"aria\\\":\\\"\\u0627\\u0644\\u0628\\u0631\\u064a\\u062f \\u0627\\u0644\\u0625\\u0644\\u0643\\u062a\\u0631\\u0648\\u0646\\u064a \\u0623\\u0648 \\u0627\\u0644\\u0647\\u0627\\u062a\\u0641\\\",\\\"type\\\":\\\"email\\\",\\\"id\\\":\\\"identifierId\\\",\\\"vis\\\":true}],\\\"buttons\\\":[\\\"\\u0",
+  "timestamp": "2026-03-21T01:10:08.115543+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
