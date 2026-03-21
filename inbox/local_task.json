@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "gmaps_107",
+  "engine": "POWERSHELL",
+  "command": "try { $r = Invoke-WebRequest -Uri 'http://localhost:9222/json' -TimeoutSec 5 -UseBasicParsing; $pages = $r.Content | ConvertFrom-Json; Write-Output \"CDP OK - Pages: $($pages.Count)\"; foreach($p in $pages){ Write-Output \"  title=$($p.title) url=$($p.url.Substring(0,[Math]::Min(80,$p.url.Length)))\" } } catch { Write-Output \"CDP FAILED: $_\" }",
+  "description": "فحص CDP عبر PowerShell HTTP مباشرة",
+  "timeout": 15
+}
