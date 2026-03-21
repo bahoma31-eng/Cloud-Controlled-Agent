@@ -1,7 +1,1 @@
-{
-  "task_id": "gmaps_002d",
-  "engine": "PYTHON",
-  "command": "import subprocess, sys\nresults = []\nfor pkg in ['pyautogui', 'pyperclip']:\n    try:\n        __import__(pkg)\n        results.append(f'{pkg}: INSTALLED')\n    except ImportError:\n        results.append(f'{pkg}: NOT FOUND')\nprint('\\n'.join(results))",
-  "description": "فحص سريع بـ PYTHON engine: هل pyautogui و pyperclip مثبتان؟",
-  "timeout": 30
-}
+waiting
