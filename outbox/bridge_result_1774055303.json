@@ -1,0 +1,13 @@
+{
+  "task_id": "gmaps_110",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "حفظ وتشغيل سكريبت Python CDP مباشر بدون Playwright",
+  "command_preview": "$script = @'\nimport json, urllib.request, asyncio, struct, hashlib, base64, os, socket, ssl\n\ndef cdp_get_pages():\n    r = urllib.request.urlopen(\"http://localhost:9222/json\", timeout=5)\n    return json.loads(r.read())\n\ndef ws_send_recv(ws_url, msg):\n    from urllib.parse import urlparse\n    u = urlparse(ws_url)\n    host = u.hostname\n    port = u.port or 80\n    s = socket.create_connection((host, port), timeout=15)\n    # WebSocket handshake\n    key = base64.b64encode(os.urandom(16)).decode()\n    req = f\"GET {u.path} HTTP/1.1\\r\\nHost: {host}:{port}\\r\\nUpgrade: websocket\\r\\nConnection: Upgrade\\r\\nSec-WebSocket-Key: {key}\\r\\nSec-WebSocket-Version: 13\\r\\n\\r\\n\"\n    s.sendall(req.encode())\n    resp = b\"\"\n    while b\"\\r\\n\\r\\n\" not in resp:\n        resp += s.recv(4096)\n    # Send frame\n    data = m",
+  "output": "Script saved to C:\\temp\\cdp_inspect.py\nPages: 8\nMaps page: https://www.google.com/maps/contrib/0/photos/@35.6909056,-0.5996544,12z/data=!4m3!8m2!3m1!1e1?entry=\nResult: {\"id\":1,\"result\":{\"result\":{\"type\":\"string\",\"value\":\"{\\\"title\\\":\\\"\\u062e\\u0631\\u0627\\u0626\\u0637 \\u202aGoogle\\u202c\\u200f\\u200f\\\",\\\"url\\\":\\\"https://www.google.com/maps/contrib/0/photos/@35.6909056,-0.5996544,12z/data=!4m3!8m2!3m1!1e1?entry=ttu&g_ep=EgoyMDI2MDMxOC4xIKXMDSoASAFQAw%3D%3D\\\",\\\"inputs\\\":1,\\\"forms\\\":1}\"}}}",
+  "timestamp": "2026-03-21T01:08:23.370598+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
