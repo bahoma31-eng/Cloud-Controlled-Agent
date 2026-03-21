@@ -1,0 +1,13 @@
+{
+  "task_id": "MUSIC-001",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "البحث عن ملفات موسيقية في مجلدات Music و Downloads و Desktop",
+  "command_preview": "Get-ChildItem -Path \"$env:USERPROFILE\\Music\",\"$env:USERPROFILE\\Downloads\",\"$env:USERPROFILE\\Desktop\" -Include *.mp3,*.wav,*.wma,*.flac,*.m4a,*.aac,*.ogg -Recurse -ErrorAction SilentlyContinue | Select-Object -First 10 FullName,Length | Format-Table -AutoSize",
+  "output": "FullName                                                                                          \n--------                                                                                          \nC:\\Users\\Revexn\\Desktop\\antigravity\\multi-agent-coordinator\\venv\\Lib\\site-packages\\scipy\\io\\tes...\nC:\\Users\\Revexn\\Desktop\\antigravity\\multi-agent-coordinator\\venv\\Lib\\site-packages\\scipy\\io\\tes...\nC:\\Users\\Revexn\\Desktop\\antigravity\\multi-agent-coordinator\\venv\\Lib\\site-packages\\scipy\\io\\tes...\nC:\\Users\\Revexn\\Desktop\\antigravity\\multi-agent-coordinator\\venv\\Lib\\site-packages\\scipy\\io\\tes...\nC:\\Users\\Revexn\\Desktop\\antigravity\\multi-agent-coordinator\\venv\\Lib\\site-packages\\scipy\\io\\tes...\nC:\\Users\\Revexn\\Desktop\\antigravity\\multi-agent-coordinator\\venv\\Lib\\site-packages\\scipy\\io\\tes...\nC:\\Users\\Revexn\\Desktop\\antigravity\\multi-agent-coordinator\\venv\\Lib\\site-packages\\scipy\\io\\tes...\nC:\\Users\\Revexn\\Desktop\\antigravity\\multi-agent-coordinator\\venv\\Lib\\site-packages\\scipy\\io\\tes...\nC:\\Users\\Revexn\\Desktop\\antigravity\\multi-agent-coordinator\\venv\\Lib\\site-packages\\scipy\\io\\tes...\nC:\\Users\\Revexn\\Desktop\\antigravity\\multi-agent-coordinator\\venv\\Lib\\site-packages\\scipy\\io\\tes...",
+  "timestamp": "2026-03-21T06:40:38.394195+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
