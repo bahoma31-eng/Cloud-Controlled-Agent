@@ -1,0 +1,13 @@
+{
+  "task_id": "gmaps_003",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "PYTHON",
+  "description": "فتح Chrome العادي مع ملف تعريف المستخدم على صفحة إضافة مكان Google Maps",
+  "command_preview": "import subprocess, time, os\n\nchrome_path = r'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'\nuser_data = r'C:\\Users\\Revexn\\AppData\\Local\\Google\\Chrome\\User Data'\nurl = 'https://www.google.com/maps/contrib/0/add-a-place'\n\nif not os.path.exists(chrome_path):\n    chrome_path = r'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe'\n\ntry:\n    proc = subprocess.Popen([chrome_path, f'--user-data-dir={user_data}', '--profile-directory=Default', url])\n    print(f'Chrome opened with PID: {proc.pid}')\n    print(f'URL: {url}')\n    print('Chrome launched successfully with user profile')\nexcept Exception as e:\n    print(f'ERROR: {e}')",
+  "output": "Chrome opened with PID: 11732\nURL: https://www.google.com/maps/contrib/0/add-a-place\nChrome launched successfully with user profile",
+  "timestamp": "2026-03-21T00:15:39.183481+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
