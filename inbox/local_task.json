@@ -1,7 +1,1 @@
-{
-  "task_id": "gmaps_102",
-  "engine": "POWERSHELL",
-  "command": "Write-Host '=== Check Chrome Debug Port ==='; $debugPort = Get-NetTCPConnection -LocalPort 9222 -ErrorAction SilentlyContinue; if ($debugPort) { Write-Host 'CDP port 9222 is OPEN'; Invoke-RestMethod -Uri 'http://localhost:9222/json' -ErrorAction SilentlyContinue | ConvertTo-Json -Depth 2 | Select-Object -First 50 } else { Write-Host 'CDP port 9222 NOT open. Checking other debug ports...'; $ports = @(9222,9223,9224,9225); foreach($p in $ports) { $c = Get-NetTCPConnection -LocalPort $p -ErrorAction SilentlyContinue; if($c) { Write-Host \"Port $p is open\" } }; Write-Host '=== Chrome command line check ==='; Get-CimInstance Win32_Process -Filter \"Name='chrome.exe'\" | Select-Object -First 1 CommandLine | Format-List }",
-  "description": "فحص إمكانية الاتصال بـ Chrome عبر CDP",
-  "timeout": 60
-}
+waiting
