@@ -1,7 +1,1 @@
-{
-  "task_id": "gmaps_005",
-  "engine": "POWERSHELL",
-  "command": "Start-Process 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' -ArgumentList '--user-data-dir=\"C:\\Users\\Revexn\\AppData\\Local\\Google\\Chrome\\User Data\"', '--profile-directory=\"Default\"', 'https://business.google.com/create' ; Write-Output 'Chrome opened on Google Business Profile create page'",
-  "description": "فتح Chrome العادي على صفحة إنشاء Google Business Profile",
-  "timeout": 30
-}
+waiting
