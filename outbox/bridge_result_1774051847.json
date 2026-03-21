@@ -1,0 +1,13 @@
+{
+  "task_id": "gmaps_002c",
+  "status": "FAILED",
+  "return_code": 1,
+  "engine": "CMD",
+  "description": "فحص سريع: هل pyautogui و pyperclip مثبتان بالفعل؟",
+  "command_preview": "python -c \"try:\n import pyautogui; print('pyautogui OK v' + pyautogui.__version__)\nexcept: print('pyautogui NOT FOUND')\ntry:\n import pyperclip; print('pyperclip OK')\nexcept: print('pyperclip NOT FOUND')\"",
+  "output": "[STDERR]\nFile \"<string>\", line 1\n    \"try:\n    ^\nSyntaxError: unterminated string literal (detected at line 1)",
+  "timestamp": "2026-03-21T00:10:47.488036+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
