@@ -1,0 +1,13 @@
+{
+  "task_id": "gbp_001",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "التحقق من حالة Chrome - هل يعمل حالياً وما هي النوافذ المفتوحة",
+  "command_preview": "Get-Process chrome -ErrorAction SilentlyContinue | Select-Object Id, MainWindowTitle, StartTime | Format-Table -AutoSize; if (-not (Get-Process chrome -ErrorAction SilentlyContinue)) { Write-Output 'Chrome is NOT running' } else { Write-Output 'Chrome IS running' }",
+  "output": "Id MainWindowTitle                    StartTime          \n  -- ---------------                    ---------          \n3032                                    21/03/2026 07:23:33\n7772 ?????? ?Google??? - Google Chrome? 21/03/2026 07:23:31\n7848                                    21/03/2026 07:23:32\n8112                                    21/03/2026 07:23:32\n8124                                    21/03/2026 07:23:32\n8344                                    21/03/2026 07:23:36\n8416                                    21/03/2026 07:23:36\n8560                                    21/03/2026 07:23:38\n\n\nChrome IS running",
+  "timestamp": "2026-03-21T06:59:54.094954+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
