@@ -1,7 +1,1 @@
-{
-  "task_id": "gmaps_104",
-  "engine": "PYTHON",
-  "command": "import asyncio\nfrom playwright.async_api import async_playwright\n\nasync def main():\n    async with async_playwright() as p:\n        browser = await p.chromium.connect_over_cdp('http://localhost:9222')\n        context = browser.contexts[0]\n        page = await context.new_page()\n        print('Navigating to Add a Place...')\n        await page.goto('https://www.google.com/maps/contrib/0/add-a-place', wait_until='networkidle', timeout=30000)\n        await asyncio.sleep(3)\n        print(f'Page title: {await page.title()}')\n        print(f'Page URL: {page.url}')\n        # Take screenshot of current state\n        content = await page.content()\n        # Check for form fields\n        inputs = await page.query_selector_all('input')\n        print(f'Found {len(inputs)} input fields')\n        for i, inp in enumerate(inputs[:10]):\n            name = await inp.get_attribute('name') or ''\n            placeholder = await inp.get_attribute('placeholder') or ''\n            aria = await inp.get_attribute('aria-label') or ''\n            val = await inp.input_value() if await inp.is_visible() else ''\n            print(f'  Input {i}: name={name}, placeholder={placeholder}, aria={aria}, value={val[:50]}')\n        # Also check textareas and selects\n        buttons = await page.query_selector_all('button')\n        print(f'Found {len(buttons)} buttons')\n        for i, btn in enumerate(buttons[:8]):\n            text = await btn.inner_text()\n            print(f'  Button {i}: {text[:60]}')\n\nasyncio.run(main())",
-  "description": "الاتصال بـ Chrome عبر Playwright CDP وفحص صفحة التسجيل",
-  "timeout": 60
-}
+waiting
