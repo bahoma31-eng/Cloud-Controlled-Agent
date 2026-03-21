@@ -1,0 +1,13 @@
+{
+  "task_id": "gmaps_002b",
+  "status": "FAILED",
+  "return_code": 124,
+  "engine": "POWERSHELL",
+  "description": "التحقق من وجود pyautogui و pyperclip ثم تثبيتهما إذا لم تكن موجودة",
+  "command_preview": "python -c \"import pyautogui; import pyperclip; print('ALREADY INSTALLED: pyautogui=' + pyautogui.__version__); print('pyperclip OK')\" 2>&1; if ($LASTEXITCODE -ne 0) { pip install --no-cache-dir pyautogui pyperclip 2>&1 | Select-Object -Last 5 }",
+  "output": "Timeout expired after 90s",
+  "timestamp": "2026-03-21T00:09:14.111480+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
