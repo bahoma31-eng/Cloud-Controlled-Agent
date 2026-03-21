@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "gmaps_002",
+  "engine": "POWERSHELL",
+  "command": "pip install pyautogui pyperclip 2>&1 | Select-Object -Last 10",
+  "description": "تثبيت مكتبات pyautogui و pyperclip للتحكم بالماوس والكيبورد",
+  "timeout": 120
+}
