@@ -1,0 +1,13 @@
+{
+  "task_id": "gmaps_105",
+  "status": "FAILED",
+  "return_code": 124,
+  "engine": "PYTHON",
+  "description": "Playwright CDP - فحص حقول صفحة Add a Place مع إصلاح الترميز",
+  "command_preview": "import asyncio, sys, io\nsys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')\nsys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')\nfrom playwright.async_api import async_playwright\n\nasync def main():\n    async with async_playwright() as p:\n        browser = await p.chromium.connect_over_cdp('http://localhost:9222')\n        ctx = browser.contexts[0]\n        page = await ctx.new_page()\n        print('NAV to add-a-place...')\n        await page.goto('https://www.google.com/maps/contrib/0/add-a-place', wait_until='networkidle', timeout=30000)\n        await asyncio.sleep(3)\n        t = await page.title()\n        print(f'Title: {t.encode(\"ascii\",\"replace\").decode()}')\n        print(f'URL: {page.url}')\n        inputs = await page.query",
+  "output": "Timeout expired after 60s",
+  "timestamp": "2026-03-21T00:59:11.064459+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
