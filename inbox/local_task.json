@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "gmaps_100",
+  "engine": "POWERSHELL",
+  "command": "Write-Host '=== Chrome Status ==='; Get-Process chrome -ErrorAction SilentlyContinue | Select-Object -First 3 Id, MainWindowTitle | Format-Table -AutoSize; Write-Host '=== pyautogui check ==='; python -c \"import pyautogui; print('pyautogui OK: ' + pyautogui.__version__)\" 2>&1; Write-Host '=== pip list relevant ==='; pip list 2>$null | Select-String 'pyautogui|pyperclip|selenium|playwright'",
+  "description": "فحص حالة Chrome وتوفر pyautogui/selenium",
+  "timeout": 60
+}
