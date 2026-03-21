@@ -1,0 +1,13 @@
+{
+  "task_id": "gmaps_103",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "إعادة تشغيل Chrome مع CDP مفعّل",
+  "command_preview": "Write-Host 'Closing Chrome...'; Stop-Process -Name chrome -Force -ErrorAction SilentlyContinue; Start-Sleep -Seconds 3; Write-Host 'Restarting Chrome with CDP...'; Start-Process 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' -ArgumentList '--remote-debugging-port=9222','--user-data-dir=C:\\Users\\Revexn\\AppData\\Local\\Google\\Chrome\\User Data','--profile-directory=Default','https://www.google.com/maps/contrib/0/add-a-place'; Start-Sleep -Seconds 5; Write-Host 'Checking CDP...'; try { $r = Invoke-RestMethod -Uri 'http://localhost:9222/json' -ErrorAction Stop; Write-Host 'CDP OK - Pages:'; $r | ForEach-Object { Write-Host \"  Title: $($_.title) | URL: $($_.url)\" } } catch { Write-Host \"CDP check failed: $_\" }",
+  "output": "Closing Chrome...\nRestarting Chrome with CDP...\nChecking CDP...\nCDP OK - Pages:\n  Title:  | URL: about:blank\n  Title:  | URL: \n  Title: ?Google Hangouts? | URL: chrome-extension://nkeimhogjdpnpccoofpliimaahmaaome/background.html\n  Title: ?????? ?????? ??? Chrome | URL: chrome://intro/\n  Title: Service Worker chrome-extension://fignfifoniblkonapihmkfakmlgkbkcf/service_worker.js | URL: chrome-extension://fignfifoniblkonapihmkfakmlgkbkcf/service_worker.js",
+  "timestamp": "2026-03-21T00:55:34.816092+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
