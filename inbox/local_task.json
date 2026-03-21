@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "bridge_health_check",
+  "engine": "POWERSHELL",
+  "command": "Write-Output 'Bridge is alive'; Get-Date -Format 'yyyy-MM-dd HH:mm:ss'; Get-Process chrome -ErrorAction SilentlyContinue | Select-Object -First 3 ProcessName, Id, MainWindowTitle",
+  "description": "فحص حالة الجسر + التحقق من Chrome",
+  "timeout": 60
+}
