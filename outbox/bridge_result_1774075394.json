@@ -1,0 +1,13 @@
+{
+  "task_id": "MUSIC-002",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "تشغيل ملف صوتي من أصوات Windows المدمجة لاختبار سماعة بلوتوث",
+  "command_preview": "Add-Type -AssemblyName PresentationCore; $player = New-Object System.Windows.Media.MediaPlayer; $files = Get-ChildItem 'C:\\Windows\\Media' -Filter *.wav -ErrorAction SilentlyContinue | Select-Object -First 5; Write-Output \"Found files:\"; $files | ForEach-Object { $_.FullName }; if ($files.Count -gt 0) { $file = $files[0].FullName; $player.Open([Uri]$file); Start-Sleep -Seconds 1; $player.Play(); Start-Sleep -Seconds 10; $player.Stop(); Write-Output \"Played: $file\" } else { Write-Output 'No WAV files found in Windows Media folder' }",
+  "output": "Found files:\nC:\\Windows\\Media\\Alarm01.wav\nC:\\Windows\\Media\\Alarm02.wav\nC:\\Windows\\Media\\Alarm03.wav\nC:\\Windows\\Media\\Alarm04.wav\nC:\\Windows\\Media\\Alarm05.wav\nPlayed: C:\\Windows\\Media\\Alarm01.wav",
+  "timestamp": "2026-03-21T06:43:14.557485+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
