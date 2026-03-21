@@ -1,0 +1,13 @@
+{
+  "task_id": "gmaps_109",
+  "status": "FAILED",
+  "return_code": 1,
+  "engine": "POWERSHELL",
+  "description": "PowerShell CDP WebSocket - فحص صفحة Maps مباشرة بدون Playwright",
+  "command_preview": "$pages = (Invoke-WebRequest -Uri 'http://localhost:9222/json' -TimeoutSec 5 -UseBasicParsing).Content | ConvertFrom-Json; $target = $null; foreach($p in $pages){ if($p.url -match 'maps.*contrib'){ $target = $p; break } }; if(-not $target){ Write-Output 'No maps page found. Navigating first page to add-a-place...'; $target = $pages[0]; $ws = New-Object System.Net.WebSockets.ClientWebSocket; $uri = [Uri]$target.webSocketDebuggerUrl; $ws.ConnectAsync($uri, [Threading.CancellationToken]::None).Wait(); $cmd = '{\"id\":1,\"method\":\"Page.navigate\",\"params\":{\"url\":\"https://business.google.com/create\"}}'; $bytes = [Text.Encoding]::UTF8.GetBytes($cmd); $seg = New-Object ArraySegment[byte] -ArgumentList (,$bytes); $ws.SendAsync($seg, 'Text', $true, [Threading.CancellationToken]::None).Wait(); Start-Slee",
+  "output": "[STDERR]\nAu caractŠre Ligne:1 : 1414\n+ ... ed'; $cmd = '{\"id\":1,\"method\":\"Runtime.evaluate\",\"params\":{\"expressio ...\n+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nL'expression d'affectation n'est pas valide. L'entr‚e d'une op‚ration d'affectation doit ˆtre un \nobjet capable d'accepter les affectations, comme une variable ou une propri‚t‚.\n    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException\n    + FullyQualifiedErrorId : InvalidLeftHandSide",
+  "timestamp": "2026-03-21T01:06:37.414532+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
