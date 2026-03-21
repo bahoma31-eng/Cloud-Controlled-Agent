@@ -1,0 +1,13 @@
+{
+  "task_id": "gmaps_002d",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "PYTHON",
+  "description": "فحص سريع بـ PYTHON engine: هل pyautogui و pyperclip مثبتان؟",
+  "command_preview": "import subprocess, sys\nresults = []\nfor pkg in ['pyautogui', 'pyperclip']:\n    try:\n        __import__(pkg)\n        results.append(f'{pkg}: INSTALLED')\n    except ImportError:\n        results.append(f'{pkg}: NOT FOUND')\nprint('\\n'.join(results))",
+  "output": "pyautogui: NOT FOUND\npyperclip: NOT FOUND",
+  "timestamp": "2026-03-21T00:12:48.104176+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
