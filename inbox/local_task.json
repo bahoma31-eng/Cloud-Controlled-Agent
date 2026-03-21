@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "gmaps_001",
+  "engine": "POWERSHELL",
+  "command": "taskkill /f /im chrome.exe 2>$null; Start-Sleep -Seconds 2; Write-Output 'Chrome closed successfully'",
+  "description": "إغلاق Chrome قبل إعادة فتحه بملف التعريف",
+  "timeout": 30
+}
