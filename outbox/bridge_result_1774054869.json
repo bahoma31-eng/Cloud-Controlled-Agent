@@ -1,0 +1,13 @@
+{
+  "task_id": "gmaps_106",
+  "status": "FAILED",
+  "return_code": 124,
+  "engine": "PYTHON",
+  "description": "Playwright CDP - استخدام الصفحة الموجودة فعلا بدل فتح جديدة",
+  "command_preview": "import asyncio, sys, io\nsys.stdout=io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8',errors='replace')\nsys.stderr=io.TextIOWrapper(sys.stderr.buffer,encoding='utf-8',errors='replace')\nfrom playwright.async_api import async_playwright\nasync def main():\n    async with async_playwright() as p:\n        browser = await p.chromium.connect_over_cdp('http://localhost:9222')\n        ctx = browser.contexts[0]\n        pages = ctx.pages\n        print(f'Existing pages: {len(pages)}')\n        target = None\n        for i,pg in enumerate(pages):\n            u = pg.url\n            print(f'  page[{i}]: {u[:80]}')\n            if 'maps' in u or 'add-a-place' in u or 'business.google' in u or 'contrib' in u:\n                target = pg\n        if not target and pages:\n            target = pages[0]\n          ",
+  "output": "Timeout expired after 45s",
+  "timestamp": "2026-03-21T01:01:09.414613+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
