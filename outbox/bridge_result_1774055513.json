@@ -1,0 +1,13 @@
+{
+  "task_id": "gmaps_112",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "CDP - الانتقال لصفحة add-a-place عبر Maps وفحص النموذج",
+  "command_preview": "$script = @'\nimport json, urllib.request, struct, base64, os, socket, time\n\ndef cdp_get_pages():\n    r = urllib.request.urlopen(\"http://localhost:9222/json\", timeout=5)\n    return json.loads(r.read())\n\ndef ws_cmd(ws_url, msg, wait=3):\n    from urllib.parse import urlparse\n    u = urlparse(ws_url)\n    host = u.hostname\n    port = u.port or 80\n    s = socket.create_connection((host, port), timeout=15)\n    key = base64.b64encode(os.urandom(16)).decode()\n    req = f\"GET {u.path} HTTP/1.1\\r\\nHost: {host}:{port}\\r\\nUpgrade: websocket\\r\\nConnection: Upgrade\\r\\nSec-WebSocket-Key: {key}\\r\\nSec-WebSocket-Version: 13\\r\\n\\r\\n\"\n    s.sendall(req.encode())\n    resp = b\"\"\n    while b\"\\r\\n\\r\\n\" not in resp:\n        resp += s.recv(4096)\n    data = msg.encode(\"utf-8\")\n    frame = bytearray([0x81])\n    l = l",
+  "output": "Navigating to add-a-place...\nNav done. Inspecting...\nResult: {\"id\":2,\"result\":{\"result\":{\"type\":\"string\",\"value\":\"{\\\"t\\\":\\\"\\u062e\\u0631\\u0627\\u0626\\u0637 \\u202aGoogle\\u202c\\u200f\\u200f\\\",\\\"u\\\":\\\"https://www.google.com/maps/contrib/0/photos/@35.6909056,-0.5996544,12z/data=!4m3!8m2!3m1!1e1?entry=ttu&g_ep=EgoyMDI2MDMxOC4xIKXMDSoASAFQAw%3D%3D\\\",\\\"inp\\\":[{\\\"n\\\":\\\"q\\\",\\\"a\\\":null,\\\"tp\\\":\\\"text\\\",\\\"ph\\\":\\\"\\\",\\\"v\\\":true}],\\\"btn\\\":[\\\"\\ue5de\\\",\\\"\\ue5de\\\",\\\"\\ue5de\\\",\\\"\\ue8b6\\\",\\\"\\ue5cd\\\",\\\"\\ue5de\\\",\\\"\\ue5de\\\",\\\"\\ue5d2\\\",\\\"\\ue866\\\\n\\u062a\\u0645 \\u0627\\u0644\\u062d\\u0641\\u0638\\\",\\\"\\ue889\\\\n\\u0627\\u0644\\u0623\\u062d\\u062f\\u062b\\\",\\\"\\ue32c\\\\n\\u062a\\u062b\\u0628\\u064a\\u062a \\u0627\\u0644\\u062a\\u0637\\u0628\\u064a\\u0642\\\",\\\"\\ue5cd\\\",\\\"\\u0645\\u0631\\u0627\\u062c\\u0639\\u0627\\u062a\\\",\\\"\\u0627\\u0644\\u0635\\u0648\\u0631\\\",\\\"\\ue5de\\\"]}\"}}}",
+  "timestamp": "2026-03-21T01:11:53.495250+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
