@@ -1,0 +1,13 @@
+{
+  "task_id": "gmaps_102",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "فحص إمكانية الاتصال بـ Chrome عبر CDP",
+  "command_preview": "Write-Host '=== Check Chrome Debug Port ==='; $debugPort = Get-NetTCPConnection -LocalPort 9222 -ErrorAction SilentlyContinue; if ($debugPort) { Write-Host 'CDP port 9222 is OPEN'; Invoke-RestMethod -Uri 'http://localhost:9222/json' -ErrorAction SilentlyContinue | ConvertTo-Json -Depth 2 | Select-Object -First 50 } else { Write-Host 'CDP port 9222 NOT open. Checking other debug ports...'; $ports = @(9222,9223,9224,9225); foreach($p in $ports) { $c = Get-NetTCPConnection -LocalPort $p -ErrorAction SilentlyContinue; if($c) { Write-Host \"Port $p is open\" } }; Write-Host '=== Chrome command line check ==='; Get-CimInstance Win32_Process -Filter \"Name='chrome.exe'\" | Select-Object -First 1 CommandLine | Format-List }",
+  "output": "=== Check Chrome Debug Port ===\nCDP port 9222 NOT open. Checking other debug ports...\n=== Chrome command line check ===\n\n\nCommandLine : \"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\" \n              \"--user-data-dir=C:\\Users\\Revexn\\AppData\\Local\\Google\\Chrome\\User Data\" \n              --profile-directory=Default https://www.google.com/maps/contrib/0/add-a-place",
+  "timestamp": "2026-03-21T00:45:28.577463+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
