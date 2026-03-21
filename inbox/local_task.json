@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "MUSIC-001",
+  "engine": "POWERSHELL",
+  "command": "Get-ChildItem -Path \"$env:USERPROFILE\\Music\",\"$env:USERPROFILE\\Downloads\",\"$env:USERPROFILE\\Desktop\" -Include *.mp3,*.wav,*.wma,*.flac,*.m4a,*.aac,*.ogg -Recurse -ErrorAction SilentlyContinue | Select-Object -First 10 FullName,Length | Format-Table -AutoSize",
+  "description": "البحث عن ملفات موسيقية في مجلدات Music و Downloads و Desktop",
+  "timeout": 60
+}
