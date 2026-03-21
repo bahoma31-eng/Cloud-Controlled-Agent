@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "gbp_001",
+  "engine": "POWERSHELL",
+  "command": "Get-Process chrome -ErrorAction SilentlyContinue | Select-Object Id, MainWindowTitle, StartTime | Format-Table -AutoSize; if (-not (Get-Process chrome -ErrorAction SilentlyContinue)) { Write-Output 'Chrome is NOT running' } else { Write-Output 'Chrome IS running' }",
+  "description": "التحقق من حالة Chrome - هل يعمل حالياً وما هي النوافذ المفتوحة",
+  "timeout": 30
+}
