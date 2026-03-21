@@ -1,1 +1,7 @@
-waiting
+{
+  "task_id": "gmaps_103",
+  "engine": "POWERSHELL",
+  "command": "Write-Host 'Closing Chrome...'; Stop-Process -Name chrome -Force -ErrorAction SilentlyContinue; Start-Sleep -Seconds 3; Write-Host 'Restarting Chrome with CDP...'; Start-Process 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' -ArgumentList '--remote-debugging-port=9222','--user-data-dir=C:\\Users\\Revexn\\AppData\\Local\\Google\\Chrome\\User Data','--profile-directory=Default','https://www.google.com/maps/contrib/0/add-a-place'; Start-Sleep -Seconds 5; Write-Host 'Checking CDP...'; try { $r = Invoke-RestMethod -Uri 'http://localhost:9222/json' -ErrorAction Stop; Write-Host 'CDP OK - Pages:'; $r | ForEach-Object { Write-Host \"  Title: $($_.title) | URL: $($_.url)\" } } catch { Write-Host \"CDP check failed: $_\" }",
+  "description": "إعادة تشغيل Chrome مع CDP مفعّل",
+  "timeout": 30
+}
