@@ -1,7 +1,1 @@
-{
-  "task_id": "gmaps_002b",
-  "engine": "POWERSHELL",
-  "command": "python -c \"import pyautogui; import pyperclip; print('ALREADY INSTALLED: pyautogui=' + pyautogui.__version__); print('pyperclip OK')\" 2>&1; if ($LASTEXITCODE -ne 0) { pip install --no-cache-dir pyautogui pyperclip 2>&1 | Select-Object -Last 5 }",
-  "description": "التحقق من وجود pyautogui و pyperclip ثم تثبيتهما إذا لم تكن موجودة",
-  "timeout": 90
-}
+waiting
