@@ -1,0 +1,13 @@
+{
+  "task_id": "gmaps_005",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "فتح Chrome العادي على صفحة إنشاء Google Business Profile",
+  "command_preview": "Start-Process 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' -ArgumentList '--user-data-dir=\"C:\\Users\\Revexn\\AppData\\Local\\Google\\Chrome\\User Data\"', '--profile-directory=\"Default\"', 'https://business.google.com/create' ; Write-Output 'Chrome opened on Google Business Profile create page'",
+  "output": "Chrome opened on Google Business Profile create page",
+  "timestamp": "2026-03-21T00:22:16.139380+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
