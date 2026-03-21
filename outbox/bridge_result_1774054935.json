@@ -1,0 +1,13 @@
+{
+  "task_id": "gmaps_107",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "فحص CDP عبر PowerShell HTTP مباشرة",
+  "command_preview": "try { $r = Invoke-WebRequest -Uri 'http://localhost:9222/json' -TimeoutSec 5 -UseBasicParsing; $pages = $r.Content | ConvertFrom-Json; Write-Output \"CDP OK - Pages: $($pages.Count)\"; foreach($p in $pages){ Write-Output \"  title=$($p.title) url=$($p.url.Substring(0,[Math]::Min(80,$p.url.Length)))\" } } catch { Write-Output \"CDP FAILED: $_\" }",
+  "output": "CDP OK - Pages: 8\n  title= url=\n  title=chrome://search-engine-choice url=chrome://search-engine-choice/\n  title=??????? ??????? ???????? ?? ?????? ??? ???? ?????? ???? Google ??????? ?? ???? ??? ??? ????? ????? ?????? url=https://accounts.google.com/v3/signin/challenge/dp?TL=AHU8sQsN5QlpaDfmVojvVzcX59\n  title=https://accounts.youtube.com/accounts/CheckConnection?pmpo=https%3A%2F%2Faccounts.google.com&amp;v=1829831030&amp;timestamp=1774054615504 url=https://accounts.youtube.com/accounts/CheckConnection?pmpo=https%3A%2F%2Faccount\n  title=????? ?Google??? url=https://www.google.com/maps/contrib/0/photos/@35.6909056,-0.5996544,12z/data=!4m\n  title=?????? ?????? ??? Chrome url=chrome://intro/\n  title=mc0 url=https://www.google.com/maps/_/js/k=maps.w.ar.mwgLJxYQn-s.2021.O/am=AAAE/rt=j/d=1\n  title=mcl0 url=https://www.google.com/maps/_/js/k=maps.w.ar.mwgLJxYQn-s.2021.O/am=AAAE/rt=j/d=1",
+  "timestamp": "2026-03-21T01:02:15.828865+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
