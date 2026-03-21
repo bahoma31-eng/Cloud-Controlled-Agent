@@ -1,0 +1,13 @@
+{
+  "task_id": "gmaps_113",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "CDP - فحص صفحة تسجيل الدخول + محاولة فتح تبويب جديد",
+  "command_preview": "$script = @'\nimport json, urllib.request, struct, base64, os, socket, time\n\ndef cdp_get_pages():\n    r = urllib.request.urlopen(\"http://localhost:9222/json\", timeout=5)\n    return json.loads(r.read())\n\ndef ws_cmd(ws_url, msg, wait=3):\n    from urllib.parse import urlparse\n    u = urlparse(ws_url)\n    host = u.hostname\n    port = u.port or 80\n    s = socket.create_connection((host, port), timeout=15)\n    key = base64.b64encode(os.urandom(16)).decode()\n    req = f\"GET {u.path} HTTP/1.1\\r\\nHost: {host}:{port}\\r\\nUpgrade: websocket\\r\\nConnection: Upgrade\\r\\nSec-WebSocket-Key: {key}\\r\\nSec-WebSocket-Version: 13\\r\\n\\r\\n\"\n    s.sendall(req.encode())\n    resp = b\"\"\n    while b\"\\r\\n\\r\\n\" not in resp:\n        resp += s.recv(4096)\n    data = msg.encode(\"utf-8\")\n    frame = bytearray([0x81])\n    l = l",
+  "output": "=== All pages ===\n[0] chrome://search-engine-choice/\n[1] https://www.google.com/maps/contrib/0/photos/@35.6909056,-0.5996544,12z/data=!4m3!8m2!3m1!1e1?entry=...\n[2] https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fbusiness.google.com%2Fcreate...\n\n=== Sign-in page ===\nSign-in info: \n\nBrowser WS: ws://localhost:9222/devtools/browser/e28300ba-e558-4f53-ac34-b35fc05b0f37",
+  "timestamp": "2026-03-21T06:29:48.526275+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
