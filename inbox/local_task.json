@@ -1,7 +1,1 @@
-{
-  "task_id": "gmaps_108",
-  "engine": "PYTHON",
-  "command": "import sys,io\nsys.stdout=io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8',errors='replace')\nsys.stderr=io.TextIOWrapper(sys.stderr.buffer,encoding='utf-8',errors='replace')\nfrom playwright.sync_api import sync_playwright\nwith sync_playwright() as p:\n    browser=p.chromium.connect_over_cdp('http://localhost:9222')\n    ctx=browser.contexts[0]\n    print(f'Pages: {len(ctx.pages)}')\n    for i,pg in enumerate(ctx.pages):\n        u=pg.url\n        print(f'[{i}] {u[:100]}')\n    # Find maps or sign-in page\n    for pg in ctx.pages:\n        if 'maps' in pg.url and 'contrib' in pg.url:\n            print(f'\\nMAPS PAGE: {pg.url}')\n            t=pg.title()\n            print(f'Title: {t}')\n            # Check for form inputs\n            inputs=pg.query_selector_all('input[type=text], input:not([type])')\n            print(f'Text inputs: {len(inputs)}')\n            for j,inp in enumerate(inputs[:10]):\n                ar=inp.get_attribute('aria-label') or ''\n                n=inp.get_attribute('name') or ''\n                print(f'  input[{j}] name={n} aria={ar}')\n            break\n    browser.close()",
-  "description": "Playwright SYNC CDP - فحص صفحة Maps",
-  "timeout": 60
-}
+waiting
