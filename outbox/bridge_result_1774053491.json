@@ -1,0 +1,13 @@
+{
+  "task_id": "gmaps_100",
+  "status": "SUCCESS",
+  "return_code": 0,
+  "engine": "POWERSHELL",
+  "description": "فحص حالة Chrome وتوفر pyautogui/selenium",
+  "command_preview": "Write-Host '=== Chrome Status ==='; Get-Process chrome -ErrorAction SilentlyContinue | Select-Object -First 3 Id, MainWindowTitle | Format-Table -AutoSize; Write-Host '=== pyautogui check ==='; python -c \"import pyautogui; print('pyautogui OK: ' + pyautogui.__version__)\" 2>&1; Write-Host '=== pip list relevant ==='; pip list 2>$null | Select-String 'pyautogui|pyperclip|selenium|playwright'",
+  "output": "=== Chrome Status ===\n\n  Id MainWindowTitle\n  -- ---------------\n2456                \n3076                \n4632                \n\n\n=== pyautogui check ===\n=== pip list relevant ===\n\nplaywright                   1.58.0\n\n[STDERR]\npython : Traceback (most recent call last):\nAu caractŠre Ligne:1 : 195\n+ ... check ==='; python -c \"import pyautogui; print('pyautogui OK: ' + pya ...\n+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], Remot \n   eException\n    + FullyQualifiedErrorId : NativeCommandError\n \n  File \"<string>\", line 1, in <module>\nModuleNotFoundError: No module named 'pyautogui'",
+  "timestamp": "2026-03-21T00:38:11.816482+00:00",
+  "executed_on": "local_machine",
+  "repo": "bahoma31-eng/Cloud-Controlled-Agent",
+  "bridge_version": "2.2"
+}
