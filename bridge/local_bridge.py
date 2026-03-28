@@ -2,9 +2,9 @@
 """
 bridge/local_bridge.py
 ~~~~~~~~~~~~~~~~~~~~~~
-Local Bridge Script V2.2 - Auto-Execute Mode + CodeAnalyzer Integration
+Local Bridge Script V2.3 - Termux/Android Edition
 
-يربط جهازك المحلي بالوكيل السحابي عبر GitHub.
+يربط هاتفك (Termux/Android) بالوكيل السحابي عبر GitHub.
 الموافقة تتم من Notion، والسكريبت ينفذ تلقائيا بدون تدخل محلي.
 
 التدفق:
@@ -15,15 +15,17 @@ Local Bridge Script V2.2 - Auto-Execute Mode + CodeAnalyzer Integration
 5. النتيجة ترفع الى outbox/
 6. الوكيل يقرأ النتيجة
 
-المحركات المدعومة:
+المحركات المدعومة (Termux):
 - PYTHON: تنفيذ كود Python
-- POWERSHELL: تنفيذ أوامر PowerShell
-- BASH: تنفيذ أوامر Bash
-- CMD: تنفيذ أوامر CMD
-- ANALYZER: استدعاء CodeAnalyzer لتحليل مجلد/مستودع (جديد V2.2)
+- BASH: تنفيذ أوامر Bash/Shell
+- ANALYZER: استدعاء CodeAnalyzer لتحليل مجلد/مستودع
 
-الاستخدام:
+ملاحظة: محركا POWERSHELL و CMD غير مدعومين في Termux وتم حذفهما.
+
+الاستخدام على Termux:
 python bridge/local_bridge.py
+
+راجع TERMUX_SETUP.md لتعليمات التثبيت الكاملة.
 """
 
 import os
@@ -58,8 +60,13 @@ POLL_INTERVAL = int(os.getenv("BRIDGE_POLL_SECONDS", "10"))
 COMMAND_TIMEOUT = int(os.getenv("BRIDGE_TIMEOUT", "120"))
 BRANCH_NAME = os.getenv("BRIDGE_BRANCH", "main")
 
-# CodeAnalyzer configuration (V2.2)
-CODE_ANALYZER_PATH = os.getenv("CODE_ANALYZER_PATH", r"C:\Users\Revexn\CodeAnalyzer")
+# CodeAnalyzer configuration (V2.3 - Termux paths)
+# المسار الافتراضي لـ Termux: ~/CodeAnalyzer
+# يمكن تغييره عبر متغير البيئة CODE_ANALYZER_PATH في ملف .env
+CODE_ANALYZER_PATH = os.getenv(
+    "CODE_ANALYZER_PATH",
+    os.path.join(os.path.expanduser("~"), "CodeAnalyzer"),
+)
 
 GITHUB_API_BASE = "https://api.github.com"
 
@@ -192,59 +199,40 @@ def execute_command(engine, content, timeout):
 
     try:
         if engine_upper == "PYTHON":
-            py = _which_or_none("python") or _which_or_none("py")
+            py = _which_or_none("python") or _which_or_none("python3")
             if not py:
-                return 1, "Engine 'PYTHON' not found on this system (python/py missing)."
+                return 1, "Engine 'PYTHON' not found. Install it in Termux with: pkg install python"
             cmd = [py, "-c", content]
             rc, stdout, stderr = _run_process(cmd, timeout_value, cwd)
 
-        elif engine_upper == "POWERSHELL":
-            ps = (
-                _which_or_none("powershell")
-                or _which_or_none("pwsh")
-                or "powershell"
-            )
-            cmd = [ps, "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", content]
-            rc, stdout, stderr = _run_process(cmd, timeout_value, cwd)
-
         elif engine_upper == "BASH":
-            bash = _which_or_none("bash")
+            bash = _which_or_none("bash") or _which_or_none("sh")
             if not bash:
-                return 1, "Engine 'BASH' not found on this system."
+                return 1, "Engine 'BASH' not found. Install it in Termux with: pkg install bash"
+            # ملاحظة: عند استخدام 'sh' بديلاً عن 'bash'، يُدعم فقط
+            # صياغة POSIX الأساسية (بدون arrays أو process substitution).
+            # لتفادي ذلك ثبِّت bash عبر: pkg install bash
             cmd = [bash, "-c", content]
             rc, stdout, stderr = _run_process(cmd, timeout_value, cwd)
 
-        elif engine_upper == "CMD":
-            # مهم: بعض أوامر CMD المركبة (cd/start/redirection/&&)
-            # تتصرف أفضل بهذا الشكل الصريح:
-            # cmd.exe /d /s /c "<command>"
-            cmd_exe = _which_or_none("cmd") or "cmd.exe"
-            cmd = [cmd_exe, "/d", "/s", "/c", content]
-            rc, stdout, stderr = _run_process(cmd, timeout_value, cwd)
-
-            # تشخيص إضافي إذا فشل بدون أي مخرجات
-            if rc != 0 and not (stdout or "").strip() and not (stderr or "").strip():
-                stderr = (
-                    "Command failed with empty output. "
-                    "Likely CMD parsing/start behavior issue. "
-                    "Tip: test the same command manually in cmd.exe."
-                )
-
         elif engine_upper == "ANALYZER":
             # =============================================================
-            # CodeAnalyzer Engine (V2.2)
+            # CodeAnalyzer Engine (V2.3 - Termux)
             # عين الجسر التحليلية - يستدعي CodeAnalyzer لتحليل مجلد/مستودع
             #
             # الاستخدام:
             #   engine: "ANALYZER"
-            #   command: "C:\path\to\target\directory"
+            #   command: "/path/to/target/directory"
             #   (اختياري) description: وصف ما تريد تحليله
+            #
+            # المسار الافتراضي على Termux: ~/CodeAnalyzer
+            # يمكن تغييره عبر CODE_ANALYZER_PATH في ملف .env
             #
             # المخرجات: تقرير JSON بنتائج التحليل
             # =============================================================
-            py = _which_or_none("python") or _which_or_none("py")
+            py = _which_or_none("python") or _which_or_none("python3")
             if not py:
-                return 1, "Engine 'PYTHON' not found on this system (required for ANALYZER)."
+                return 1, "Engine 'PYTHON' not found. Install it in Termux with: pkg install python"
 
             if not os.path.isdir(CODE_ANALYZER_PATH):
                 return 1, f"CodeAnalyzer directory not found: {CODE_ANALYZER_PATH}"
@@ -301,7 +289,7 @@ def main():
         print("GITHUB_TOKEN is missing! Add it to .env file")
         sys.exit(1)
 
-    _header("Local Bridge Agent V2.2 - Auto Execute Mode + CodeAnalyzer")
+    _header("Local Bridge Agent V2.3 - Termux/Android Edition")
     print(f"  Repo      : {REPO_OWNER}/{REPO_NAME}")
     print(f"  Task file : {TASK_FILE}")
     print(f"  Polling   : every {POLL_INTERVAL}s")
@@ -311,7 +299,7 @@ def main():
     print()
     print("  >> Auto-execute enabled.")
     print("  >> Approval happens in Notion, not here.")
-    print("  >> Engines: PYTHON | POWERSHELL | BASH | CMD | ANALYZER")
+    print("  >> Engines: PYTHON | BASH | ANALYZER")
     print("  >> Press Ctrl+C to stop.")
     _footer()
 
@@ -377,7 +365,7 @@ def main():
                 "timestamp": _now(),
                 "executed_on": "local_machine",
                 "repo": f"{REPO_OWNER}/{REPO_NAME}",
-                "bridge_version": "2.2",
+                "bridge_version": "2.3-termux",
             }
 
             result_name = f"{RESULT_DIR}/bridge_result_{int(time.time())}.json"
