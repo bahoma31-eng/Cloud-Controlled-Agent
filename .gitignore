@@ -1,0 +1,10 @@
+# سجل حالة الملفات المعالجة — لا يُرفع للمستودع
+social_media/facebook/.processed_shas.json
+
+# ملفات البيئة
+.env
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
