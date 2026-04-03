@@ -2,11 +2,10 @@
 """
 gmail_watcher.py
 ~~~~~~~~~~~~~~~~
-يراقب Gmail كل فترة، وعند وصول بريد من مرسل معتمد
-يستخدم Groq لتحويل النص إلى مهمة JSON ويكتبها في GitHub.
+يراقب Gmail كل فترة، يبحث فقط عن آخر إيميل من bahoma31@gmail.com
+يحوّله إلى مهمة JSON عبر Groq ويكتبها في GitHub.
 """
 import os, sys, time, json, imaplib, email, base64, re
-import codecs
 from email.header import decode_header
 from datetime import datetime, timezone
 
@@ -30,8 +29,8 @@ BRANCH           = os.getenv("BRIDGE_BRANCH", "main")
 POLL             = int(os.getenv("GMAIL_POLL_SECONDS", "30"))
 GROQ_MODEL       = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 
-# المرسلون المعتمدون (فارغ = قبول الجميع)
-ALLOWED_SENDERS  = [s.strip().lower() for s in os.getenv("ALLOWED_SENDERS", "").split(",") if s.strip()]
+# المرسل الوحيد المعتمد
+TRUSTED_SENDER   = "bahoma31@gmail.com"
 
 TASK_FILE        = "inbox/local_task.json"
 API_BASE         = "https://api.github.com"
@@ -57,8 +56,7 @@ GROQ_PROMPT = """أنت مساعد يحول طلبات البريد الإلكت
 """
 
 def ts(): return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-def log(icon, msg): print(f"[{ts()}] {icon} {msg}")
-def now_iso(): return datetime.now(timezone.utc).isoformat()
+def log(icon, msg): print(f"[{ts()}] {icon} {msg}", flush=True)
 
 def gh_headers():
     return {
@@ -95,9 +93,7 @@ def groq_parse(subject, body):
     }
     payload = {
         "model": GROQ_MODEL,
-        "messages": [
-            {"role": "user", "content": GROQ_PROMPT + text}
-        ],
+        "messages": [{"role": "user", "content": GROQ_PROMPT + text}],
         "temperature": 0.1,
         "max_tokens": 500
     }
@@ -123,17 +119,14 @@ def decode_str(s):
     return result
 
 def safe_decode(payload, charset):
-    """Safely decode email payload handling unknown charsets."""
     if not payload:
         return ""
     charset = (charset or "utf-8").lower()
-    # Normalize unknown charsets
     if charset in ("unknown-8bit", "x-unknown", "unknown"):
         charset = "latin-1"
     try:
         return payload.decode(charset, errors="replace")
     except (LookupError, UnicodeDecodeError):
-        # Fallback chain
         for enc in ("utf-8", "latin-1", "cp1252"):
             try:
                 return payload.decode(enc, errors="replace")
@@ -148,56 +141,57 @@ def get_body(msg):
             if part.get_content_type() == "text/plain":
                 payload = part.get_payload(decode=True)
                 if payload:
-                    charset = part.get_content_charset()
-                    body += safe_decode(payload, charset)
+                    body += safe_decode(payload, part.get_content_charset())
     else:
         payload = msg.get_payload(decode=True)
         if payload:
-            charset = msg.get_content_charset()
-            body = safe_decode(payload, charset)
+            body = safe_decode(payload, msg.get_content_charset())
     return body.strip()
 
 def check_gmail():
+    """يبحث عن آخر إيميل من TRUSTED_SENDER فقط، يتجاهل الباقي."""
     mail = imaplib.IMAP4_SSL("imap.gmail.com")
     mail.login(GMAIL_ADDRESS, GMAIL_APP_PW)
     mail.select("inbox")
 
-    status, data = mail.search(None, "UNSEEN")
+    # ابحث فقط عن الإيميلات من المرسل الموثوق
+    status, data = mail.search(None, f'(UNSEEN FROM "{TRUSTED_SENDER}")')
+
     if status != "OK" or not data[0]:
+        log("💤", f"No new email from {TRUSTED_SENDER}")
         mail.logout()
-        return []
+        return None
 
-    tasks = []
     ids = data[0].split()
-    log("📬", f"Found {len(ids)} unread email(s)")
+    log("📬", f"Found {len(ids)} unread email(s) from {TRUSTED_SENDER}")
 
-    for eid in ids:
-        status, msg_data = mail.fetch(eid, "(RFC822)")
-        if status != "OK":
-            continue
+    # خذ فقط آخر إيميل (أحدث واحد)
+    latest_id = ids[-1]
 
-        raw = msg_data[0][1]
-        msg = email.message_from_bytes(raw)
-
-        sender = msg.get("From", "")
-        sender_email = re.search(r'[\w.+-]+@[\w-]+\.[\w.]+', sender)
-        sender_email = sender_email.group().lower() if sender_email else ""
-
-        if ALLOWED_SENDERS and sender_email not in ALLOWED_SENDERS:
-            log("🚫", f"Ignored email from: {sender_email}")
-            mail.store(eid, "+FLAGS", "\\Seen")
-            continue
-
-        subject = decode_str(msg.get("Subject", "No subject"))
-        body = get_body(msg)
-
-        log("📧", f"From: {sender_email} | Subject: {subject[:60]}")
-
+    # علّم جميع الإيميلات الأخرى كمقروءة (تجاهلها)
+    for eid in ids[:-1]:
         mail.store(eid, "+FLAGS", "\\Seen")
-        tasks.append({"sender": sender_email, "subject": subject, "body": body})
+        log("⏭", f"Skipped older email id={eid.decode()}")
 
+    # اقرأ آخر إيميل
+    status, msg_data = mail.fetch(latest_id, "(RFC822)")
+    if status != "OK":
+        mail.logout()
+        return None
+
+    raw = msg_data[0][1]
+    msg = email.message_from_bytes(raw)
+
+    subject = decode_str(msg.get("Subject", "No subject"))
+    body = get_body(msg)
+
+    log("📧", f"Processing: Subject: {subject[:80]}")
+
+    # علّمه كمقروء
+    mail.store(latest_id, "+FLAGS", "\\Seen")
     mail.logout()
-    return tasks
+
+    return {"sender": TRUSTED_SENDER, "subject": subject, "body": body}
 
 def main():
     missing = []
@@ -212,41 +206,40 @@ def main():
     print("=" * 55)
     print("Gmail Watcher - Groq Edition")
     print(f"Watching : {GMAIL_ADDRESS}")
+    print(f"Trusted  : {TRUSTED_SENDER}")
     print(f"Polling  : {POLL}s")
     print(f"Groq     : {GROQ_MODEL}")
     print(f"Repo     : {REPO_OWNER}/{REPO_NAME}")
-    if ALLOWED_SENDERS:
-        print(f"Allowed  : {', '.join(ALLOWED_SENDERS)}")
-    else:
-        print("Allowed  : ALL senders")
+    print("Mode     : Latest email only")
     print("Press Ctrl+C to stop")
     print("=" * 55)
 
     while True:
         try:
-            tasks = check_gmail()
-            for task_info in tasks:
+            task_info = check_gmail()
+
+            if task_info:
                 log("🤖", "Sending to Groq for parsing...")
                 try:
                     task = groq_parse(task_info["subject"], task_info["body"])
                     if not task:
                         log("!", "Groq returned empty result")
-                        continue
-
-                    task["task_id"] = f"email-{int(time.time())}"
-                    task["source"] = "gmail"
-                    task["from"] = task_info["sender"]
-                    task["original_subject"] = task_info["subject"]
-
-                    log("✅", f"Task parsed: {task.get('description','?')}")
-                    log("🔧", f"Engine: {task.get('engine')} | Command: {str(task.get('command',''))[:80]}")
-
-                    ok = gh_put(TASK_FILE, json.dumps(task, ensure_ascii=False, indent=2),
-                                f"Gmail Watcher: task from {task_info['sender']}")
-                    if ok:
-                        log("🚀", f"Task written to GitHub: {TASK_FILE}")
                     else:
-                        log("!!", "Failed to write task to GitHub")
+                        task["task_id"] = f"email-{int(time.time())}"
+                        task["source"] = "gmail"
+                        task["from"] = task_info["sender"]
+                        task["original_subject"] = task_info["subject"]
+
+                        log("✅", f"Task parsed: {task.get('description', '?')}")
+                        log("🔧", f"Engine: {task.get('engine')} | Command: {str(task.get('command', ''))[:80]}")
+
+                        ok = gh_put(TASK_FILE,
+                                    json.dumps(task, ensure_ascii=False, indent=2),
+                                    f"Gmail Watcher: task from {task_info['sender']}")
+                        if ok:
+                            log("🚀", f"Task written to GitHub: {TASK_FILE}")
+                        else:
+                            log("!!", "Failed to write task to GitHub")
 
                 except json.JSONDecodeError as e:
                     log("!", f"JSON parse error: {e}")
