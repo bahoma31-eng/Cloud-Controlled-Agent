@@ -3,10 +3,13 @@
 gmail_watcher.py
 ~~~~~~~~~~~~~~~~
 يراقب Gmail كل فترة، يبحث فقط عن آخر إيميل من bahoma31@gmail.com
-يحوّله إلى مهمة JSON عبر Groq ويكتبها في GitHub.
+يحوّله إلى مهمة JSON عبر Groq ويكتبها في GitHub،
+ثم ينفذ الأمر محلياً ويرسل تقرير HTML بالنتيجة.
 """
-import os, sys, time, json, imaplib, email, base64, re
+import os, sys, time, json, imaplib, email, base64, re, subprocess, smtplib
 from email.header import decode_header
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from datetime import datetime, timezone
 
 try:
@@ -148,13 +151,150 @@ def get_body(msg):
             body = safe_decode(payload, msg.get_content_charset())
     return body.strip()
 
+def execute_task(task):
+    """ينفذ الأمر محلياً ويعيد النتيجة."""
+    engine  = task.get("engine", "BASH").upper()
+    command = task.get("command", "")
+    timeout = int(task.get("timeout", 60))
+
+    log("⚙️", f"Executing [{engine}]: {command[:80]}")
+    start = time.time()
+    try:
+        if engine == "PYTHON":
+            result = subprocess.run(
+                ["python3", "-c", command],
+                capture_output=True, text=True, timeout=timeout
+            )
+        else:
+            result = subprocess.run(
+                command, shell=True,
+                capture_output=True, text=True, timeout=timeout
+            )
+        elapsed = round(time.time() - start, 2)
+        stdout  = result.stdout.strip()
+        stderr  = result.stderr.strip()
+        code    = result.returncode
+        status  = "✅ Success" if code == 0 else "❌ Failed"
+        log("📊", f"Exit code: {code} | Time: {elapsed}s")
+        return {"status": status, "stdout": stdout, "stderr": stderr,
+                "exit_code": code, "elapsed": elapsed}
+    except subprocess.TimeoutExpired:
+        return {"status": "⏰ Timeout", "stdout": "", "stderr": "Command timed out",
+                "exit_code": -1, "elapsed": timeout}
+    except Exception as e:
+        return {"status": "💥 Error", "stdout": "", "stderr": str(e),
+                "exit_code": -1, "elapsed": 0}
+
+def build_html_report(task, result):
+    """يبني تقرير HTML جميل."""
+    now         = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    description = task.get("description", "")
+    engine      = task.get("engine", "BASH")
+    command     = task.get("command", "")
+    status      = result["status"]
+    stdout      = result["stdout"] or "(لا يوجد مخرجات)"
+    stderr      = result["stderr"] or "(لا توجد أخطاء)"
+    elapsed     = result["elapsed"]
+    exit_code   = result["exit_code"]
+
+    status_color = "#22c55e" if result["exit_code"] == 0 else "#ef4444"
+    if "Timeout" in status:
+        status_color = "#f59e0b"
+
+    html = f"""<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<style>
+  body {{ font-family: 'Segoe UI', Tahoma, Arial, sans-serif; background:#f1f5f9; margin:0; padding:20px; color:#1e293b; }}
+  .card {{ background:#fff; border-radius:12px; padding:28px; max-width:680px; margin:auto;
+           box-shadow:0 4px 24px rgba(0,0,0,0.08); }}
+  .header {{ display:flex; align-items:center; gap:12px; margin-bottom:24px; border-bottom:2px solid #e2e8f0; padding-bottom:16px; }}
+  .header h1 {{ font-size:1.4rem; margin:0; color:#0f172a; }}
+  .badge {{ display:inline-block; padding:4px 14px; border-radius:999px; font-size:0.85rem;
+            font-weight:600; color:#fff; background:{status_color}; }}
+  .section {{ margin-bottom:18px; }}
+  .label {{ font-size:0.78rem; font-weight:700; color:#64748b; text-transform:uppercase;
+            letter-spacing:0.05em; margin-bottom:6px; }}
+  .value {{ background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;
+            padding:10px 14px; font-size:0.95rem; white-space:pre-wrap; word-break:break-all; }}
+  .output {{ background:#0f172a; color:#86efac; border-radius:8px; padding:14px 18px;
+             font-family:monospace; font-size:0.9rem; white-space:pre-wrap; word-break:break-all; }}
+  .error  {{ background:#fff1f2; color:#be123c; border:1px solid #fecdd3; border-radius:8px;
+             padding:14px 18px; font-family:monospace; font-size:0.9rem; white-space:pre-wrap; }}
+  .meta   {{ display:flex; gap:20px; flex-wrap:wrap; margin-top:20px; padding-top:16px;
+             border-top:1px solid #e2e8f0; font-size:0.82rem; color:#94a3b8; }}
+  .meta span b {{ color:#475569; }}
+  .footer {{ text-align:center; margin-top:24px; font-size:0.78rem; color:#94a3b8; }}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <span style="font-size:2rem;">🤖</span>
+    <div>
+      <h1>تقرير تنفيذ المهمة</h1>
+      <span class="badge">{status}</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="label">📋 وصف المهمة</div>
+    <div class="value">{description}</div>
+  </div>
+
+  <div class="section">
+    <div class="label">💻 الأمر المنفَّذ ({engine})</div>
+    <div class="output">{command}</div>
+  </div>
+
+  <div class="section">
+    <div class="label">📤 المخرجات</div>
+    <div class="output">{stdout}</div>
+  </div>
+
+  {"" if not result["stderr"] else f'<div class="section"><div class="label">⚠️ الأخطاء</div><div class="error">{stderr}</div></div>'}
+
+  <div class="meta">
+    <span>⏱️ الوقت: <b>{elapsed}s</b></span>
+    <span>🔢 كود الخروج: <b>{exit_code}</b></span>
+    <span>🕐 التاريخ: <b>{now}</b></span>
+  </div>
+
+  <div class="footer">
+    تم التنفيذ تلقائياً بواسطة Cloud-Controlled-Agent 🚀
+  </div>
+</div>
+</body>
+</html>"""
+    return html
+
+def send_report_email(to_addr, subject, html_body):
+    """يرسل التقرير HTML بالإيميل."""
+    log("📨", f"Sending HTML report to {to_addr}...")
+    try:
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = f"📊 تقرير: {subject}"
+        msg["From"]    = GMAIL_ADDRESS
+        msg["To"]      = to_addr
+        msg.attach(MIMEText(html_body, "html", "utf-8"))
+
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(GMAIL_ADDRESS, GMAIL_APP_PW)
+            server.sendmail(GMAIL_ADDRESS, to_addr, msg.as_string())
+
+        log("✉️", f"Report sent successfully to {to_addr}")
+        return True
+    except Exception as e:
+        log("!", f"Failed to send email: {e}")
+        return False
+
 def check_gmail():
     """يبحث عن آخر إيميل من TRUSTED_SENDER فقط، يتجاهل الباقي."""
     mail = imaplib.IMAP4_SSL("imap.gmail.com")
     mail.login(GMAIL_ADDRESS, GMAIL_APP_PW)
     mail.select("inbox")
 
-    # ابحث فقط عن الإيميلات من المرسل الموثوق
     status, data = mail.search(None, f'(UNSEEN FROM "{TRUSTED_SENDER}")')
 
     if status != "OK" or not data[0]:
@@ -165,15 +305,12 @@ def check_gmail():
     ids = data[0].split()
     log("📬", f"Found {len(ids)} unread email(s) from {TRUSTED_SENDER}")
 
-    # خذ فقط آخر إيميل (أحدث واحد)
     latest_id = ids[-1]
 
-    # علّم جميع الإيميلات الأخرى كمقروءة (تجاهلها)
     for eid in ids[:-1]:
         mail.store(eid, "+FLAGS", "\\Seen")
         log("⏭", f"Skipped older email id={eid.decode()}")
 
-    # اقرأ آخر إيميل
     status, msg_data = mail.fetch(latest_id, "(RFC822)")
     if status != "OK":
         mail.logout()
@@ -183,11 +320,10 @@ def check_gmail():
     msg = email.message_from_bytes(raw)
 
     subject = decode_str(msg.get("Subject", "No subject"))
-    body = get_body(msg)
+    body    = get_body(msg)
 
     log("📧", f"Processing: Subject: {subject[:80]}")
 
-    # علّمه كمقروء
     mail.store(latest_id, "+FLAGS", "\\Seen")
     mail.logout()
 
@@ -210,7 +346,7 @@ def main():
     print(f"Polling  : {POLL}s")
     print(f"Groq     : {GROQ_MODEL}")
     print(f"Repo     : {REPO_OWNER}/{REPO_NAME}")
-    print("Mode     : Latest email only")
+    print("Mode     : Latest email only + HTML report reply")
     print("Press Ctrl+C to stop")
     print("=" * 55)
 
@@ -225,14 +361,15 @@ def main():
                     if not task:
                         log("!", "Groq returned empty result")
                     else:
-                        task["task_id"] = f"email-{int(time.time())}"
-                        task["source"] = "gmail"
-                        task["from"] = task_info["sender"]
+                        task["task_id"]          = f"email-{int(time.time())}"
+                        task["source"]           = "gmail"
+                        task["from"]             = task_info["sender"]
                         task["original_subject"] = task_info["subject"]
 
                         log("✅", f"Task parsed: {task.get('description', '?')}")
                         log("🔧", f"Engine: {task.get('engine')} | Command: {str(task.get('command', ''))[:80]}")
 
+                        # ① كتابة المهمة في GitHub
                         ok = gh_put(TASK_FILE,
                                     json.dumps(task, ensure_ascii=False, indent=2),
                                     f"Gmail Watcher: task from {task_info['sender']}")
@@ -240,6 +377,17 @@ def main():
                             log("🚀", f"Task written to GitHub: {TASK_FILE}")
                         else:
                             log("!!", "Failed to write task to GitHub")
+
+                        # ② تنفيذ الأمر محلياً
+                        exec_result = execute_task(task)
+
+                        # ③ بناء تقرير HTML وإرساله
+                        html = build_html_report(task, exec_result)
+                        send_report_email(
+                            to_addr=TRUSTED_SENDER,
+                            subject=task_info["subject"],
+                            html_body=html
+                        )
 
                 except json.JSONDecodeError as e:
                     log("!", f"JSON parse error: {e}")
