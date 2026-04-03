@@ -6,6 +6,7 @@ gmail_watcher.py
 يستخدم Groq لتحويل النص إلى مهمة JSON ويكتبها في GitHub.
 """
 import os, sys, time, json, imaplib, email, base64, re
+import codecs
 from email.header import decode_header
 from datetime import datetime, timezone
 
@@ -121,6 +122,25 @@ def decode_str(s):
             result += part
     return result
 
+def safe_decode(payload, charset):
+    """Safely decode email payload handling unknown charsets."""
+    if not payload:
+        return ""
+    charset = (charset or "utf-8").lower()
+    # Normalize unknown charsets
+    if charset in ("unknown-8bit", "x-unknown", "unknown"):
+        charset = "latin-1"
+    try:
+        return payload.decode(charset, errors="replace")
+    except (LookupError, UnicodeDecodeError):
+        # Fallback chain
+        for enc in ("utf-8", "latin-1", "cp1252"):
+            try:
+                return payload.decode(enc, errors="replace")
+            except Exception:
+                continue
+    return payload.decode("utf-8", errors="replace")
+
 def get_body(msg):
     body = ""
     if msg.is_multipart():
@@ -128,11 +148,13 @@ def get_body(msg):
             if part.get_content_type() == "text/plain":
                 payload = part.get_payload(decode=True)
                 if payload:
-                    body += payload.decode("utf-8", errors="replace")
+                    charset = part.get_content_charset()
+                    body += safe_decode(payload, charset)
     else:
         payload = msg.get_payload(decode=True)
         if payload:
-            body = payload.decode("utf-8", errors="replace")
+            charset = msg.get_content_charset()
+            body = safe_decode(payload, charset)
     return body.strip()
 
 def check_gmail():
