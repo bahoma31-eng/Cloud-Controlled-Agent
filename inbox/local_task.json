@@ -1,10 +1,10 @@
 {
-  "task_id": "email-1775237285",
+  "task_id": "email-1775240673",
   "engine": "PYTHON",
   "command": "print(sum(range(1, 101)))",
-  "description": "حساب مجموع الأرقام من 1 إلى 100",
+  "description": "حساب مجموع الأعداد من 1 إلى 100",
   "timeout": 60,
   "source": "gmail",
   "from": "bahoma31@gmail.com",
-  "original_subject": "عمليه حسابيه"
+  "original_subject": "mission"
 }
