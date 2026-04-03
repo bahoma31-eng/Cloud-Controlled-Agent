@@ -1,10 +1,10 @@
 {
-  "task_id": "email-1775236670",
-  "engine": "BASH",
-  "command": "echo 'Server status: $(systemctl status server)'",
-  "description": "تأكد من حالة تشغيل السيرفر",
+  "task_id": "email-1775237285",
+  "engine": "PYTHON",
+  "command": "print(sum(range(1, 101)))",
+  "description": "حساب مجموع الأرقام من 1 إلى 100",
   "timeout": 60,
   "source": "gmail",
   "from": "bahoma31@gmail.com",
-  "original_subject": "هل يمكنك من ان تتاكد بان السيرفر يعمل ام لا"
+  "original_subject": "عمليه حسابيه"
 }
