@@ -1,10 +1,10 @@
 {
-  "task_id": "test-001",
+  "task_id": "test-email-002",
   "status": "SUCCESS",
   "return_code": 0,
   "engine": "BASH",
-  "description": "اختبار الدورة الكاملة",
-  "output": "Hello from Termux\nFri Apr  3 20:12:10 CET 2026\nLinux localhost 4.19.87-27102101 #1 SMP PREEMPT Thu Feb 27 12:21:35 KST 2025 aarch64 Android",
-  "timestamp": "2026-04-03T19:12:10.627995+00:00",
+  "description": "اختبار الإيميل",
+  "output": "Agent OK!\nFri Apr  3 20:30:05 CET 2026\nEmail test success",
+  "timestamp": "2026-04-03T19:30:05.165074+00:00",
   "agent": "termux_agent.py"
 }
