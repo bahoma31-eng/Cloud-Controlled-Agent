@@ -1,6 +1,1 @@
-{
-  "task_id": "test-email-002",
-  "engine": "BASH",
-  "command": "echo 'Agent OK!' && date && echo 'Email test success'",
-  "description": "اختبار الإيميل"
-}
+waiting
