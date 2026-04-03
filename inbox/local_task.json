@@ -1,1 +1,6 @@
-waiting
+{
+  "task_id": "test-001",
+  "engine": "BASH",
+  "command": "echo Hello from Termux && date && uname -a",
+  "description": "اختبار الدورة الكاملة"
+}
