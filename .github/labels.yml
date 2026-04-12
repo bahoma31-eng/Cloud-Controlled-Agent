@@ -1,0 +1,14 @@
+# labels مطلوبة لتشغيل النظام
+# يمكنك إنشاؤها يدويًا من Settings > Labels
+# أو عبر: gh label create "run-task" --color "#0075ca"
+- name: run-task
+  color: "0075ca"
+  description: "تشغيل مهمة عبر Bridge Runner"
+
+- name: completed
+  color: "0e8a16"
+  description: "المهمة نُفِّذت بنجاح"
+
+- name: failed
+  color: "d93f0b"
+  description: "المهمة فشلت"

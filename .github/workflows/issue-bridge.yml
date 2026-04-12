@@ -1,0 +1,262 @@
+name: "🤖 Issue Bridge Runner"
+
+on:
+  issues:
+    types: [opened, labeled]
+
+jobs:
+  run-task:
+    name: Execute Task from Issue
+    runs-on: ubuntu-latest
+    # فقط Issues التي تحمل label: "run-task"
+    if: contains(github.event.issue.labels.*.name, 'run-task')
+
+    permissions:
+      issues: write
+      contents: write
+
+    steps:
+      # ──────────────────────────────────────────
+      # 1. تعليق فوري: "جاري التنفيذ"
+      # ──────────────────────────────────────────
+      - name: Comment – Starting
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: [
+                '## ⚙️ Bridge Runner – جاري التنفيذ',
+                '',
+                `> **Issue:** #${context.issue.number}`,
+                `> **Run:** [${context.runId}](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`,
+                `> **وقت البدء:** ${new Date().toISOString()}`,
+                '',
+                '_سيُضاف تعليق آخر عند الانتهاء..._'
+              ].join('\n')
+            })
+
+      # ──────────────────────────────────────────
+      # 2. سحب الكود
+      # ──────────────────────────────────────────
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ──────────────────────────────────────────
+      # 3. إعداد Python
+      # ──────────────────────────────────────────
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install requests python-dotenv --quiet
+
+      # ──────────────────────────────────────────
+      # 4. استخراج وتنفيذ المهمة من body الـ Issue
+      # ──────────────────────────────────────────
+      - name: Parse and Execute Task
+        id: exec
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
+          python3 - <<'PYEOF'
+          import os, sys, json, subprocess, textwrap, re
+
+          body   = os.environ.get("ISSUE_BODY", "")
+          number = os.environ.get("ISSUE_NUMBER", "?")
+          title  = os.environ.get("ISSUE_TITLE", "")
+
+          # ──────────────────────────────────────
+          # 4a. محاولة قراءة JSON من كتلة ```json
+          # ──────────────────────────────────────
+          task = None
+          json_match = re.search(r'```(?:json)?\s*([\s\S]*?)```', body, re.IGNORECASE)
+          if json_match:
+              try:
+                  task = json.loads(json_match.group(1).strip())
+              except json.JSONDecodeError:
+                  pass
+
+          # ──────────────────────────────────────
+          # 4b. fallback: نبحث عن مفاتيح engine/command في النص
+          # ──────────────────────────────────────
+          if not task:
+              engine_m  = re.search(r'(?:engine|محرك)\s*[:=]\s*(\w+)', body, re.IGNORECASE)
+              command_m = re.search(r'(?:command|أمر|كود)\s*[:=]\s*(.+)', body, re.IGNORECASE | re.DOTALL)
+              if engine_m and command_m:
+                  task = {
+                      "task_id": number,
+                      "engine": engine_m.group(1).strip().upper(),
+                      "command": command_m.group(1).strip().strip('`').strip(),
+                      "description": title or "Issue task"
+                  }
+
+          # ──────────────────────────────────────
+          # 4c. fallback نهائي: bash يُنفّذ عنوان الـ Issue كأمر
+          # ──────────────────────────────────────
+          if not task:
+              task = {
+                  "task_id": number,
+                  "engine": "BASH",
+                  "command": title,
+                  "description": "(auto-parsed from title)"
+              }
+
+          engine  = task.get("engine", "BASH").upper()
+          command = task.get("command", "")
+          timeout = int(task.get("timeout", 120))
+
+          print(f"[TASK] engine={engine}  timeout={timeout}s")
+          print(f"[CMD]  {command[:200]}")
+
+          # ──────────────────────────────────────
+          # 4d. تنفيذ
+          # ──────────────────────────────────────
+          try:
+              if engine == "PYTHON":
+                  result = subprocess.run(
+                      [sys.executable, "-c", command],
+                      capture_output=True, text=True, timeout=timeout
+                  )
+              elif engine in ("BASH", "CMD", "SH"):
+                  result = subprocess.run(
+                      command, shell=True, capture_output=True, text=True, timeout=timeout
+                  )
+              elif engine in ("POWERSHELL", "PWSH"):
+                  result = subprocess.run(
+                      ["pwsh", "-NoProfile", "-Command", command],
+                      capture_output=True, text=True, timeout=timeout
+                  )
+              else:
+                  result = subprocess.run(
+                      command, shell=True, capture_output=True, text=True, timeout=timeout
+                  )
+
+              rc     = result.returncode
+              stdout = (result.stdout or "").strip()
+              stderr = (result.stderr or "").strip()
+              output = (stdout + ("\n\n[STDERR]\n" + stderr if stderr else "")).strip()
+              status = "SUCCESS" if rc == 0 else "FAILED"
+
+          except subprocess.TimeoutExpired:
+              rc, output, status = 124, f"Timeout expired after {timeout}s", "TIMEOUT"
+          except Exception as e:
+              rc, output, status = 1, str(e), "ERROR"
+
+          # ──────────────────────────────────────
+          # 4e. كتابة النتائج لـ step التالي
+          # ──────────────────────────────────────
+          out_file = os.environ.get("GITHUB_OUTPUT", "/tmp/gha_output.txt")
+          # نقصّ الناتج إلى 10,000 حرف لتجنّب حدود GHA
+          safe_output = output[:10000].replace('%', '%25').replace('\n', '%0A').replace('\r', '%0D')
+
+          with open(out_file, 'a') as f:
+              f.write(f"status={status}\n")
+              f.write(f"return_code={rc}\n")
+              f.write(f"engine={engine}\n")
+              f.write(f"description={task.get('description','')[:300]}\n")
+              f.write(f"output_short={safe_output[:3000]}\n")
+
+          # ──────────────────────────────────────
+          # 4f. رفع ملف نتيجة كامل إلى outbox/
+          # ──────────────────────────────────────
+          import base64, time, requests
+          token = os.environ.get("GITHUB_TOKEN", "")
+          repo_owner = "bahoma31-eng"
+          repo_name  = "Cloud-Controlled-Agent"
+          branch     = "main"
+
+          result_data = {
+              "task_id":      number,
+              "status":       status,
+              "return_code":  rc,
+              "engine":       engine,
+              "description":  task.get("description", ""),
+              "command_preview": command[:800],
+              "output":       output[:8000],
+              "timestamp":    __import__('datetime').datetime.utcnow().isoformat() + "Z",
+              "executed_on":  "github-actions",
+              "bridge_version": "3.0"
+          }
+
+          result_name = f"outbox/issue_{number}_result_{int(time.time())}.json"
+          content_b64 = base64.b64encode(json.dumps(result_data, ensure_ascii=False, indent=2).encode()).decode()
+          api_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/contents/{result_name}"
+          headers = {"Authorization": f"token {token}", "Accept": "application/vnd.github+json"}
+          payload = {"message": f"Bridge: issue #{number} result", "content": content_b64, "branch": branch}
+          r = requests.put(api_url, headers=headers, json=payload, timeout=30)
+          if r.status_code in (200, 201):
+              print(f"[OK] Result saved -> {result_name}")
+          else:
+              print(f"[WARN] Could not save result: {r.status_code}")
+
+          print(f"[DONE] {status} (rc={rc})")
+          PYEOF
+
+      # ──────────────────────────────────────────
+      # 5. تعليق بالنتيجة النهائية
+      # ──────────────────────────────────────────
+      - name: Comment – Result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          TASK_STATUS: ${{ steps.exec.outputs.status }}
+          TASK_RC: ${{ steps.exec.outputs.return_code }}
+          TASK_ENGINE: ${{ steps.exec.outputs.engine }}
+          TASK_DESC: ${{ steps.exec.outputs.description }}
+          TASK_OUTPUT: ${{ steps.exec.outputs.output_short }}
+        with:
+          script: |
+            const status  = process.env.TASK_STATUS  || 'UNKNOWN';
+            const rc      = process.env.TASK_RC      || '?';
+            const engine  = process.env.TASK_ENGINE  || '?';
+            const desc    = process.env.TASK_DESC    || '';
+            const rawOut  = process.env.TASK_OUTPUT  || '(no output)';
+
+            const icon = status === 'SUCCESS' ? '✅' : status === 'TIMEOUT' ? '⏱️' : '❌';
+            const output = rawOut.slice(0, 6000);
+
+            const body = [
+              `## ${icon} Bridge Result – ${status}`,
+              '',
+              `| الحقل | القيمة |`,
+              `|-------|--------|`,
+              `| **Issue** | #${context.issue.number} |`,
+              `| **المحرك** | \`${engine}\` |`,
+              `| **الحالة** | \`${status}\` |`,
+              `| **رمز الإرجاع** | \`${rc}\` |`,
+              `| **الوصف** | ${desc} |`,
+              `| **Run** | [اضغط هنا](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) |`,
+              '',
+              '### 📤 المخرجات',
+              '```',
+              output,
+              '```',
+              '',
+              `> _مُنفَّذ على GitHub Actions Ubuntu Runner — Bridge V3.0_`
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: context.issue.number,
+              body
+            });
+
+            // أضف label حسب النتيجة
+            const resultLabel = status === 'SUCCESS' ? 'completed' : 'failed';
+            try {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo:  context.repo.repo,
+                issue_number: context.issue.number,
+                labels: [resultLabel]
+              });
+            } catch(e) { /* label قد لا يكون موجودًا */ }

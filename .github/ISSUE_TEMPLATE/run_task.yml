@@ -1,0 +1,61 @@
+name: "🤖 تشغيل مهمة (Run Task)"
+description: "افتح هذا الـ Issue لتشغيل مهمة عبر Bridge V3.0 على GitHub Actions"
+title: "[TASK] "
+labels:
+  - "run-task"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🚀 Bridge Task Runner
+        أنشئ Issue بهذا النموذج وسيُشغَّل الوكيل تلقائيًا عند الحفظ.
+        النتيجة ستظهر كتعليق في هذا الـ Issue خلال ثوانٍ.
+
+  - type: dropdown
+    id: engine
+    attributes:
+      label: المحرك (Engine)
+      description: اختر لغة/بيئة التنفيذ
+      options:
+        - BASH
+        - PYTHON
+        - POWERSHELL
+    validations:
+      required: true
+
+  - type: textarea
+    id: command
+    attributes:
+      label: الأمر أو الكود (Command)
+      description: اكتب الأمر أو الكود المراد تنفيذه
+      placeholder: |
+        مثال BASH:
+          uname -a && python3 --version
+
+        مثال PYTHON:
+          import sys, platform
+          print(f"Python {sys.version}")
+          print(f"OS: {platform.system()}")
+    validations:
+      required: true
+
+  - type: input
+    id: description
+    attributes:
+      label: وصف المهمة
+      placeholder: "فحص إصدار Python والبيئة"
+
+  - type: input
+    id: timeout
+    attributes:
+      label: مهلة التنفيذ (ثوانٍ)
+      placeholder: "120"
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        > **ملاحظة:** يمكنك أيضًا كتابة JSON مباشرةً في خانة "الأمر" بهذا الشكل:
+        > ```json
+        > {"task_id": "1", "engine": "BASH", "command": "echo hello", "description": "test"}
+        > ```
