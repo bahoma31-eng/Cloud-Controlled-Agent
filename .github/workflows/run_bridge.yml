@@ -1,0 +1,49 @@
+name: Run Actions Bridge
+
+# يُطلق هذا الـ workflow تلقائياً عند اكتشاف task جديد في inbox/local_task.json
+# أو عند تشغيله يدوياً من واجهة GitHub Actions
+
+on:
+  push:
+    paths:
+      - "inbox/local_task.json"
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to read/write (default: main)"
+        required: false
+        default: "main"
+
+permissions:
+  contents: write   # needed to read inbox and write outbox
+
+jobs:
+  run-bridge:
+    name: Execute Task
+    runs-on: ubuntu-latest
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REPO_OWNER: ${{ github.repository_owner }}
+      REPO_NAME: ${{ github.event.repository.name }}
+      BRIDGE_BRANCH: ${{ github.event.inputs.branch || 'main' }}
+      BRIDGE_TIMEOUT: "120"
+      # اختياري — أضف CODE_ANALYZER_PATH كـ secret إن كنت تستخدم ANALYZER engine
+      CODE_ANALYZER_PATH: ${{ secrets.CODE_ANALYZER_PATH }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch || 'main' }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run Actions Bridge
+        run: python bridge/actions_bridge.py
