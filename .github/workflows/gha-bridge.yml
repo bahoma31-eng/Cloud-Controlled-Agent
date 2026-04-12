@@ -1,0 +1,261 @@
+name: "☁️ GHA Bridge Runner"
+
+# ──────────────────────────────────────────────────────────
+# ثلاث طرق لتشغيل الجسر:
+#  1. يدوي من واجهة GitHub (workflow_dispatch)
+#  2. تلقائي عند رفع ملف مهمة إلى inbox/
+#  3. عبر GitHub API (repository_dispatch)
+# لا يحتاج أي وكيل محلي ولا Nosheen Cloud Agent
+# ──────────────────────────────────────────────────────────
+on:
+  workflow_dispatch:
+    inputs:
+      task_json:
+        description: 'مهمة JSON (مثال: {"engine":"PYTHON","command":"print(42)","description":"اختبار"})'
+        required: true
+        default: '{"engine":"BASH","command":"echo Hello from GHA && date && uname -a","description":"اختبار افتراضي"}'
+      timeout:
+        description: 'المهلة الزمنية بالثواني'
+        required: false
+        default: '120'
+
+  push:
+    paths:
+      - 'inbox/*.json'
+
+  repository_dispatch:
+    types: [run-task]
+
+jobs:
+  execute:
+    name: "🚀 تنفيذ المهمة"
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      # ────────────────────────────────
+      # 1. سحب الكود
+      # ────────────────────────────────
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      # ────────────────────────────────
+      # 2. إعداد Python
+      # ────────────────────────────────
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install requests --quiet
+
+      # ────────────────────────────────
+      # 3. تحليل وتنفيذ المهمة
+      # ────────────────────────────────
+      - name: Parse and Execute Task
+        id: exec
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          TRIGGER_EVENT: ${{ github.event_name }}
+          DISPATCH_PAYLOAD: ${{ toJson(github.event.client_payload) }}
+          WORKFLOW_INPUT: ${{ github.event.inputs.task_json }}
+          INPUT_TIMEOUT: ${{ github.event.inputs.timeout }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python3 - <<'PYEOF'
+          import os, sys, json, subprocess, time, base64
+
+          trigger   = os.environ.get("TRIGGER_EVENT", "")
+          run_id    = os.environ.get("RUN_ID", "")
+          owner     = os.environ.get("REPO_OWNER", "")
+          repo      = os.environ.get("REPO_NAME", "")
+          token     = os.environ.get("GH_TOKEN", "")
+          task      = None
+
+          print(f"[INFO] Trigger: {trigger}")
+
+          # ── أ) workflow_dispatch: المدخل المباشر ──
+          if trigger == "workflow_dispatch":
+              raw = os.environ.get("WORKFLOW_INPUT", "{}")
+              try:
+                  task = json.loads(raw)
+              except Exception as e:
+                  print(f"[ERR] Bad JSON input: {e}")
+                  task = {"engine": "BASH", "command": raw, "description": "raw command"}
+
+          # ── ب) repository_dispatch: payload من API ──
+          elif trigger == "repository_dispatch":
+              raw = os.environ.get("DISPATCH_PAYLOAD", "{}")
+              try:
+                  task = json.loads(raw) if raw and raw != "null" else {}
+              except Exception:
+                  task = {}
+
+          # ── ج) push: نقرأ آخر ملف JSON في inbox/ ──
+          elif trigger == "push":
+              import glob
+              files = sorted(glob.glob("inbox/*.json"))
+              if files:
+                  try:
+                      with open(files[-1], 'r', encoding='utf-8') as f:
+                          task = json.load(f)
+                      print(f"[INFO] Loaded task from {files[-1]}")
+                  except Exception as e:
+                      print(f"[ERR] Cannot read task file: {e}")
+
+          if not task:
+              task = {"engine": "BASH", "command": "echo No task provided", "description": "fallback"}
+
+          # ── القيم الافتراضية ──
+          task.setdefault("task_id", f"gha-{run_id}")
+          task.setdefault("engine", "BASH")
+          task.setdefault("description", "GHA Bridge Task")
+          task.setdefault("command", "echo empty")
+
+          try:
+              timeout = int(os.environ.get("INPUT_TIMEOUT") or task.get("timeout", 120))
+          except Exception:
+              timeout = 120
+
+          engine  = task["engine"].upper()
+          command = task["command"]
+
+          print(f"[TASK] id={task['task_id']}  engine={engine}  timeout={timeout}s")
+          print(f"[CMD]  {command[:300]}")
+          print("-" * 60)
+
+          # ── تنفيذ ──
+          try:
+              if engine == "PYTHON":
+                  result = subprocess.run(
+                      [sys.executable, "-c", command],
+                      capture_output=True, text=True, timeout=timeout
+                  )
+              elif engine in ("POWERSHELL", "PWSH"):
+                  result = subprocess.run(
+                      ["pwsh", "-NoProfile", "-Command", command],
+                      capture_output=True, text=True, timeout=timeout
+                  )
+              else:  # BASH / CMD / SH / default
+                  result = subprocess.run(
+                      command, shell=True, executable="/bin/bash",
+                      capture_output=True, text=True, timeout=timeout
+                  )
+
+              rc     = result.returncode
+              stdout = (result.stdout or "").strip()
+              stderr = (result.stderr or "").strip()
+              output = stdout + ("\n\n[STDERR]\n" + stderr if stderr else "")
+              status = "SUCCESS" if rc == 0 else "FAILED"
+
+          except subprocess.TimeoutExpired:
+              rc, output, status = 124, f"⏱️ انتهت المهلة بعد {timeout}s", "TIMEOUT"
+          except Exception as e:
+              rc, output, status = 1, str(e), "ERROR"
+
+          print(output[:5000])
+          print("-" * 60)
+          print(f"[DONE] {status} (rc={rc})")
+
+          # ── حفظ نتيجة إلى outbox/ عبر GitHub API ──
+          if token:
+              result_data = {
+                  "task_id":        task["task_id"],
+                  "status":         status,
+                  "return_code":    rc,
+                  "engine":         engine,
+                  "description":    task["description"],
+                  "command_preview": command[:500],
+                  "output":         output[:8000],
+                  "timestamp":      __import__('datetime').datetime.utcnow().isoformat() + "Z",
+                  "executed_on":    "github-actions-ubuntu",
+                  "run_id":         run_id,
+                  "bridge_version": "3.1-cloud-native"
+              }
+              filename   = f"outbox/gha_{task['task_id']}_{int(time.time())}.json"
+              content_b64 = base64.b64encode(
+                  json.dumps(result_data, ensure_ascii=False, indent=2).encode()
+              ).decode()
+
+              import urllib.request
+              api_url = f"https://api.github.com/repos/{owner}/{repo}/contents/{filename}"
+              headers_dict = {
+                  "Authorization": f"token {token}",
+                  "Accept": "application/vnd.github+json",
+                  "Content-Type": "application/json"
+              }
+              body_bytes = json.dumps({
+                  "message": f"Bridge result: {task['task_id']} [{status}]",
+                  "content": content_b64,
+                  "branch": "main"
+              }).encode()
+              req = urllib.request.Request(api_url, data=body_bytes, headers=headers_dict, method="PUT")
+              try:
+                  with urllib.request.urlopen(req, timeout=30) as resp:
+                      if resp.status in (200, 201):
+                          print(f"[OK] Result saved → {filename}")
+              except Exception as e:
+                  print(f"[WARN] Could not save result file: {e}")
+
+          # ── كتابة outputs لـ GitHub Actions ──
+          gha_out = os.environ.get("GITHUB_OUTPUT", "")
+          safe = lambda s: str(s).replace('%','%25').replace('\n','%0A').replace('\r','%0D')
+          if gha_out:
+              with open(gha_out, 'a') as f:
+                  f.write(f"status={status}\n")
+                  f.write(f"return_code={rc}\n")
+                  f.write(f"engine={engine}\n")
+                  f.write(f"task_id={safe(task['task_id'])}\n")
+                  f.write(f"description={safe(task['description'][:300])}\n")
+                  f.write(f"output_short={safe(output[:4000])}\n")
+          PYEOF
+
+      # ────────────────────────────────
+      # 4. ملخص في Job Summary
+      # ────────────────────────────────
+      - name: Write Job Summary
+        if: always()
+        env:
+          TASK_STATUS: ${{ steps.exec.outputs.status }}
+          TASK_RC:     ${{ steps.exec.outputs.return_code }}
+          TASK_ENGINE: ${{ steps.exec.outputs.engine }}
+          TASK_ID:     ${{ steps.exec.outputs.task_id }}
+          TASK_DESC:   ${{ steps.exec.outputs.description }}
+          TASK_OUTPUT: ${{ steps.exec.outputs.output_short }}
+        run: |
+          STATUS="${TASK_STATUS:-UNKNOWN}"
+          RC="${TASK_RC:-?}"
+          ENGINE="${TASK_ENGINE:-?}"
+          TID="${TASK_ID:-?}"
+          DESC="${TASK_DESC:-}"
+          OUT="${TASK_OUTPUT:-(no output)}"
+
+          if   [ "$STATUS" = "SUCCESS" ]; then ICON="✅"
+          elif [ "$STATUS" = "TIMEOUT" ]; then ICON="⏱️"
+          else ICON="❌"; fi
+
+          cat >> $GITHUB_STEP_SUMMARY <<EOF
+          ## ${ICON} Bridge Result – ${STATUS}
+
+          | الحقل | القيمة |
+          |-------|--------|
+          | **Task ID** | \`${TID}\` |
+          | **المحرك** | \`${ENGINE}\` |
+          | **الحالة** | \`${STATUS}\` |
+          | **رمز الإرجاع** | \`${RC}\` |
+          | **الوصف** | ${DESC} |
+
+          ### 📤 المخرجات
+          \`\`\`
+          ${OUT:0:6000}
+          \`\`\`
+
+          > _☁️ مُنفَّذ بالكامل على GitHub Actions Ubuntu Runner — Bridge V3.1 Cloud-Native_
+          EOF
